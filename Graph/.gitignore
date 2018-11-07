@@ -64,3 +64,4 @@ fabric.properties
 
 .idea/*
 __pycache__/*
+Graph/Graphics/__pycache__/*
