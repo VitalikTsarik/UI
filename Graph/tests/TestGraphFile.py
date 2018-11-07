@@ -38,3 +38,5 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(self.__graph.get_adj_edge(2), [{'edge_idx': 1, 'length': 0, 'vert_to': 1}])
         self.__graph.add_edge(3, 0, 1, 2)
         self.assertEqual(self.__graph.get_adj_edge(2), [{'edge_idx': 1, 'length': 0, 'vert_to': 1}])
+        self.__graph.add_edge(1, 0, 2, 4)
+        self.assertEqual(self.__graph.get_adj_edge(4), [])
