@@ -41,4 +41,4 @@ class TestGraphMethods(unittest.TestCase):
         # self.__graph.add_edge(1, 0, 2, 4)
         # self.assertEqual(self.__graph.get_adj_edge(4), [])
         self.__graph.add_edge(5, 0, 4, 4)
-        self.assertEqual(self.__graph.get_adj_vert(4), [])
+        self.assertEqual(self.__graph.get_adj_edge(4), [])
