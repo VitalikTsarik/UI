@@ -2,7 +2,6 @@ import json
 from Graph import Graph
 
 
-# проверка на наличие файла и формат файла
 def read_graph_from_json(filename):
     with open(filename) as json_data:
         graph = json.load(json_data)
