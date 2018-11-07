@@ -29,11 +29,12 @@ class TestGraphMethods(unittest.TestCase):
                                                         {'edge_idx': 2, 'length': 0, 'vert_to': 3}])
         self.assertEqual(self.__graph.get_adj_edge(4), [])
 
-    # где-то нужна поверка типов
-    def test_not_add_existing_vert(self): # добавить проверку при добавлении ребра
+    def test_not_add_existing_vert(self):
         self.assertEqual(self.__graph.get_vert_post_idx(1), 1)
         self.__graph.add_vertex(1, 4)
         self.assertEqual(self.__graph.get_vert_post_idx(1), 1)
 
     def test_not_add_existing_edge(self):
-        pass  # не пройдёт
+        self.assertEqual(self.__graph.get_adj_edge(2), [{'edge_idx': 1, 'length': 0, 'vert_to': 1}])
+        self.__graph.add_edge(3, 0, 1, 2)
+        self.assertEqual(self.__graph.get_adj_edge(2), [{'edge_idx': 1, 'length': 0, 'vert_to': 1}])
