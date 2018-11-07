@@ -27,6 +27,8 @@ class Graph(object):
 
     # warning попытка добавить existing edge
     def add_edge(self, idx, length, vert_from, vert_to):
+        if vert_from == vert_to:
+            return
         for vertex in self.__graph[vert_from]['adj_edge']:
             if vertex['vert_to'] == vert_to:
                 return
