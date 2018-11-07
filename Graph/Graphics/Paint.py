@@ -5,7 +5,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from Graphics.ErrorWindow import *
+from Graphics.ExtraMessages import *
 from JsonConverter import *
 
 
@@ -13,8 +13,6 @@ class MainWindow(QMainWindow):
     def __init__(self):
         # todo: instance_of Graph
         super().__init__()
-
-        self.err_window = ErrorWindow(self)
 
         self.form_widget = FormWidget(self)
         self.setCentralWidget(self.form_widget)
@@ -72,17 +70,11 @@ class MainWindow(QMainWindow):
             dictionary = read_graph_from_json(file_name)
             try:
                 self.form_widget.link_graph(dict_to_graph(dictionary))
-            except KeyError as error:
-                self.err_window.call_error_window('Please, check the format of data in your json file')
+            except KeyError:
+                ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
 
     def help_inf(self):
-        help_box = QMessageBox(self)
-        err_icon = QIcon('icons/question.jpg')
-        help_box.setWindowIcon(err_icon)
-        help_box.setWindowTitle('Required format of file')
-        help_box.setText('Check README file for extra information')
-        help_box.exec_()
-
+        ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
 
 class FormWidget(QWidget):
