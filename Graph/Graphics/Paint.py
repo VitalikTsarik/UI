@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
 
         self.create_menu()
         self.show()
+        ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
 
     def set_geometry(self):
         self.resize(1300, 900)
