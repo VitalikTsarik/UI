@@ -1,4 +1,4 @@
-# проверять тип того, что передаём
+# todo: проверять тип того, что передаём в методы
 class Graph(object):
     def __init__(self, name, idx):
         self.__graph = {}
@@ -27,6 +27,10 @@ class Graph(object):
 
     # warning попытка добавить existing edge
     def add_edge(self, idx, length, vert_from, vert_to):
+        for vertex in self.__graph[vert_from]['adj_edge']:
+            if vertex['vert_to'] == vert_to:
+                return
+
         if vert_from not in self.__graph.keys():
             self.add_vertex(vert_from)
         self.__graph[vert_from]['adj_edge'].append(
@@ -36,6 +40,7 @@ class Graph(object):
                 'vert_to': vert_to
             }
         )
+
         if vert_to not in self.__graph.keys():
             self.add_vertex(vert_to)
         self.__graph[vert_to]['adj_edge'].append(
