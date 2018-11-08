@@ -17,6 +17,7 @@ class MainWindow(QMainWindow):
         self.form_widget = FormWidget(self)
         self.setCentralWidget(self.form_widget)
         self.init_ui()
+        ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
 
     def init_ui(self):
         self.set_geometry()
@@ -26,7 +27,6 @@ class MainWindow(QMainWindow):
 
         self.create_menu()
         self.show()
-        ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
 
     def set_geometry(self):
         self.resize(1300, 900)
