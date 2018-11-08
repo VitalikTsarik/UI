@@ -56,3 +56,6 @@
 * в командной строке пропишите pip3 install pyqt5
 * в командной строке пропишите python Application.py
 
+или
+
+* используйте ярлык application.exe
