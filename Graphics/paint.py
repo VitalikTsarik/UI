@@ -5,8 +5,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from Graphics.ExtraMessages import *
-from JsonConverter import *
+from Graphics.extra_messages import *
+from json_converter import *
 
 
 class MainWindow(QMainWindow):
