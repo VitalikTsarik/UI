@@ -1,5 +1,5 @@
 import sys
-from Graphics.paint import *
+from graphics.paint import *
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
