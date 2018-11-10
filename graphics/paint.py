@@ -88,8 +88,6 @@ class FormWidget(QWidget):
         # todo: может это старый синтаксис
         super(FormWidget, self).__init__(parent)
         self.create_button()
-        self.h_offsets = {}
-        self.v_offsets = {}
         self.graph = None
         self.is_graph_new = None
 
@@ -125,8 +123,13 @@ class FormWidget(QWidget):
 
     def link_graph(self, graph):
         self.graph = graph
+        self.is_graph_new = True
         self.reset_offsets()
         self.update()
+
+    def reset_offsets(self):
+        self.h_offsets = {}
+        self.v_offsets = {}
 
     def paintEvent(self, event):
         if not self.graph:
@@ -155,8 +158,9 @@ class FormWidget(QWidget):
         radius = indent / 6
         h_num = round((height + radius) / indent)
 
-        if not self.h_offsets or not self.v_offsets:
+        if self.is_graph_new:
             self.set_offsets(indent)
+            self.is_graph_new = False
 
         i = 0
         j = 0
@@ -176,14 +180,6 @@ class FormWidget(QWidget):
         for vertex in self.graph.get_all_vert():
             self.h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
-
-    def update_form_for_new_graph(self):
-        self.reset_offsets()
-        self.update()
-
-    def reset_offsets(self):
-        self.h_offsets = {}
-        self.v_offsets = {}
 
     def draw_edges(self, h_painter, points):
         h_painter.setPen(self.lines_pen)
@@ -208,4 +204,3 @@ class FormWidget(QWidget):
             h_painter.setPen(self.circles_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
-
