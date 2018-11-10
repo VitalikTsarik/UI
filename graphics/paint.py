@@ -17,7 +17,7 @@ class MainWindow(QMainWindow):
         self.form_widget = FormWidget(self)
         self.setCentralWidget(self.form_widget)
         self.init_ui()
-        ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
+        # ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
 
     def init_ui(self):
         self.set_geometry()
@@ -42,6 +42,10 @@ class MainWindow(QMainWindow):
         new_act.setStatusTip('Open a file with graph')
         new_act.triggered.connect(self.open_file)
 
+        settings_act = QAction('Settings', self)
+        settings_act.setStatusTip('Edit application setting')
+        settings_act.triggered.connect(self.create_settings_dlg)
+
         exit_act = QAction('&Exit', self)  # QtGui.QIcon('exit.png'),
         exit_act.setStatusTip('Quit application')
         exit_act.triggered.connect(qApp.quit)
@@ -58,6 +62,7 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_act)
 
+        menu_bar.addAction(settings_act)
         menu_bar.addAction(help_act)
 
     def open_file(self):
@@ -73,6 +78,10 @@ class MainWindow(QMainWindow):
                 self.form_widget.link_graph(dict_to_graph(dictionary))
             except KeyError:
                 ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
+
+    def create_settings_dlg(self):
+        settings_dlg = SettingsDlg(self)
+        settings_dlg.show()
 
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
@@ -145,7 +154,7 @@ class FormWidget(QWidget):
 
         h_painter.end()
 
-    #todo: подумать(или нет)
+    # todo: подумать(или нет)
     def calc_coordinates(self):
         padding = 50
         x_0 = padding
@@ -204,3 +213,11 @@ class FormWidget(QWidget):
             h_painter.setPen(self.circles_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
+
+
+class SettingsDlg(QDialog):
+    def __init__(self, parent):
+        super(SettingsDlg, self).__init__(parent)
+        self.setWindowTitle("Settings")
+        
+
