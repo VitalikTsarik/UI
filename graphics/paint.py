@@ -11,6 +11,13 @@ from json_converter import *
 
 
 class MainWindow(QMainWindow):
+    vertex_color = QColor(120, 120, 255)
+    vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
+    edge_width = 2
+    edge_pen = QPen(QColor(100, 100, 100), edge_width, Qt.SolidLine)
+    font = QFont('Decorative', 10)
+    vertex_label_style = 'inside'
+
     def __init__(self):
         # todo: instance_of Graph
         super().__init__()
@@ -93,10 +100,6 @@ class MainWindow(QMainWindow):
 
 
 class FormWidget(QWidget):
-    circles_color = QColor(120, 120, 255)
-    circles_pen = QPen(Qt.black, 1, Qt.SolidLine)
-    lines_pen = QPen(QColor(100, 100, 100), 2, Qt.SolidLine)
-    font = QFont('Decorative', 10)
 
     def __init__(self, parent):
         # todo: может это старый синтаксис
@@ -196,14 +199,14 @@ class FormWidget(QWidget):
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges(self, h_painter, points):
-        h_painter.setPen(self.lines_pen)
+        h_painter.setPen(self.parent().edge_pen)
         for vertex in self.graph.get_all_vert():
             for adj_vert in self.graph.get_adj_edge(vertex):
                 h_painter.drawLine(points[vertex][0], points[vertex][1]
                                    , points[adj_vert["vert_to"]][0], points[adj_vert["vert_to"]][1])
 
     def draw_vertices(self, h_painter, points, radius):
-        h_painter.setFont(self.font)
+        h_painter.setFont(self.parent().font)
         for vertex in self.graph.get_all_vert():
             x = points[vertex][0] - radius
             y = points[vertex][1] - radius
@@ -214,8 +217,8 @@ class FormWidget(QWidget):
             # h_painter.drawText(QRectF(x - self.h_points_offsets[vertex], y - self.v_points_offsets[vertex]
             #                    , 2*radius, 2*radius), Qt.AlignCenter, vertex.__str__())
 
-            h_painter.setBrush(self.circles_color)
-            h_painter.setPen(self.circles_pen)
+            h_painter.setBrush(self.parent().vertex_color)
+            h_painter.setPen(self.parent().vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
