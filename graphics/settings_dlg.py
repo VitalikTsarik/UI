@@ -1,9 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor, QPen, QFont
 
 
 class Ui_settings_dlg(object):
+    vertex_color = QColor(120, 120, 255)
+    vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
+    edge_width = 2
+    edge_pen = QPen(QColor(100, 100, 100), edge_width, Qt.SolidLine)
+    font = QFont('Decorative', 10)
+    vertex_label_style = 'inside'
+
     def setupUi(self, settings_dlg):
         settings_dlg.setObjectName("settings_dlg")
         settings_dlg.setEnabled(True)
@@ -118,6 +127,10 @@ class Ui_settings_dlg(object):
         self.tab_widget.setCurrentIndex(0)
         self.standart_btns.accepted.connect(settings_dlg.accept)
         self.standart_btns.rejected.connect(settings_dlg.reject)
+        self.rb_inside.setChecked(True)
+        self.rb_vertex_blue.setChecked(True)
+        self.rb_edge_black.setChecked(True)
+
         QtCore.QMetaObject.connectSlotsByName(settings_dlg)
 
     def retranslateUi(self, settings_dlg):
