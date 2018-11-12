@@ -3,7 +3,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPen, QFont
-from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialog, QFontDialog
 
 
 class SettingsDlg(QDialog):
@@ -44,6 +44,8 @@ class SettingsDlg(QDialog):
         self.ui.rb_inside.toggled.connect(self.rb_inside_action)
         self.ui.rb_outside.toggled.connect(self.rb_outside_action)
 
+        self.ui.btn_change_font.clicked.connect(self.btn_change_font_action)
+
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
         self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
@@ -56,6 +58,12 @@ class SettingsDlg(QDialog):
 
     def rb_outside_action(self):
         self.draw_param['vertex_label_style'] = 'outside'
+
+    def btn_change_font_action(self):
+        font_dlg = QFontDialog()
+        font_dlg.setCurrentFont(self.draw_param['font'])
+        if font_dlg.exec_():
+            self.draw_param['font'] = font_dlg.currentFont()
 
     def rb_vertex_blue_action(self):
         self.draw_param['vertex_color'] = QColor(120, 120, 255)
