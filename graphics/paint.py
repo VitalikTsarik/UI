@@ -163,10 +163,6 @@ class FormWidget(QWidget):
             self.h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
 
-    def update_form_for_new_graph(self):
-        self.reset_offsets()
-        self.update()
-
     def reset_offsets(self):
         self.h_offsets = {}
         self.v_offsets = {}
