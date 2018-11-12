@@ -131,6 +131,10 @@ class Ui_settings_dlg(object):
         self.rb_vertex_blue.setChecked(True)
         self.rb_edge_black.setChecked(True)
 
+        self.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
+        self.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
+        self.rb_vertex_red.toggled.connect(self.rb_vertex_grey_action)
+
         QtCore.QMetaObject.connectSlotsByName(settings_dlg)
 
     def retranslateUi(self, settings_dlg):
@@ -153,6 +157,15 @@ class Ui_settings_dlg(object):
         self.rb_edge_blue.setText(_translate("settings_dlg", "Blue"))
         self.rb_edge_black.setText(_translate("settings_dlg", "Black"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.edge_tab), _translate("settings_dlg", "Edge"))
+
+    def rb_vertex_blue_action(self):
+        self.vertex_color = QColor(120, 120, 255)
+
+    def rb_vertex_red_action(self):
+        self.vertex_color = QColor(255, 120, 120)
+
+    def rb_vertex_grey_action(self):
+        self.vertex_color = QColor(180, 180, 180)
 
 
 if __name__ == "__main__":
