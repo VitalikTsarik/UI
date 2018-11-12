@@ -3,7 +3,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPen, QFont
-from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog
+from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog, QDialogButtonBox
 
 
 class SettingsDlg(QDialog):
@@ -60,59 +60,80 @@ class SettingsDlg(QDialog):
 
         self.ui.standart_btns.accepted.connect(self.accept)
         self.ui.standart_btns.rejected.connect(self.reject)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).clicked.connect(self.apply)
 
     def rb_inside_action(self):
         self.draw_param['vertex_label_style'] = 'inside'
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_outside_action(self):
         self.draw_param['vertex_label_style'] = 'outside'
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def btn_change_font_action(self):
         font_dlg = QFontDialog()
         font_dlg.setCurrentFont(self.draw_param['font'])
         if font_dlg.exec_():
             self.draw_param['font'] = font_dlg.currentFont()
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_vertex_blue_action(self):
         self.draw_param['vertex_color'] = QColor(120, 120, 255)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_vertex_red_action(self):
         self.draw_param['vertex_color'] = QColor(255, 120, 120)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_vertex_grey_action(self):
         self.draw_param['vertex_color'] = QColor(180, 180, 180)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def btn_vertex_custom_color_action(self):
         color_dlg = QColorDialog()
         color_dlg.setCurrentColor(self.draw_param['vertex_color'])
         if color_dlg.exec_():
             self.draw_param['vertex_color'] = color_dlg.currentColor()
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def spin_box_edge_width_action(self):
         self.draw_param['edge_width'] = self.ui.spin_box_edge_width.value()
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_edge_blue_action(self):
         self.draw_param['edge_color'] = QColor(120, 120, 255)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_edge_red_action(self):
         self.draw_param['edge_color'] = QColor(255, 120, 120)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def rb_edge_black_action(self):
         self.draw_param['edge_color'] = QColor(50, 50, 50)
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def btn_edge_custom_color_action(self):
         color_dlg = QColorDialog()
         color_dlg.setCurrentColor(self.draw_param['edge_color'])
         if color_dlg.exec_():
             self.draw_param['edge_color'] = color_dlg.currentColor()
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(True)
 
     def accept(self):
+        self.save_changes()
+        self.close()
+
+    def apply(self):
+        self.save_changes()
+        self.ui.standart_btns.button(QDialogButtonBox.Apply).setEnabled(False)
+
+    def save_changes(self):
         self.parent().vertex_label_style = self.draw_param['vertex_label_style']
         self.parent().font = self.draw_param['font']
         self.parent().vertex_color = self.draw_param['vertex_color']
         self.parent().edge_width = self.draw_param['edge_width']
         self.parent().edge_color = self.draw_param['edge_color']
-        self.close()
+        self.parent().update()
 
 
 class UiSettingsDlg(object):
