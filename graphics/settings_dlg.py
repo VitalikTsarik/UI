@@ -51,6 +51,8 @@ class SettingsDlg(QDialog):
         self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
         self.ui.btn_vertex_custom_color.clicked.connect(self.btn_vertex_custom_color_action)
 
+        self.ui.spin_box_edge_width.valueChanged.connect(self.spin_box_edge_width_action)
+
         self.ui.rb_edge_blue.toggled.connect(self.rb_edge_blue_action)
         self.ui.rb_edge_red.toggled.connect(self.rb_edge_red_action)
         self.ui.rb_edge_black.toggled.connect(self.rb_edge_black_action)
@@ -85,6 +87,9 @@ class SettingsDlg(QDialog):
         color_dlg.setCurrentColor(self.draw_param['vertex_color'])
         if color_dlg.exec_():
             self.draw_param['vertex_color'] = color_dlg.currentColor()
+
+    def spin_box_edge_width_action(self):
+        self.draw_param['edge_width'] = self.ui.spin_box_edge_width.value()
 
     def rb_edge_blue_action(self):
         self.draw_param['edge_color'] = QColor(120, 120, 255)
