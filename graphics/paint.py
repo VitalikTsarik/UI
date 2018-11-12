@@ -98,6 +98,7 @@ class MainWindow(QMainWindow):
             }
         settings_dlg = SettingsDlg(self, draw_param)
         settings_dlg.show()
+        self.update()
 
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')

@@ -43,7 +43,7 @@ class SettingsDlg(QDialog):
     def connect_actions(self):
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
-        self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_grey_action)
+        self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
 
         self.ui.standart_btns.accepted.connect(self.accept)
         self.ui.standart_btns.rejected.connect(self.reject)
@@ -56,6 +56,14 @@ class SettingsDlg(QDialog):
 
     def rb_vertex_grey_action(self):
         self.draw_param['vertex_color'] = QColor(180, 180, 180)
+
+    def accept(self):
+        self.parent().vertex_label_style = self.draw_param['vertex_label_style']
+        self.parent().font = self.draw_param['font']
+        self.parent().vertex_color = self.draw_param['vertex_color']
+        self.parent().edge_width = self.draw_param['edge_width']
+        self.parent().edge_color = self.draw_param['edge_color']
+        self.close()
 
 
 class UiSettingsDlg(object):
