@@ -40,7 +40,6 @@ class SettingsDlg(QDialog):
 
         self.ui.spin_box_edge_width.setValue(self.draw_param['edge_width'])
 
-
     def connect_actions(self):
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
@@ -50,13 +49,13 @@ class SettingsDlg(QDialog):
         self.ui.standart_btns.rejected.connect(self.reject)
 
     def rb_vertex_blue_action(self):
-        self.vertex_color = QColor(120, 120, 255)
+        self.draw_param['vertex_color'] = QColor(120, 120, 255)
 
     def rb_vertex_red_action(self):
-        self.vertex_color = QColor(255, 120, 120)
+        self.draw_param['vertex_color'] = QColor(255, 120, 120)
 
     def rb_vertex_grey_action(self):
-        self.vertex_color = QColor(180, 180, 180)
+        self.draw_param['vertex_color'] = QColor(180, 180, 180)
 
 
 class UiSettingsDlg(object):
