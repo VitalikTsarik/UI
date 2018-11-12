@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
     vertex_color = QColor(120, 120, 255)
     vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
     edge_width = 2
-    edge_pen = QPen(QColor(100, 100, 100), edge_width, Qt.SolidLine)
+    edge_color = QColor(100, 100, 100)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
 
@@ -88,7 +88,15 @@ class MainWindow(QMainWindow):
                 ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
 
     def create_settings_dlg(self):
-        settings_dlg = SettingsDlg(self)
+        draw_param = \
+            {
+                'vertex_color': self.vertex_color,
+                'edge_width': self.edge_width,
+                'edge_color': self.edge_color,
+                'font': self.font,
+                'vertex_label_style': self.vertex_label_style
+            }
+        settings_dlg = SettingsDlg(self, draw_param)
         settings_dlg.show()
 
     def help_inf(self):
@@ -195,7 +203,8 @@ class FormWidget(QWidget):
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges(self, h_painter, points):
-        h_painter.setPen(self.parent().edge_pen)
+        edge_pen = QPen(self.parent().edge_color, self.parent().edge_width, Qt.SolidLine)
+        h_painter.setPen(edge_pen)
         for vertex in self.graph.get_all_vert():
             for adj_vert in self.graph.get_adj_edge(vertex):
                 h_painter.drawLine(points[vertex][0], points[vertex][1]

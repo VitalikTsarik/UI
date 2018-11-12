@@ -7,24 +7,39 @@ from PyQt5.QtWidgets import QDialog
 
 
 class SettingsDlg(QDialog):
-    vertex_color = QColor(120, 120, 255)
-    vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
-    edge_width = 2
-    edge_pen = QPen(QColor(100, 100, 100), edge_width, Qt.SolidLine)
-    font = QFont('Decorative', 10)
-    vertex_label_style = 'inside'
-
-    def __init__(self, parent):
+    def __init__(self, parent, draw_param):
         super(SettingsDlg, self).__init__(parent)
+        self.draw_param = draw_param
         self.ui = UiSettingsDlg()
         self.ui.setupUi(self)
         self.connect_actions()
+        self.set_cur_state()
 
     def set_cur_state(self):
         self.ui.tab_widget.setCurrentIndex(0)
-        self.ui.rb_inside.setChecked(True)
-        self.ui.rb_vertex_blue.setChecked(True)
-        self.ui.rb_edge_black.setChecked(True)
+        if self.draw_param['vertex_label_style'] == 'inside':
+            self.ui.rb_inside.setChecked(True)
+        else:
+            self.ui.rb_outside.setChecked(True)
+
+        vertex_color = self.draw_param['vertex_color']
+        if vertex_color == QColor(120, 120, 255):
+            self.ui.rb_vertex_blue.setChecked(True)
+        elif vertex_color == QColor(255, 120, 120):
+            self.ui.rb_vertex_red.setChecked(True)
+        elif vertex_color == QColor(180, 180, 180):
+            self.ui.rb_vertex_grey.setChecked(True)
+
+        edge_color = self.draw_param["edge_color"]
+        if edge_color == QColor(100, 100, 100):
+            self.ui.rb_edge_black.setChecked(True)
+        elif edge_color == QColor(120, 120, 255):
+            self.ui.rb_edge_blue.setChecked(True)
+        elif edge_color == QColor(255, 120, 120):
+            self.ui.rb_edge_red.setChecked(True)
+
+        self.ui.spin_box_edge_width.setValue(self.draw_param['edge_width'])
+
 
     def connect_actions(self):
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
