@@ -41,12 +41,21 @@ class SettingsDlg(QDialog):
         self.ui.spin_box_edge_width.setValue(self.draw_param['edge_width'])
 
     def connect_actions(self):
+        self.ui.rb_inside.toggled.connect(self.rb_inside_action)
+        self.ui.rb_outside.toggled.connect(self.rb_outside_action)
+
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
         self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
 
         self.ui.standart_btns.accepted.connect(self.accept)
         self.ui.standart_btns.rejected.connect(self.reject)
+
+    def rb_inside_action(self):
+        self.draw_param['vertex_label_style'] = 'inside'
+
+    def rb_outside_action(self):
+        self.draw_param['vertex_label_style'] = 'outside'
 
     def rb_vertex_blue_action(self):
         self.draw_param['vertex_color'] = QColor(120, 120, 255)
