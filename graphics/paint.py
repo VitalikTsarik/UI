@@ -107,22 +107,6 @@ class FormWidget(QWidget):
 
         self.setLayout(vbox)
 
-    @property
-    def is_graph_new(self):
-        return self._is_graph_new
-
-    @is_graph_new.setter
-    def is_graph_new(self, value: bool):
-        self._is_graph_new = value
-
-    @property
-    def graph(self):
-        return self._graph
-
-    @graph.setter
-    def graph(self, value: Graph):
-        self._graph = value
-
     def link_graph(self, graph):
         self.graph = graph
         self.is_graph_new = True
