@@ -91,7 +91,7 @@ class FormWidget(QWidget):
         self.h_offsets = {}
         self.v_offsets = {}
         self.graph = None
-        self.is_graph_new = None
+        self.is_graph_new = False
 
     def create_button(self):
         ok_btn = QPushButton('OK')
@@ -125,6 +125,7 @@ class FormWidget(QWidget):
 
     def link_graph(self, graph):
         self.graph = graph
+        self.is_graph_new = True
         self.reset_offsets()
         self.update()
 
@@ -155,8 +156,9 @@ class FormWidget(QWidget):
         radius = indent / 6
         h_num = round((height + radius) / indent)
 
-        if not self.h_offsets or not self.v_offsets:
+        if self.is_graph_new:
             self.set_offsets(indent)
+            self.is_graph_new = False
 
         i = 0
         j = 0
