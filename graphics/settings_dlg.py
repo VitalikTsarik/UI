@@ -3,7 +3,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPen, QFont
-from PyQt5.QtWidgets import QDialog, QFontDialog
+from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog
 
 
 class SettingsDlg(QDialog):
@@ -49,6 +49,7 @@ class SettingsDlg(QDialog):
         self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
         self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
+        self.ui.btn_vertex_custom_color.clicked.connect(self.btn_vertex_custom_color_action)
 
         self.ui.standart_btns.accepted.connect(self.accept)
         self.ui.standart_btns.rejected.connect(self.reject)
@@ -73,6 +74,12 @@ class SettingsDlg(QDialog):
 
     def rb_vertex_grey_action(self):
         self.draw_param['vertex_color'] = QColor(180, 180, 180)
+
+    def btn_vertex_custom_color_action(self):
+        color_dlg = QColorDialog()
+        color_dlg.setCurrentColor(self.draw_param['vertex_color'])
+        if color_dlg.exec_():
+            self.draw_param['vertex_color'] = color_dlg.currentColor()
 
     def accept(self):
         self.parent().vertex_label_style = self.draw_param['vertex_label_style']
