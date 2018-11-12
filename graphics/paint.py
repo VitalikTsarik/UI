@@ -6,7 +6,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from graphics.extra_messages import *
-from graphics.settings_dlg import Ui_settings_dlg
+from graphics.settings_dlg import *
 from json_converter import *
 
 
@@ -88,12 +88,8 @@ class MainWindow(QMainWindow):
                 ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
 
     def create_settings_dlg(self):
-        settings_dlg = QDialog()
-        ui = Ui_settings_dlg()
-        ui.setupUi(settings_dlg)
-
+        settings_dlg = SettingsDlg(self)
         settings_dlg.show()
-        settings_dlg.exec_()
 
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')

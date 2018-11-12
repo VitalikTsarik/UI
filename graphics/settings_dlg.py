@@ -3,9 +3,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QPen, QFont
+from PyQt5.QtWidgets import QDialog
 
 
-class Ui_settings_dlg(object):
+class SettingsDlg(QDialog):
     vertex_color = QColor(120, 120, 255)
     vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
     edge_width = 2
@@ -13,6 +14,37 @@ class Ui_settings_dlg(object):
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
 
+    def __init__(self, parent):
+        super(SettingsDlg, self).__init__(parent)
+        self.ui = UiSettingsDlg()
+        self.ui.setupUi(self)
+        self.connect_actions()
+
+    def set_cur_state(self):
+        self.ui.tab_widget.setCurrentIndex(0)
+        self.ui.rb_inside.setChecked(True)
+        self.ui.rb_vertex_blue.setChecked(True)
+        self.ui.rb_edge_black.setChecked(True)
+
+    def connect_actions(self):
+        self.ui.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
+        self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
+        self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_grey_action)
+
+        self.ui.standart_btns.accepted.connect(self.accept)
+        self.ui.standart_btns.rejected.connect(self.reject)
+
+    def rb_vertex_blue_action(self):
+        self.vertex_color = QColor(120, 120, 255)
+
+    def rb_vertex_red_action(self):
+        self.vertex_color = QColor(255, 120, 120)
+
+    def rb_vertex_grey_action(self):
+        self.vertex_color = QColor(180, 180, 180)
+
+
+class UiSettingsDlg(object):
     def setupUi(self, settings_dlg):
         settings_dlg.setObjectName("settings_dlg")
         settings_dlg.setEnabled(True)
@@ -124,17 +156,6 @@ class Ui_settings_dlg(object):
         self.tab_widget.addTab(self.edge_tab, "")
 
         self.retranslateUi(settings_dlg)
-        self.tab_widget.setCurrentIndex(0)
-        self.standart_btns.accepted.connect(settings_dlg.accept)
-        self.standart_btns.rejected.connect(settings_dlg.reject)
-        self.rb_inside.setChecked(True)
-        self.rb_vertex_blue.setChecked(True)
-        self.rb_edge_black.setChecked(True)
-
-        self.rb_vertex_blue.toggled.connect(self.rb_vertex_blue_action)
-        self.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
-        self.rb_vertex_red.toggled.connect(self.rb_vertex_grey_action)
-
         QtCore.QMetaObject.connectSlotsByName(settings_dlg)
 
     def retranslateUi(self, settings_dlg):
@@ -158,21 +179,12 @@ class Ui_settings_dlg(object):
         self.rb_edge_black.setText(_translate("settings_dlg", "Black"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.edge_tab), _translate("settings_dlg", "Edge"))
 
-    def rb_vertex_blue_action(self):
-        self.vertex_color = QColor(120, 120, 255)
-
-    def rb_vertex_red_action(self):
-        self.vertex_color = QColor(255, 120, 120)
-
-    def rb_vertex_grey_action(self):
-        self.vertex_color = QColor(180, 180, 180)
-
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     settings_dlg = QtWidgets.QDialog()
-    ui = Ui_settings_dlg()
+    ui = UiSettingsDlg()
     ui.setupUi(settings_dlg)
     settings_dlg.show()
     sys.exit(app.exec_())
