@@ -14,7 +14,7 @@ class MainWindow(QMainWindow):
     vertex_color = QColor(120, 120, 255)
     vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
     edge_width = 2
-    edge_color = QColor(100, 100, 100)
+    edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
 

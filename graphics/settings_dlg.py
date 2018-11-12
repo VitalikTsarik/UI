@@ -31,7 +31,7 @@ class SettingsDlg(QDialog):
             self.ui.rb_vertex_grey.setChecked(True)
 
         edge_color = self.draw_param["edge_color"]
-        if edge_color == QColor(100, 100, 100):
+        if edge_color == QColor(50, 50, 50):
             self.ui.rb_edge_black.setChecked(True)
         elif edge_color == QColor(120, 120, 255):
             self.ui.rb_edge_blue.setChecked(True)
@@ -50,6 +50,11 @@ class SettingsDlg(QDialog):
         self.ui.rb_vertex_red.toggled.connect(self.rb_vertex_red_action)
         self.ui.rb_vertex_grey.toggled.connect(self.rb_vertex_grey_action)
         self.ui.btn_vertex_custom_color.clicked.connect(self.btn_vertex_custom_color_action)
+
+        self.ui.rb_edge_blue.toggled.connect(self.rb_edge_blue_action)
+        self.ui.rb_edge_red.toggled.connect(self.rb_edge_red_action)
+        self.ui.rb_edge_black.toggled.connect(self.rb_edge_black_action)
+        self.ui.btn_edge_custom_color.clicked.connect(self.btn_edge_custom_color_action)
 
         self.ui.standart_btns.accepted.connect(self.accept)
         self.ui.standart_btns.rejected.connect(self.reject)
@@ -80,6 +85,21 @@ class SettingsDlg(QDialog):
         color_dlg.setCurrentColor(self.draw_param['vertex_color'])
         if color_dlg.exec_():
             self.draw_param['vertex_color'] = color_dlg.currentColor()
+
+    def rb_edge_blue_action(self):
+        self.draw_param['edge_color'] = QColor(120, 120, 255)
+
+    def rb_edge_red_action(self):
+        self.draw_param['edge_color'] = QColor(255, 120, 120)
+
+    def rb_edge_black_action(self):
+        self.draw_param['edge_color'] = QColor(50, 50, 50)
+
+    def btn_edge_custom_color_action(self):
+        color_dlg = QColorDialog()
+        color_dlg.setCurrentColor(self.draw_param['edge_color'])
+        if color_dlg.exec_():
+            self.draw_param['edge_color'] = color_dlg.currentColor()
 
     def accept(self):
         self.parent().vertex_label_style = self.draw_param['vertex_label_style']
