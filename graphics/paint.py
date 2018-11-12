@@ -6,10 +6,18 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from graphics.extra_messages import *
+from graphics.settings_dlg import *
 from json_converter import *
 
 
 class MainWindow(QMainWindow):
+    vertex_color = QColor(120, 120, 255)
+    vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
+    edge_width = 2
+    edge_color = QColor(50, 50, 50)
+    font = QFont('Decorative', 10)
+    vertex_label_style = 'inside'
+
     def __init__(self):
         # todo: instance_of Graph
         super().__init__()
@@ -17,7 +25,7 @@ class MainWindow(QMainWindow):
         self.form_widget = FormWidget(self)
         self.setCentralWidget(self.form_widget)
         self.init_ui()
-        ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
+        # ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open...")
 
     def init_ui(self):
         self.set_geometry()
@@ -42,6 +50,10 @@ class MainWindow(QMainWindow):
         new_act.setStatusTip('Open a file with graph')
         new_act.triggered.connect(self.open_file)
 
+        settings_act = QAction('Settings', self)
+        settings_act.setStatusTip('Edit application setting')
+        settings_act.triggered.connect(self.create_settings_dlg)
+
         exit_act = QAction('&Exit', self)  # QtGui.QIcon('exit.png'),
         exit_act.setStatusTip('Quit application')
         exit_act.triggered.connect(qApp.quit)
@@ -58,6 +70,7 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_act)
 
+        menu_bar.addAction(settings_act)
         menu_bar.addAction(help_act)
 
     def open_file(self):
@@ -74,22 +87,28 @@ class MainWindow(QMainWindow):
             except KeyError:
                 ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
 
+    def create_settings_dlg(self):
+        draw_param = \
+            {
+                'vertex_color': self.vertex_color,
+                'edge_width': self.edge_width,
+                'edge_color': self.edge_color,
+                'font': self.font,
+                'vertex_label_style': self.vertex_label_style
+            }
+        settings_dlg = SettingsDlg(self, draw_param)
+        settings_dlg.show()
+
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
 
 class FormWidget(QWidget):
-    circles_color = QColor(120, 120, 255)
-    circles_pen = QPen(Qt.black, 1, Qt.SolidLine)
-    lines_pen = QPen(QColor(100, 100, 100), 2, Qt.SolidLine)
-    font = QFont('Decorative', 10)
 
     def __init__(self, parent):
         # todo: может это старый синтаксис
         super(FormWidget, self).__init__(parent)
         self.create_button()
-        self.h_offsets = {}
-        self.v_offsets = {}
         self.graph = None
         self.is_graph_new = None
 
@@ -125,8 +144,13 @@ class FormWidget(QWidget):
 
     def link_graph(self, graph):
         self.graph = graph
+        self.is_graph_new = True
         self.reset_offsets()
         self.update()
+
+    def reset_offsets(self):
+        self.h_offsets = {}
+        self.v_offsets = {}
 
     def paintEvent(self, event):
         if not self.graph:
@@ -142,7 +166,7 @@ class FormWidget(QWidget):
 
         h_painter.end()
 
-    #todo: подумать(или нет)
+    # todo: подумать(или нет)
     def calc_coordinates(self):
         padding = 50
         x_0 = padding
@@ -155,8 +179,9 @@ class FormWidget(QWidget):
         radius = indent / 6
         h_num = round((height + radius) / indent)
 
-        if not self.h_offsets or not self.v_offsets:
+        if self.is_graph_new:
             self.set_offsets(indent)
+            self.is_graph_new = False
 
         i = 0
         j = 0
@@ -177,23 +202,16 @@ class FormWidget(QWidget):
             self.h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
 
-    def update_form_for_new_graph(self):
-        self.reset_offsets()
-        self.update()
-
-    def reset_offsets(self):
-        self.h_offsets = {}
-        self.v_offsets = {}
-
     def draw_edges(self, h_painter, points):
-        h_painter.setPen(self.lines_pen)
+        edge_pen = QPen(self.parent().edge_color, self.parent().edge_width, Qt.SolidLine)
+        h_painter.setPen(edge_pen)
         for vertex in self.graph.get_all_vert():
             for adj_vert in self.graph.get_adj_edge(vertex):
                 h_painter.drawLine(points[vertex][0], points[vertex][1]
                                    , points[adj_vert["vert_to"]][0], points[adj_vert["vert_to"]][1])
 
     def draw_vertices(self, h_painter, points, radius):
-        h_painter.setFont(self.font)
+        h_painter.setFont(self.parent().font)
         for vertex in self.graph.get_all_vert():
             x = points[vertex][0] - radius
             y = points[vertex][1] - radius
@@ -204,8 +222,8 @@ class FormWidget(QWidget):
             # h_painter.drawText(QRectF(x - self.h_points_offsets[vertex], y - self.v_points_offsets[vertex]
             #                    , 2*radius, 2*radius), Qt.AlignCenter, vertex.__str__())
 
-            h_painter.setBrush(self.circles_color)
-            h_painter.setPen(self.circles_pen)
+            h_painter.setBrush(self.parent().vertex_color)
+            h_painter.setPen(self.parent().vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
