@@ -90,8 +90,8 @@ class FormWidget(QWidget):
         self.create_button()
         self.h_offsets = {}
         self.v_offsets = {}
-        self.graph = None
-        self.is_graph_new = False
+        self.__graph = None
+        self.__is_graph_new = False
 
     def create_button(self):
         ok_btn = QPushButton('OK')
@@ -108,13 +108,13 @@ class FormWidget(QWidget):
         self.setLayout(vbox)
 
     def link_graph(self, graph):
-        self.graph = graph
-        self.is_graph_new = True
+        self.__graph = graph
+        self.__is_graph_new = True
         self.reset_offsets()
         self.update()
 
     def paintEvent(self, event):
-        if not self.graph:
+        if not self.__graph:
             return
 
         points, radius = self.calc_coordinates()
@@ -136,18 +136,18 @@ class FormWidget(QWidget):
         width = self.frameGeometry().width() - padding * 4
         height = self.frameGeometry().height() - padding * 4
 
-        indent = sqrt((width * height) / self.graph.vert_amnt)
+        indent = sqrt((width * height) / self.__graph.vert_amnt)
         radius = indent / 6
         h_num = round((height + radius) / indent)
 
-        if self.is_graph_new:
+        if self.__is_graph_new:
             self.set_offsets(indent)
-            self.is_graph_new = False
+            self.__is_graph_new = False
 
         i = 0
         j = 0
         points = {}
-        for vertex in self.graph.get_all_vert():
+        for vertex in self.__graph.get_all_vert():
             if j == h_num:
                 j = 0
                 i += 1
@@ -159,7 +159,7 @@ class FormWidget(QWidget):
         return points, radius
 
     def set_offsets(self, indent):
-        for vertex in self.graph.get_all_vert():
+        for vertex in self.__graph.get_all_vert():
             self.h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.v_offsets[vertex] = (randint(0, int(indent / 3)))
 
@@ -173,14 +173,14 @@ class FormWidget(QWidget):
 
     def draw_edges(self, h_painter, points):
         h_painter.setPen(self.lines_pen)
-        for vertex in self.graph.get_all_vert():
-            for adj_vert in self.graph.get_adj_edge(vertex):
+        for vertex in self.__graph.get_all_vert():
+            for adj_vert in self.__graph.get_adj_edge(vertex):
                 h_painter.drawLine(points[vertex][0], points[vertex][1]
                                    , points[adj_vert["vert_to"]][0], points[adj_vert["vert_to"]][1])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(self.font)
-        for vertex in self.graph.get_all_vert():
+        for vertex in self.__graph.get_all_vert():
             x = points[vertex][0] - radius
             y = points[vertex][1] - radius
 
