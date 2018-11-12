@@ -184,14 +184,7 @@ class FormWidget(QWidget):
             x = points[vertex][0] - radius
             y = points[vertex][1] - radius
 
-            # h_painter.setBrush(Qt.NoBrush)
-            # h_painter.setPen(QPen(Qt.black, 1, Qt.SolidLine))
-            # h_painter.drawEllipse(x - self.h_points_offsets[vertex], y - self.v_points_offsets[vertex], 2*radius, 2*radius)
-            # h_painter.drawText(QRectF(x - self.h_points_offsets[vertex], y - self.v_points_offsets[vertex]
-            #                    , 2*radius, 2*radius), Qt.AlignCenter, vertex.__str__())
-
             h_painter.setBrush(self.circles_color)
             h_painter.setPen(self.circles_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
-
