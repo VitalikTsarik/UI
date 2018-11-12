@@ -179,8 +179,8 @@ class FormWidget(QWidget):
             if j == h_num:
                 j = 0
                 i += 1
-            x = x_0 + i * indent + self.h_offsets[vertex] + radius
-            y = y_0 + j * indent + self.v_offsets[vertex] + radius
+            x = x_0 + i * indent + self.__h_offsets[vertex] + radius
+            y = y_0 + j * indent + self.__v_offsets[vertex] + radius
             points[vertex] = [x, y]
             j += 1
 
@@ -188,24 +188,20 @@ class FormWidget(QWidget):
 
     def set_offsets(self, indent):
         for vertex in self.__graph.get_all_vert():
-            self.h_offsets[vertex] = (randint(0, int(indent / 3)))
-            self.v_offsets[vertex] = (randint(0, int(indent / 3)))
-
-    def reset_offsets(self):
-        self.__h_offsets = {}
-        self.__v_offsets = {}
+            self.__h_offsets[vertex] = (randint(0, int(indent / 3)))
+            self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges(self, h_painter, points):
         edge_pen = QPen(self.parent().edge_color, self.parent().edge_width, Qt.SolidLine)
         h_painter.setPen(edge_pen)
-        for vertex in self.graph.get_all_vert():
-            for adj_vert in self.graph.get_adj_vert(vertex):
+        for vertex in self.__graph.get_all_vert():
+            for adj_vert in self.__graph.get_adj_vert(vertex):
                 h_painter.drawLine(points[vertex][0], points[vertex][1]
                                    , points[adj_vert][0], points[adj_vert][1])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(self.parent().font)
-        for vertex in self.graph.get_all_vert():
+        for vertex in self.__graph.get_all_vert():
             x = points[vertex][0] - radius
             y = points[vertex][1] - radius
             h_painter.setBrush(self.parent().vertex_color)
