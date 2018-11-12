@@ -170,9 +170,9 @@ class FormWidget(QWidget):
     def draw_edges(self, h_painter, points):
         h_painter.setPen(self.lines_pen)
         for vertex in self.__graph.get_all_vert():
-            for adj_vert in self.__graph.get_adj_edge(vertex):
-                h_painter.drawLine(points[vertex][0], points[vertex][1]
-                                   , points[adj_vert["vert_to"]][0], points[adj_vert["vert_to"]][1])
+            for adj_vert in self.__graph.get_adj_vert(vertex):
+                h_painter.drawLine(points[vertex][0], points[vertex][1],
+                                   points[adj_vert][0], points[adj_vert][1])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(self.font)
