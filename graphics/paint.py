@@ -108,27 +108,12 @@ class FormWidget(QWidget):
     def __init__(self, parent):
         # todo: может это старый синтаксис
         super(FormWidget, self).__init__(parent)
-        self.create_button()
 
         self.__h_offsets = {}
         self.__v_offsets = {}
 
         self.__graph = None
         self.__is_graph_new = False
-
-    def create_button(self):
-        ok_btn = QPushButton('OK')
-        ok_btn.clicked.connect(qApp.quit)
-
-        hbox = QHBoxLayout()
-        hbox.addStretch(1)
-        hbox.addWidget(ok_btn)
-
-        vbox = QVBoxLayout(self)
-        vbox.addStretch(1)
-        vbox.addLayout(hbox)
-
-        self.setLayout(vbox)
 
     def link_graph(self, graph):
         self.__graph = graph
