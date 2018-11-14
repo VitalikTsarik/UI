@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
 
 
