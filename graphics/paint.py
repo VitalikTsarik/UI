@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
 
 
 class FormWidget(QWidget):
-    def __init__(self, parent, **kwargs):
+    def __init__(self, parent):
         super(FormWidget, self).__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
@@ -124,7 +124,8 @@ class FormWidget(QWidget):
 
 
 class PaintGraphWidget(QWidget):
-    vertex_color = QColor(120, 120, 255)
+    background_color = QColor(255, 211, 117, 60)
+    vertex_color = QColor(40, 220, 0)
     vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
     edge_width = 2
     edge_color = QColor(50, 50, 50)
@@ -152,10 +153,7 @@ class PaintGraphWidget(QWidget):
         self.__v_offsets = {}
 
     def paintEvent(self, event):
-        self.setAutoFillBackground(True)
-        palette = self.palette()
-        palette.setColor(self.backgroundRole(), QColor(255, 211, 117, 60))
-        self.setPalette(palette)
+        self.set_bckgrnd_color()
 
         if not self.__graph:
             return
@@ -200,6 +198,12 @@ class PaintGraphWidget(QWidget):
             j += 1
 
         return points, radius
+
+    def set_bckgrnd_color(self):
+        self.setAutoFillBackground(True)
+        palette = self.palette()
+        palette.setColor(self.backgroundRole(), self.background_color)
+        self.setPalette(palette)
 
     def set_offsets(self, indent):
         for vertex in self.__graph.get_all_vert():
