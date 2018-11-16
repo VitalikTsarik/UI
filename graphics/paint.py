@@ -22,7 +22,6 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.__form_widget)
 
         self.show()
-    # ExtraMessages.information_message(self, "Get started", "To choose the file with your graph select:\nFile->Open..")
 
     def init_main_window(self):
         self.set_geometry()
@@ -76,11 +75,7 @@ class MainWindow(QMainWindow):
         if open_file_dlg.exec_():
             file_name = open_file_dlg.selectedFiles()[0]
             dictionary = read_graph_from_json(file_name)
-            try:
-                # todo: переделать костыль
-                self.__form_widget.paint_widget.link_graph(dict_to_graph(dictionary))
-            except KeyError:
-                ExtraMessages.error_message(self, 'Data error', 'Please, check the format of data in your json file')
+            self.__form_widget.paint_widget.link_graph(dict_to_graph(dictionary))
 
     # def create_settings_dlg(self):
     #     draw_param = \
@@ -103,17 +98,17 @@ class FormWidget(QWidget):
         super(FormWidget, self).__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
-        self.__rbutton = ControlButton(self)
-        self.__rbutton.right_arrow()
-        self.__lbutton = ControlButton(self)
-        self.__lbutton.left_arrow()
+        self.rbutton = ControlButton(self)
+        self.rbutton.right_arrow()
+        self.lbutton = ControlButton(self)
+        self.lbutton.left_arrow()
 
         self.__init_layouts()
 
     def __init_layouts(self):
         hbox = QHBoxLayout()
-        hbox.addWidget(self.__lbutton)
-        hbox.addWidget(self.__rbutton)
+        hbox.addWidget(self.lbutton)
+        hbox.addWidget(self.rbutton)
 
         vbox = QVBoxLayout(self)
         vbox.addWidget(self.paint_widget)
