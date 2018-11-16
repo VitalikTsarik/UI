@@ -227,3 +227,8 @@ class PaintGraphWidget(QWidget):
             h_painter.setPen(self.vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
+
+    def calc_line(self, p1, p2):
+        a = (p2.y() - p1.y())/(p2.x() - p1.x())
+        b = p1.y() - a*p1.x()
+        return a, b
