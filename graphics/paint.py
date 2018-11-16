@@ -94,7 +94,7 @@ class MainWindow(QMainWindow):
 
 
 class FormWidget(QWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, **kwargs):
         super(FormWidget, self).__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
