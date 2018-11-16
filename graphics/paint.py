@@ -129,6 +129,7 @@ class PaintGraphWidget(QWidget):
     edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
+    train_size = 20
 
     def __init__(self, parent):
         super(PaintGraphWidget, self).__init__(parent)
@@ -227,6 +228,16 @@ class PaintGraphWidget(QWidget):
             h_painter.setPen(self.vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
+
+    def draw_train(self, h_painter, train, points):
+        edge = self.__graph.get_edge(train.line_idx)
+        p1 = points[edge['vert1']]
+        p2 = points[edge['vert2']]
+        length = edge['length']
+        a, b = self.calc_line(p1, p2)
+        cx = p1.x + (train.position/length)*(p2.x - p1.x)
+        cy = a*cx + b
+        h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
 
     def calc_line(self, p1, p2):
         a = (p2.y() - p1.y())/(p2.x() - p1.x())
