@@ -31,8 +31,6 @@ class MainWindow(QMainWindow):
 
     def set_geometry(self):
         self.resize(1300, 900)
-        self.setMinimumWidth(400)
-        self.setMinimumHeight(300)
         qr = self.geometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -134,6 +132,9 @@ class PaintGraphWidget(QWidget):
 
     def __init__(self, parent):
         super(PaintGraphWidget, self).__init__(parent)
+
+        self.setMinimumWidth(400)
+        self.setMinimumHeight(300)
 
         self.__h_offsets = {}
         self.__v_offsets = {}
