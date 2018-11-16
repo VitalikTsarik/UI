@@ -95,7 +95,7 @@ class MainWindow(QMainWindow):
 
 class FormWidget(QWidget):
     def __init__(self, parent):
-        super(FormWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
         self.rbutton = ControlButton(self)
@@ -133,7 +133,7 @@ class PaintGraphWidget(QWidget):
     vertex_label_style = 'inside'
 
     def __init__(self, parent):
-        super(PaintGraphWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.__h_offsets = {}
         self.__v_offsets = {}
