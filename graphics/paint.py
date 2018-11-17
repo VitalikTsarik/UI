@@ -31,8 +31,6 @@ class MainWindow(QMainWindow):
 
     def set_geometry(self):
         self.resize(1300, 900)
-        self.setMinimumWidth(400)
-        self.setMinimumHeight(300)
         qr = self.geometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -131,9 +129,13 @@ class PaintGraphWidget(QWidget):
     edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
+    train_size = 20
 
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.setMinimumWidth(400)
+        self.setMinimumHeight(300)
 
         self.__h_offsets = {}
         self.__v_offsets = {}
@@ -194,7 +196,7 @@ class PaintGraphWidget(QWidget):
                 i += 1
             x = x_0 + i * indent + self.__h_offsets[vertex] + radius
             y = y_0 + j * indent + self.__v_offsets[vertex] + radius
-            points[vertex] = [x, y]
+            points[vertex] = QPointF(x, y)
             j += 1
 
         return points, radius
@@ -215,15 +217,29 @@ class PaintGraphWidget(QWidget):
         h_painter.setPen(edge_pen)
         for vertex in self.__graph.get_all_vert():
             for adj_vert in self.__graph.get_adj_vert(vertex):
-                h_painter.drawLine(points[vertex][0], points[vertex][1]
-                                   , points[adj_vert][0], points[adj_vert][1])
+                h_painter.drawLine(points[vertex], points[adj_vert])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
         for vertex in self.__graph.get_all_vert():
-            x = points[vertex][0] - radius
-            y = points[vertex][1] - radius
+            x = points[vertex].x() - radius
+            y = points[vertex].y() - radius
             h_painter.setBrush(self.vertex_color)
             h_painter.setPen(self.vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
+
+    def draw_train(self, h_painter, train, points):
+        edge = self.__graph.get_edge(train.line_idx)
+        p1 = points[edge['vert1']]
+        p2 = points[edge['vert2']]
+        length = edge['length']
+        a, b = self.calc_line(p1, p2)
+        cx = p1.x + (train.position/length)*(p2.x - p1.x)
+        cy = a*cx + b
+        h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
+
+    def calc_line(self, p1, p2):
+        a = (p2.y() - p1.y())/(p2.x() - p1.x())
+        b = p1.y() - a*p1.x()
+        return a, b
