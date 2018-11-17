@@ -64,3 +64,11 @@ class Graph(object):
 
     def get_vert_post_idx(self, idx):
         return self.__graph[idx]['post_idx']
+
+    def get_edge(self, idx):
+        for vert in self.__graph.keys():
+            for edge in self.__graph[vert]['adj_edge']:
+                if edge['edge_idx'] == idx:
+                    return {'length': edge['length'],
+                            'vert1': vert,
+                            'vert2': edge['vert_to']}
