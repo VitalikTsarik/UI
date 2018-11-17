@@ -60,10 +60,7 @@ class Graph(object):
         return self.__graph[idx]['adj_edge']
 
     def get_adj_vert(self, idx):
-        vertices = []
-        for edge in self.__graph[idx]['adj_edge']:
-            vertices.append(edge['vert_to'])
-        return tuple(vertices)
+        return tuple([edge['vert_to'] for edge in self.__graph[idx]['adj_edge']])
 
     def get_vert_post_idx(self, idx):
         return self.__graph[idx]['post_idx']
