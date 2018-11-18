@@ -39,6 +39,10 @@ class ServerConnection:
         self.__request(Action.LOGIN, data)
         return self.__response()
 
+    def player_action(self):
+        self.__request(Action.PLAYER)
+        return self.__response()
+
     def logout_action(self):
         self.__request(Action.LOGOUT)
         return self.__response()
