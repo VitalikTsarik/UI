@@ -54,6 +54,11 @@ class ServerConnection:
         self.__request(Action.MAP, data)
         return self.__response()
 
+    def move_action(self, train_idx, line_idx, speed):
+        data = dumps({"line_idx": line_idx, "speed": speed, "train_idx": train_idx})
+        self.__request(Action.MOVE, data)
+        return self.__response()
+
     def logout_action(self):
         self.__request(Action.LOGOUT)
         return self.__response()
