@@ -90,3 +90,15 @@ class ServerConnection:
                 data += self.__socket.recv(size)
                 return loads(data.decode('UTF-8'))
         return res
+
+
+if __name__ == '__main__':
+    cnt = ServerConnection(SERVER, PORT)
+    cnt.login_action('qeweeq')
+    q = cnt.map_action(Layer.Layer1)
+    cnt.move_action(1, 1, 1)
+    for i in range(0, 12):
+        cnt.turn_action()
+        time.sleep(2)
+        q = cnt.map_action(Layer.Layer1)
+        print(q)
