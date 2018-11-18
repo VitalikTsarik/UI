@@ -59,6 +59,10 @@ class ServerConnection:
         self.__request(Action.MOVE, data)
         return self.__response()
 
+    def turn_action(self):
+        self.__request(Action.TURN)
+        return self.__response()
+
     def logout_action(self):
         self.__request(Action.LOGOUT)
         return self.__response()
