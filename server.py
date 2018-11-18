@@ -1,38 +1,36 @@
 import socket
 
 
-class Server:
+class ServerConnection:
+    def __init__(self):
+        self.__socket = socket.socket()
+        self.__socket.connect(('wgforge-srv.wargaming.net', 443))
+
     def login(self, person_name):
-        with socket.socket() as s:
-            s.connect(('wgforge-srv.wargaming.net', 443))
+        action = 1
+        action_byte = (action).to_bytes(4, byteorder='little')
             
-            action = 1
-            action_byte = (action).to_bytes(4, byteorder='little')
+        msg_fp = "{\"name\":\""
+        person_name = "Boris"
+        msg_lp = "\"}"
+
+        msg = msg_fp + person_name + msg_lp
+        msg_len = len(str(msg))
             
-            msg_fp = "{\"name\":\""
-            person_name = "Boris"
-            msg_lp = "\"}"
+        msg_len_byte = (msg_len).to_bytes(4, byteorder='little')
             
-            msg = msg_fp + person_name + msg_lp
-            msg_len = len(str(msg))
+        msg_byte = msg.encode()
+        msg_serv = action_byte + msg_len_byte + msg_byte
+        self.__socket.send(msg_serv)
             
-            msg_len_byte = (msg_len).to_bytes(4, byteorder='little')
-            
-            msg_byte = msg.encode()
-            msg_serv = action_byte + msg_len_byte + msg_byte
-            s.send(msg_serv)
-            
-            res = s.recv(4)
-            size = int.from_bytes(s.recv(4), byteorder='little')
-            d = s.recv(size)
+        res = self.__socket.recv(4)
+        size = int.from_bytes(self.__socket.recv(4), byteorder='little')
+        d = self.__socket.recv(size)
 
     def logout(self):
-        with socket.socket() as s:
-            s.send(b'\x02\x00\x00\x00\x00\x00\x00\x00')
+        self.__socket.send(b'\x02\x00\x00\x00\x00\x00\x00\x00')
 
-
-def map_get(self,layer_num):
-    with socket.socket() as s:
+    def map_get(self, layer_num):
         action = 10
         action_byte = (action).to_bytes(4, byteorder='little')
             
@@ -48,15 +46,13 @@ def map_get(self,layer_num):
         msg_byte = msg.encode()
         msg_serv = action_byte + msg_len_byte + msg_byte
             
-        s.send(msg_serv)
+        self.__socket.send(msg_serv)
             
-        res = s.recv(4)
-        size = int.from_bytes(s.recv(4), byteorder='little')
-        d = s.recv(size)
+        res = self.__socket.recv(4)
+        size = int.from_bytes(self.__socket.recv(4), byteorder='little')
+        d = self.__socket.recv(size)
 
-
-def move(self, line_idx, speed, train_idx):
-    with socket.socket() as s:
+    def move(self, line_idx, speed, train_idx):
         action = 3
         action_byte = (action).to_bytes(4, byteorder='little')
             
@@ -76,4 +72,4 @@ def move(self, line_idx, speed, train_idx):
         msg_byte = msg.encode()
         msg_serv = action_byte + msg_len_byte + msg_byte
             
-        s.send(msg_serv)
+        self.__socket.send(msg_serv)
