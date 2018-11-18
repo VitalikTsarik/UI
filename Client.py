@@ -29,6 +29,12 @@ class Result(Enum):
     INTERNAL_SERVER_ERROR = 500
 
 
+class Layer(Enum):
+    Layer0 = 0
+    Layer1 = 1
+    Layer10 = 10
+
+
 class ServerConnection:
     def __init__(self, server, port):
         self.__socket = socket.socket()
@@ -41,6 +47,11 @@ class ServerConnection:
 
     def player_action(self):
         self.__request(Action.PLAYER)
+        return self.__response()
+
+    def map_action(self, layer):
+        data = dumps({'layer': layer.value})
+        self.__request(Action.MAP, data)
         return self.__response()
 
     def logout_action(self):
