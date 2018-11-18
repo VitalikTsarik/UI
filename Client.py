@@ -34,6 +34,15 @@ class ServerConnection:
         self.__socket = socket.socket()
         self.__socket.connect((server, port))
 
+    def login_action(self, name):
+        data = dumps({'name': name})
+        self.__request(Action.LOGIN, data)
+        return self.__response()
+
+    def close(self):
+        self.__socket.close()
+        return self.__response()
+
     def __request(self, action, data=None):
         if data:
             msg = pack('ii', action.value, len(data)) + data.encode('UTF-8')
