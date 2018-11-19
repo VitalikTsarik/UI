@@ -1,9 +1,9 @@
 from math import sqrt
 from random import randint
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QRectF
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
 from graphics.extra_messages import *
 from graphics.settings_dlg import *
