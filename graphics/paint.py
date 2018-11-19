@@ -103,6 +103,9 @@ class FormWidget(QWidget):
 
         self.__init_layouts()
 
+        self.__button_dlg = ExtraMessages.button_dialog([x for x in range(10)], self)
+        #self.__show_button_dlg()
+
     def __init_layouts(self):
         hbox = QHBoxLayout()
         hbox.addWidget(self.lbutton)
@@ -119,6 +122,9 @@ class FormWidget(QWidget):
         palette = self.palette()
         palette.setColor(self.backgroundRole(), QColor(255, 211, 117, 70))
         self.setPalette(palette)
+
+    def __show_button_dlg(self):
+        self.__button_dlg.exec_()
 
 
 class PaintGraphWidget(QWidget):
