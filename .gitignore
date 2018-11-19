@@ -65,3 +65,4 @@ fabric.properties
 .idea/*
 __pycache__/*
 Graphics/__pycache__/*
+game_components/__pycache__/*
