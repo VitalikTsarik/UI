@@ -1,6 +1,6 @@
 import json
 from graph import Graph
-from game_components import Train
+from game_components.train import Train
 
 
 def read_graph_from_json(filename):
