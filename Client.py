@@ -36,7 +36,7 @@ class Layer(Enum):
 
 
 class ServerConnection:
-    def __init__(self, server, port):
+    def __init__(self, server=SERVER, port=PORT):
         self.__socket = socket.socket()
         self.__socket.connect((server, port))
 
@@ -92,7 +92,7 @@ class ServerConnection:
 
 
 if __name__ == '__main__':
-    cnt = ServerConnection(SERVER, PORT)
+    cnt = ServerConnection()
     cnt.login_action('qeweeq')
     l = cnt.map_action(Layer.Layer0)
     print(l)
