@@ -270,14 +270,3 @@ class UiSettingsDlg(object):
         self.rb_edge_blue.setText(_translate("settings_dlg", "Blue"))
         self.rb_edge_black.setText(_translate("settings_dlg", "Black"))
         self.tab_widget.setTabText(self.tab_widget.indexOf(self.edge_tab), _translate("settings_dlg", "Edge"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    settings_dlg = QtWidgets.QDialog()
-    ui = UiSettingsDlg()
-    ui.setupUi(settings_dlg)
-    settings_dlg.show()
-    sys.exit(app.exec_())
-
