@@ -27,6 +27,8 @@ class MainWindow(QMainWindow):
 
         self.show()
 
+        self.__turn_timer = QTimer()
+        self.init_turn_timer()
 
     def init_main_window(self):
         self.set_geometry()
@@ -95,6 +97,15 @@ class MainWindow(QMainWindow):
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
+    def init_turn_timer(self):
+        self.__turn_timer.setInterval(10000)
+        self.__turn_timer.timeout.connect(self.next_turn)
+        self.__turn_timer.start()
+
+    def next_turn(self):
+        print('next turn')
+        # self.__game.next_turn()
+        # self.__update()
 
 class FormWidget(QWidget):
     def __init__(self, parent):
