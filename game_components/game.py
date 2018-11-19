@@ -7,7 +7,7 @@ class Game:
         self.__main_window = window
         self.__client = ServerConnection()
         self.__client.login_action('NeBoris')
-        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
+        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
         # todo: parse from Layer1 to trains and posts
         layer1 = self.__client.map_action(Layer.Layer1)
         self.__posts = []

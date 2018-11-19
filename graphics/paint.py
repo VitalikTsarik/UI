@@ -9,19 +9,24 @@ from graphics.extra_messages import *
 from graphics.settings_dlg import *
 from json_converter import *
 from graphics.move_buttons import *
+from game_components.game import Game
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.__game = Game(self)
+
         self.init_main_window()
         self.create_menu()
 
         self.__form_widget = FormWidget(self)
+        self.__form_widget.paint_widget.link_graph(self.__game.map_graph)
         self.setCentralWidget(self.__form_widget)
 
         self.show()
+
 
     def init_main_window(self):
         self.set_geometry()
