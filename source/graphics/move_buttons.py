@@ -24,11 +24,11 @@ class ControlButton(QPushButton):
     def right_arrow(self):
         self.__classic_control_button()
         self.setToolTip('Move forward')
-        self.setIcon(QIcon('icons/right_arrow'))
+        self.setIcon(QIcon('source/icons/right_arrow'))
         self.setIconSize(QSize(self.height(), self.height()))
 
     def left_arrow(self):
         self.__classic_control_button()
         self.setToolTip('Move backward')
-        self.setIcon(QIcon('icons/left_arrow'))
+        self.setIcon(QIcon('source/icons/left_arrow'))
         self.setIconSize(QSize(self.height(), self.height()))

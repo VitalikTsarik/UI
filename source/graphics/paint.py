@@ -5,10 +5,10 @@ from PyQt5.QtCore import QRectF
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
-from graphics.extra_messages import *
-from graphics.settings_dlg import *
-from json_converter import *
-from graphics.move_buttons import *
+from source.graphics.extra_messages import *
+from source.graphics.settings_dlg import *
+from source.json_converter import *
+from source.graphics.move_buttons import *
 
 
 class MainWindow(QMainWindow):
@@ -27,7 +27,7 @@ class MainWindow(QMainWindow):
         self.set_geometry()
 
         self.setWindowTitle('Graph visualisation')
-        self.setWindowIcon(QIcon('icons/ui.jpg'))
+        self.setWindowIcon(QIcon('source/icons/ui.jpg'))
 
     def set_geometry(self):
         self.resize(1300, 900)
