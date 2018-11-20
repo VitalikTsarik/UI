@@ -81,23 +81,25 @@ class ServerConnection:
 
     def __response(self):
         res = unpack('i', self.__socket.recv(4))[0]
-        if res == 0:
-            size = unpack('i', self.__socket.recv(4))[0]
-            if size:
-                data = b''
-                while size > 128:
-                    data += self.__socket.recv(128)
-                    size -= 128
-                data += self.__socket.recv(size)
-                return loads(data.decode('UTF-8'))
-        return res
+        size = unpack('i', self.__socket.recv(4))[0]
+        if size:
+            data = b''
+            while size > 4:
+                data += self.__socket.recv(4)
+                size -= 4
+            data += self.__socket.recv(size)
+            return res, loads(data.decode('UTF-8'))
+        return res, 0
 
 
 if __name__ == '__main__':
     cnt = ServerConnection(SERVER, PORT)
     cnt.login_action('qeweeq')
+    l = cnt.map_action(Layer.Layer0)
+    print(l)
     q = cnt.map_action(Layer.Layer1)
     cnt.move_action(1, 1, 1)
+    print(q)
     for i in range(0, 12):
         cnt.turn_action()
         time.sleep(2)
