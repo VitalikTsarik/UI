@@ -7,7 +7,7 @@ class ControlButton(QPushButton):
     def __init__(self, widget=None):
         super(ControlButton, self).__init__(widget)
 
-    def __arrow(self, tool_tip, icon_path):
+    def __move_btn(self, tool_tip, icon_path):
         self.resize(self.width(), self.height() * 1.3)
         self.setStyleSheet("""
                         QPushButton {
@@ -25,10 +25,13 @@ class ControlButton(QPushButton):
         self.setIconSize(QSize(self.height(), self.height()))
 
     def right_arrow(self):
-        self.__arrow('Move forward', 'icons/right_arrow')
+        self.__move_btn('Move forward', 'icons/right_arrow')
 
     def left_arrow(self):
-        self.__arrow('Move backward', 'icons/left_arrow')
+        self.__move_btn('Move backward', 'icons/left_arrow')
+
+    def stop(self):
+        self.__move_btn('Stop', 'icons/stop')
 
     def post_number(self, number):
         self.setToolTip(f'Move to {number}')

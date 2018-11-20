@@ -100,20 +100,25 @@ class FormWidget(QWidget):
         self.rbutton.right_arrow()
         self.lbutton = ControlButton(self)
         self.lbutton.left_arrow()
+        self.stop_btn = ControlButton(self)
+        self.stop_btn.stop()
+        self.btn_widget = ButtonWidget(self)
 
         self.__init_layouts()
 
-        self.__button_dlg = ExtraMessages.button_dialog([x for x in range(10)], self)
-        #self.__show_button_dlg()
-
     def __init_layouts(self):
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.lbutton)
-        hbox.addWidget(self.rbutton)
+        hbox_btns = QHBoxLayout()
+        hbox_btns.addWidget(self.lbutton)
+        hbox_btns.addWidget(self.stop_btn)
+        hbox_btns.addWidget(self.rbutton)
+
+        hbox_widg = QHBoxLayout()
+        hbox_widg.addWidget(self.paint_widget)
+        hbox_widg.addWidget(self.btn_widget)
 
         vbox = QVBoxLayout(self)
-        vbox.addWidget(self.paint_widget)
-        vbox.addLayout(hbox)
+        vbox.addLayout(hbox_widg)
+        vbox.addLayout(hbox_btns)
 
         self.setLayout(vbox)
 
@@ -123,8 +128,10 @@ class FormWidget(QWidget):
         palette.setColor(self.backgroundRole(), QColor(255, 211, 117, 70))
         self.setPalette(palette)
 
-    def __show_button_dlg(self):
-        self.__button_dlg.exec_()
+
+class ButtonWidget(QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
 
 
 class PaintGraphWidget(QWidget):
@@ -162,6 +169,7 @@ class PaintGraphWidget(QWidget):
 
     def paintEvent(self, event):
         self.set_bckgrnd_color()
+        self.resize(self.parent().width() * 0.8, self.height())
 
         if not self.__graph:
             return
