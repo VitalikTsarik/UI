@@ -60,4 +60,3 @@ def dict_to_market(dictionary):
 def dict_to_storage(dictionary):
     return Storage(idx=dictionary['idx'], point_idx=dictionary['point_idx'], events=dictionary['events'], name=dictionary['name'],
                    replenishment=dictionary['replenishment'], armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'])
-
