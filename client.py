@@ -38,6 +38,7 @@ class Layer(Enum):
 class ServerConnection:
     def __init__(self, server=SERVER, port=PORT):
         self.__socket = socket.socket()
+        self.__socket.settimeout(10)
         self.__socket.connect((server, port))
 
     def login_action(self, name):

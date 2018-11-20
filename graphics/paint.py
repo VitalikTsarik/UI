@@ -116,19 +116,45 @@ class FormWidget(QWidget):
         self.rbutton.right_arrow()
         self.lbutton = ControlButton(self)
         self.lbutton.left_arrow()
+        self.stop_btn = ControlButton(self)
+        self.stop_btn.stop()
+        self.direction_btns = []
 
         self.__init_layouts()
 
+        self.create_dir_btns(range(10))
+        self.add_dir_btns()
+
     def __init_layouts(self):
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.lbutton)
-        hbox.addWidget(self.rbutton)
+        hbox_btns = QHBoxLayout()
+        hbox_btns.addWidget(self.lbutton)
+        hbox_btns.addWidget(self.stop_btn)
+        hbox_btns.addWidget(self.rbutton)
+
+        hbox_widg = QHBoxLayout()
+        hbox_widg.addWidget(self.paint_widget)
 
         vbox = QVBoxLayout(self)
-        vbox.addWidget(self.paint_widget)
-        vbox.addLayout(hbox)
+        vbox.addLayout(hbox_widg)
+        vbox.addLayout(hbox_btns)
 
         self.setLayout(vbox)
+
+    def create_dir_btns(self, numbers):
+        for num in numbers:
+            btn = ControlButton(self)
+            btn.post_number(num)
+            self.direction_btns.append(btn)
+
+    def add_dir_btns(self):
+        vbox = QHBoxLayout()
+        for btn in self.direction_btns:
+            vbox.addWidget(btn)
+
+        layout = self.layout()
+        layout.insertLayout(0, vbox)
+        self.setLayout(layout)
+
 
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
