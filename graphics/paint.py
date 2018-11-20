@@ -98,7 +98,7 @@ class MainWindow(QMainWindow):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
     def init_turn_timer(self):
-        self.__turn_timer.setInterval(1000)
+        self.__turn_timer.setInterval(10000)
         self.__turn_timer.timeout.connect(self.next_turn)
         self.__turn_timer.start()
 
@@ -210,8 +210,7 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges(h_painter, points)
         self.draw_vertices(h_painter, points, radius)
-        for train in self.parent().parent().game.trains:
-            self.draw_train(h_painter, train, points)
+        self.draw_trains(h_painter, self.parent().parent().game.trains, points)
 
         h_painter.end()
 
@@ -274,6 +273,11 @@ class PaintGraphWidget(QWidget):
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
+    def draw_trains(self, h_painter, trains, points):
+        h_painter.setBrush(self.train_color)
+        for train in trains:
+            self.draw_train(h_painter, train, points)
+
     def draw_train(self, h_painter, train, points):
         edge = self.__graph.get_edge(train.line_idx)
         p1 = points[edge['vert1']]
@@ -282,7 +286,6 @@ class PaintGraphWidget(QWidget):
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
-        h_painter.setBrush(self.train_color)
         h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
 
     def calc_line(self, p1, p2):
