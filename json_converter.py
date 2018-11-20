@@ -24,5 +24,5 @@ def dict_to_trains(dictionary):
 
 
 def dict_to_train(dictionary):
-    return Train(idx=dictionary['idx'], speed=dictionary['speed'], level=dictionary['level'],
-                 line_idx=dictionary['line_idx'], position=dictionary['position'], player_idx=dictionary['player_idx'])
+    return Train(idx=dictionary['idx'], speed=dictionary['speed'], line_idx=dictionary['line_idx'],
+                 position=dictionary['position'], player_idx=dictionary['player_idx'])

@@ -1,8 +1,7 @@
 class Train:
-    def __init__(self, idx, speed, level, line_idx, position, player_idx):
+    def __init__(self, idx, speed, line_idx, position, player_idx):
         self.__idx = idx
         self.__speed = speed
-        self.__level = level
 
         self.__line_idx = line_idx
         self.__position = position
@@ -16,10 +15,6 @@ class Train:
     @property
     def speed(self):
         return self.__speed
-
-    @property
-    def level(self):
-        return self.__level
 
     @property
     def line_idx(self):

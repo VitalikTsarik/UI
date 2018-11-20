@@ -1,5 +1,5 @@
 from Client import *
-from json_converter import dict_to_graph
+from json_converter import dict_to_graph, dict_to_trains
 
 
 class Game:
@@ -8,10 +8,9 @@ class Game:
         self.__client = ServerConnection()
         self.__client.login_action('NeBoris')
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
-        # todo: parse from Layer1 to trains and posts
-        layer1 = self.__client.map_action(Layer.Layer1)
+        layer1 = self.__client.map_action(Layer.Layer1)[1]
+        self.__trains = self.__trains = dict_to_trains(layer1)
         self.__posts = []
-        self.__trains = []
 
     @property
     def map_graph(self):
