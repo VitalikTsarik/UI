@@ -1,4 +1,4 @@
-from Client import *
+from client import *
 from json_converter import dict_to_graph, dict_to_trains
 
 

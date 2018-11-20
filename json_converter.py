@@ -1,6 +1,7 @@
 import json
 from graph import Graph
-from game_components.train import Train, Town, Market, Storage
+from game_components.train import Train
+from game_components.GamePoint import *
 
 
 def read_graph_from_json(filename):
