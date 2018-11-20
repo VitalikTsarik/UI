@@ -98,14 +98,14 @@ class MainWindow(QMainWindow):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
     def init_turn_timer(self):
-        self.__turn_timer.setInterval(10000)
+        self.__turn_timer.setInterval(1000)
         self.__turn_timer.timeout.connect(self.next_turn)
         self.__turn_timer.start()
 
     def next_turn(self):
         print('next turn')
-        # self.__game.next_turn()
-        # self.__update()
+        self.game.next_turn()
+        self.update()
 
 
 class FormWidget(QWidget):

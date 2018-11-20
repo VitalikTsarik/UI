@@ -23,6 +23,10 @@ class Train:
     def speed(self):
         return self.__speed
 
+    @speed.setter
+    def speed(self, value):
+        self.__speed = value
+
     @property
     def level(self):
         return self.__level

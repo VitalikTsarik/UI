@@ -12,6 +12,13 @@ class Game:
         self.__trains = self.__trains = dict_to_trains(layer1)
         self.__posts = []
 
+    def next_turn(self):
+        for train in self.trains:
+            train.position += train.speed
+            road = self.map_graph.get_edge(train.line_idx)
+            if train.position == 0 or train.position == road['length']:
+                train.speed = 0
+
     @property
     def map_graph(self):
         return self.__map_graph
