@@ -16,13 +16,13 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.__game = Game(self)
+        self.game = Game(self)
 
         self.init_main_window()
         self.create_menu()
 
         self.__form_widget = FormWidget(self)
-        self.__form_widget.paint_widget.link_graph(self.__game.map_graph)
+        self.__form_widget.paint_widget.link_graph(self.game.map_graph)
         self.setCentralWidget(self.__form_widget)
 
         self.show()
@@ -107,6 +107,7 @@ class MainWindow(QMainWindow):
         # self.__game.next_turn()
         # self.__update()
 
+
 class FormWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
@@ -155,7 +156,6 @@ class FormWidget(QWidget):
         layout.insertLayout(0, vbox)
         self.setLayout(layout)
 
-
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -171,6 +171,7 @@ class PaintGraphWidget(QWidget):
     edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
+    train_color = QColor(20, 75, 255, 200)
     train_size = 20
 
     def __init__(self, parent):
@@ -209,6 +210,8 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges(h_painter, points)
         self.draw_vertices(h_painter, points, radius)
+        for train in self.parent().parent().game.trains:
+            self.draw_train(h_painter, train, points)
 
         h_painter.end()
 
@@ -277,8 +280,9 @@ class PaintGraphWidget(QWidget):
         p2 = points[edge['vert2']]
         length = edge['length']
         a, b = self.calc_line(p1, p2)
-        cx = p1.x + (train.position/length)*(p2.x - p1.x)
+        cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
+        h_painter.setBrush(self.train_color)
         h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
 
     def calc_line(self, p1, p2):
