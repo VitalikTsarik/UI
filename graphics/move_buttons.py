@@ -4,7 +4,7 @@ from PyQt5.QtCore import QSize
 
 
 class ControlButton(QPushButton):
-    def __init__(self, widget=None):
+    def __init__(self, widget):
         super(ControlButton, self).__init__(widget)
 
     def __move_btn(self, tool_tip, icon_path):
@@ -42,7 +42,6 @@ class ControlButton(QPushButton):
                             border: 1px solid-black;
                             border-radius: 15px;
                             background-color: white;
-                            width: 60px;
                             }
         
                         QPushButton:pressed {
@@ -50,3 +49,4 @@ class ControlButton(QPushButton):
                                         stop:0 rgba(255, 255, 255), stop:1 rgba(103, 230, 103, 200))
                             }
                          """)
+        self.resize(self.parent().width(), self.height())

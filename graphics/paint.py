@@ -102,9 +102,12 @@ class FormWidget(QWidget):
         self.lbutton.left_arrow()
         self.stop_btn = ControlButton(self)
         self.stop_btn.stop()
-        self.btn_widget = ButtonWidget(self)
+        self.direction_btns = []
 
         self.__init_layouts()
+
+        self.create_dir_btns(range(10))
+        self.add_dir_btns()
 
     def __init_layouts(self):
         hbox_btns = QHBoxLayout()
@@ -114,7 +117,6 @@ class FormWidget(QWidget):
 
         hbox_widg = QHBoxLayout()
         hbox_widg.addWidget(self.paint_widget)
-        hbox_widg.addWidget(self.btn_widget)
 
         vbox = QVBoxLayout(self)
         vbox.addLayout(hbox_widg)
@@ -122,16 +124,27 @@ class FormWidget(QWidget):
 
         self.setLayout(vbox)
 
+    def create_dir_btns(self, numbers):
+        for num in numbers:
+            btn = ControlButton(self)
+            btn.post_number(num)
+            self.direction_btns.append(btn)
+
+    def add_dir_btns(self):
+        vbox = QHBoxLayout()
+        for btn in self.direction_btns:
+            vbox.addWidget(btn)
+
+        layout = self.layout()
+        layout.insertLayout(0, vbox)
+        self.setLayout(layout)
+
+
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
         palette = self.palette()
         palette.setColor(self.backgroundRole(), QColor(255, 211, 117, 70))
         self.setPalette(palette)
-
-
-class ButtonWidget(QWidget):
-    def __init__(self, parent):
-        super().__init__(parent)
 
 
 class PaintGraphWidget(QWidget):
@@ -169,7 +182,6 @@ class PaintGraphWidget(QWidget):
 
     def paintEvent(self, event):
         self.set_bckgrnd_color()
-        self.resize(self.parent().width() * 0.8, self.height())
 
         if not self.__graph:
             return
