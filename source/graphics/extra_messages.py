@@ -6,7 +6,7 @@ class ExtraMessages:
     @staticmethod
     def __initialize_message(window, title, message):
         message_box = QMessageBox(window)
-        message_icn = QIcon('icons/ui.jpg')
+        message_icn = QIcon('source/icons/ui.jpg')
         message_box.setWindowIcon(message_icn)
         message_box.setWindowTitle(title)
         message_box.setText(message)
