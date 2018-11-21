@@ -72,3 +72,9 @@ class Graph(object):
                     return {'length': edge['length'],
                             'vert1': vert,
                             'vert2': edge['vert_to']}
+
+    def get_edge_by_adj_vert(self, vert1, vert2):
+        for edge in self.__graph[vert1]['adj_edge']:
+            if edge['vert_to'] == vert2:
+                return {'length': edge['length'],
+                        'edge_idx': edge['edge_idx']}
