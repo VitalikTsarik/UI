@@ -20,14 +20,15 @@ def dict_to_graph(layer0):
 
 
 def dict_to_trains(layer1):
-    trains = layer1['trains']
-    return [dict_to_train(train) for train in trains]
+    trains = {}
+    for train in layer1['trains']:
+        trains[train['idx']] = dict_to_train(train)
+    return trains
 
 
 def dict_to_train(dictionary):
     return Train(idx=dictionary['idx'], speed=dictionary['speed'], line_idx=dictionary['line_idx'],
                  position=dictionary['position'], player_idx=dictionary['player_idx'])
-
 
 
 def dict_to_post(layer1):

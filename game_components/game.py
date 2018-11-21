@@ -9,11 +9,11 @@ class Game:
         self.__client.login_action('NeBoris')
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
         layer1 = self.__client.map_action(Layer.Layer1)[1]
-        self.__trains = self.__trains = dict_to_trains(layer1)
+        self.__trains = dict_to_trains(layer1)
         self.__posts = []
 
     def next_turn(self):
-        for train in self.trains:
+        for train in self.trains.values():
             train.position += train.speed
             road = self.map_graph.get_edge(train.line_idx)
             if train.position == 0 or train.position == road['length']:

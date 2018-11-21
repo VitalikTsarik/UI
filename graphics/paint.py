@@ -275,7 +275,7 @@ class PaintGraphWidget(QWidget):
 
     def draw_trains(self, h_painter, trains, points):
         h_painter.setBrush(self.train_color)
-        for train in trains:
+        for train in trains.values():
             self.draw_train(h_painter, train, points)
 
     def draw_train(self, h_painter, train, points):
