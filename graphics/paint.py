@@ -172,7 +172,6 @@ class PaintGraphWidget(QWidget):
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
     train_color = QColor(20, 75, 255, 200)
-    train_size = 20
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -210,7 +209,7 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges_and_waypoints(h_painter, points, vert_radius)
         self.draw_vertices(h_painter, points, vert_radius)
-        self.draw_trains(h_painter, self.parent().parent().game.trains, points)
+        self.draw_trains(h_painter, self.parent().parent().game.trains, points, vert_radius)
 
         h_painter.end()
 
@@ -285,12 +284,12 @@ class PaintGraphWidget(QWidget):
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
-    def draw_trains(self, h_painter, trains, points):
+    def draw_trains(self, h_painter, trains, points, vert_radius):
         h_painter.setBrush(self.train_color)
         for train in trains.values():
-            self.draw_train(h_painter, train, points)
+            self.draw_train(h_painter, train, points, vert_radius)
 
-    def draw_train(self, h_painter, train, points):
+    def draw_train(self, h_painter, train, points, vert_radius):
         edge = self.__graph.get_edge(train.line_idx)
         p1 = points[edge['vert1']]
         p2 = points[edge['vert2']]
@@ -298,7 +297,7 @@ class PaintGraphWidget(QWidget):
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
-        h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
+        h_painter.drawRect(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
 
     def calc_line(self, p1, p2):
         a = (p2.y() - p1.y())/(p2.x() - p1.x())
