@@ -202,7 +202,7 @@ class PaintGraphWidget(QWidget):
         i = 0
         j = 0
         points = {}
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             if j == h_num:
                 j = 0
                 i += 1
@@ -220,20 +220,20 @@ class PaintGraphWidget(QWidget):
         self.setPalette(palette)
 
     def set_offsets(self, indent):
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             self.__h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges(self, h_painter, points):
         edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
         h_painter.setPen(edge_pen)
-        for vertex in self.__graph.get_all_vert():
-            for adj_vert in self.__graph.get_adj_vert(vertex):
+        for vertex in self.__graph.get_all_vertices():
+            for adj_vert in self.__graph.get_adj_vertices(vertex):
                 h_painter.drawLine(points[vertex], points[adj_vert])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
             h_painter.setBrush(self.vertex_color)

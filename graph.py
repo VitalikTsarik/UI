@@ -53,16 +53,16 @@ class Graph(object):
             }
         )
 
-    def get_all_vert(self):
+    def get_all_vertices(self):
         return tuple(self.__graph.keys())
 
-    def get_adj_edge(self, idx):
+    def get_adj_edges(self, idx):
         return self.__graph[idx]['adj_edge']
 
-    def get_adj_vert(self, idx):
+    def get_adj_vertices(self, idx):
         return tuple([edge['vert_to'] for edge in self.__graph[idx]['adj_edge']])
 
-    def get_vert_post_idx(self, idx):
+    def get_vertex_post_idx(self, idx):
         return self.__graph[idx]['post_idx']
 
     def get_edge(self, idx):
