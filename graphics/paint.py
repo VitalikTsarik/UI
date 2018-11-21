@@ -247,7 +247,7 @@ class PaintGraphWidget(QWidget):
             self.draw_train(h_painter, train, points)
 
     def draw_train(self, h_painter, train, points):
-        edge = self.__graph.get_edge(train.line_idx)
+        edge = self.__graph.get_edge_by_idx(train.line_idx)
         p1 = points[edge['vert1']]
         p2 = points[edge['vert2']]
         length = edge['length']

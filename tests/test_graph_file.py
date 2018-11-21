@@ -28,9 +28,9 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(self.__graph.get_adj_edges(1), [{'edge_idx': 1, 'length': 0, 'vert_to': 2},
                                                          {'edge_idx': 2, 'length': 0, 'vert_to': 3}])
         self.assertEqual(self.__graph.get_adj_edges(4), [])
-        self.assertEqual(self.__graph.get_edge(1), {'length': 0, 'vert1': 1, 'vert2': 2})
-        self.assertEqual(self.__graph.get_edge(2), {'length': 0, 'vert1': 1, 'vert2': 3})
-        self.assertEqual(self.__graph.get_edge(6), None)
+        self.assertEqual(self.__graph.get_edge_by_idx(1), {'length': 0, 'vert1': 1, 'vert2': 2})
+        self.assertEqual(self.__graph.get_edge_by_idx(2), {'length': 0, 'vert1': 1, 'vert2': 3})
+        self.assertEqual(self.__graph.get_edge_by_idx(6), None)
         self.assertEqual(self.__graph.get_edge_by_adj_vert(1, 3), {'length': 0, 'edge_idx': 2})
 
     def test_not_add_existing_vert(self):
