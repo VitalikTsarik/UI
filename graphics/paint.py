@@ -77,26 +77,36 @@ class FormWidget(QWidget):
         self.stop_btn = ControlButton(self)
         self.stop_btn.stop()
         self.direction_btns = []
+        self.__layouts = []
 
         self.__init_layouts()
 
         self.create_dir_btns(range(10))
         self.add_dir_btns()
+        self.del_dir_btns()
 
     def __init_layouts(self):
-        hbox_btns = QHBoxLayout()
-        hbox_btns.addWidget(self.lbutton)
-        hbox_btns.addWidget(self.stop_btn)
-        hbox_btns.addWidget(self.rbutton)
+        hbox_btns_move = QHBoxLayout()
+        hbox_btns_move.addWidget(self.lbutton)
+        hbox_btns_move.addWidget(self.stop_btn)
+        hbox_btns_move.addWidget(self.rbutton)
 
         hbox_widg = QHBoxLayout()
         hbox_widg.addWidget(self.paint_widget)
 
-        vbox = QVBoxLayout(self)
-        vbox.addLayout(hbox_widg)
-        vbox.addLayout(hbox_btns)
+        hbox_btns_dir = QHBoxLayout()
 
-        self.setLayout(vbox)
+        main_vbox = QVBoxLayout(self)
+        main_vbox.addLayout(hbox_btns_dir)
+        main_vbox.addLayout(hbox_widg)
+        main_vbox.addLayout(hbox_btns_move)
+
+        self.__layouts.append(main_vbox)
+        self.__layouts.append(hbox_btns_dir)
+        self.__layouts.append(hbox_widg)
+        self.__layouts.append(hbox_btns_move)
+
+        self.setLayout(main_vbox)
 
     def create_dir_btns(self, numbers):
         for num in numbers:
@@ -105,13 +115,12 @@ class FormWidget(QWidget):
             self.direction_btns.append(btn)
 
     def add_dir_btns(self):
-        vbox = QHBoxLayout()
         for btn in self.direction_btns:
-            vbox.addWidget(btn)
+            self.__layouts[1].addWidget(btn)
 
-        layout = self.layout()
-        layout.insertLayout(0, vbox)
-        self.setLayout(layout)
+    def del_dir_btns(self):
+        while self.__layouts[1].count() > 0:
+            self.__layouts[1].takeAt(0).widget().deleteLater()
 
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
@@ -190,7 +199,7 @@ class PaintGraphWidget(QWidget):
         i = 0
         j = 0
         points = {}
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             if j == h_num:
                 j = 0
                 i += 1
@@ -208,15 +217,15 @@ class PaintGraphWidget(QWidget):
         self.setPalette(palette)
 
     def set_offsets(self, indent):
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             self.__h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges_and_waypoints(self, h_painter, points, vert_radius):
         edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
         h_painter.setBrush(self.vertex_color)
-        for vertex in self.__graph.get_all_vert():
-            for adj_vert in self.__graph.get_adj_vert(vertex):
+        for vertex in self.__graph.get_all_vertices():
+            for adj_vert in self.__graph.get_adj_vertices(vertex):
                 h_painter.setPen(edge_pen)
                 p1 = points[vertex]
                 p2 = points[adj_vert]
@@ -224,7 +233,7 @@ class PaintGraphWidget(QWidget):
 
                 # todo: отрисовывать промежуточные кружочки получше
                 h_painter.setPen(self.vertex_pen)
-                edge = next(edge for edge in self.__graph.get_adj_edge(vertex) if edge['vert_to'] == adj_vert)
+                edge = next(edge for edge in self.__graph.get_adj_edges(vertex) if edge['vert_to'] == adj_vert)
                 length = edge['length']
                 a, b = self.calc_line(p1, p2)
                 for i in range(1, length):
@@ -236,7 +245,7 @@ class PaintGraphWidget(QWidget):
         h_painter.setFont(QFont('Decorative', 10))
         h_painter.setBrush(self.vertex_color)
         h_painter.setPen(self.vertex_pen)
-        for vertex in self.__graph.get_all_vert():
+        for vertex in self.__graph.get_all_vertices():
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
@@ -248,7 +257,7 @@ class PaintGraphWidget(QWidget):
             self.draw_train(h_painter, train, points, vert_radius)
 
     def draw_train(self, h_painter, train, points, vert_radius):
-        edge = self.__graph.get_edge(train.line_idx)
+        edge = self.__graph.get_edge_by_idx(train.line_idx)
         p1 = points[edge['vert1']]
         p2 = points[edge['vert2']]
         length = edge['length']

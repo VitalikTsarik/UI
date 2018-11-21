@@ -15,7 +15,7 @@ class Game:
     def next_turn(self):
         for train in self.trains.values():
             train.position += train.speed
-            road = self.map_graph.get_edge(train.line_idx)
+            road = self.map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
                 train.speed = 0
 
