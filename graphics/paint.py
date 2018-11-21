@@ -257,15 +257,16 @@ class PaintGraphWidget(QWidget):
 
     def draw_edges_and_waypoints(self, h_painter, points, vert_radius):
         edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
-        h_painter.setPen(edge_pen)
         h_painter.setBrush(self.vertex_color)
         for vertex in self.__graph.get_all_vert():
             for adj_vert in self.__graph.get_adj_vert(vertex):
+                h_painter.setPen(edge_pen)
                 p1 = points[vertex]
                 p2 = points[adj_vert]
                 h_painter.drawLine(p1, p2)
 
                 # todo: отрисовывать промежуточные кружочки получше
+                h_painter.setPen(self.vertex_pen)
                 edge = next(edge for edge in self.__graph.get_adj_edge(vertex) if edge['vert_to'] == adj_vert)
                 length = edge['length']
                 a, b = self.calc_line(p1, p2)
@@ -276,11 +277,11 @@ class PaintGraphWidget(QWidget):
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
+        h_painter.setBrush(self.vertex_color)
+        h_painter.setPen(self.vertex_pen)
         for vertex in self.__graph.get_all_vert():
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
-            h_painter.setBrush(self.vertex_color)
-            h_painter.setPen(self.vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
