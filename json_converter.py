@@ -1,6 +1,7 @@
 import json
 from graph import Graph
-from game_components import Train, Town, Market, Storage
+from game_components.train import Train
+from game_components.GamePoint import *
 
 
 def read_graph_from_json(filename):
@@ -24,12 +25,9 @@ def dict_to_trains(layer1):
 
 
 def dict_to_train(dictionary):
-    return Train(idx=dictionary['idx'], speed=dictionary['speed'], level=dictionary['level'], line_idx=dictionary['line_idx'],
-                 position=dictionary['position'], player_idx=dictionary['player_idx'], cooldown=dictionary['cooldown'],
-                 events=dictionary['events'], fuel=dictionary['fuel'], fuel_capacity=dictionary['fuel_capacity'],
-                 fuel_consumption=dictionary['fuel_consumption'], goods=dictionary['goods'],
-                 goods_capacity=dictionary['goods_capacity'], goods_type=dictionary['goods_type']
-                 )
+    return Train(idx=dictionary['idx'], speed=dictionary['speed'], line_idx=dictionary['line_idx'],
+                 position=dictionary['position'], player_idx=dictionary['player_idx'])
+
 
 
 def dict_to_post(layer1):

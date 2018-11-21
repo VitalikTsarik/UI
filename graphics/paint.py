@@ -9,19 +9,26 @@ from graphics.extra_messages import *
 from graphics.settings_dlg import *
 from json_converter import *
 from graphics.move_buttons import *
+from game_components.game import Game
 
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.game = Game(self)
+
         self.init_main_window()
         self.create_menu()
 
         self.__form_widget = FormWidget(self)
+        self.__form_widget.paint_widget.link_graph(self.game.map_graph)
         self.setCentralWidget(self.__form_widget)
 
         self.show()
+
+        self.__turn_timer = QTimer()
+        self.init_turn_timer()
 
     def init_main_window(self):
         self.set_geometry()
@@ -90,6 +97,16 @@ class MainWindow(QMainWindow):
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
 
+    def init_turn_timer(self):
+        self.__turn_timer.setInterval(10000)
+        self.__turn_timer.timeout.connect(self.next_turn)
+        self.__turn_timer.start()
+
+    def next_turn(self):
+        print('next turn')
+        self.game.next_turn()
+        self.update()
+
 
 class FormWidget(QWidget):
     def __init__(self, parent):
@@ -139,7 +156,6 @@ class FormWidget(QWidget):
         layout.insertLayout(0, vbox)
         self.setLayout(layout)
 
-
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
         palette = self.palette()
@@ -155,6 +171,7 @@ class PaintGraphWidget(QWidget):
     edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
+    train_color = QColor(20, 75, 255, 200)
     train_size = 20
 
     def __init__(self, parent):
@@ -193,6 +210,7 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges(h_painter, points)
         self.draw_vertices(h_painter, points, radius)
+        self.draw_trains(h_painter, self.parent().parent().game.trains, points)
 
         h_painter.end()
 
@@ -255,13 +273,18 @@ class PaintGraphWidget(QWidget):
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
+    def draw_trains(self, h_painter, trains, points):
+        h_painter.setBrush(self.train_color)
+        for train in trains:
+            self.draw_train(h_painter, train, points)
+
     def draw_train(self, h_painter, train, points):
         edge = self.__graph.get_edge(train.line_idx)
         p1 = points[edge['vert1']]
         p2 = points[edge['vert2']]
         length = edge['length']
         a, b = self.calc_line(p1, p2)
-        cx = p1.x + (train.position/length)*(p2.x - p1.x)
+        cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
         h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
 
