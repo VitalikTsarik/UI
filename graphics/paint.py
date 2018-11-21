@@ -44,14 +44,6 @@ class MainWindow(QMainWindow):
         self.move(qr.topLeft())
 
     def create_menu(self):
-        new_act = QAction('Open...', self)
-        new_act.setStatusTip('Open a file with graph')
-        new_act.triggered.connect(self.open_file)
-
-        exit_act = QAction('&Exit', self)
-        exit_act.setStatusTip('Quit application')
-        exit_act.triggered.connect(qApp.quit)
-
         help_act = QAction('Help', self)
         help_act.setStatusTip('Show file format')
         help_act.triggered.connect(self.help_inf)
@@ -59,26 +51,10 @@ class MainWindow(QMainWindow):
         self.statusBar()
         menu_bar = self.menuBar()
 
-        file_menu = menu_bar.addMenu('&File')
-        file_menu.addAction(new_act)
-        file_menu.addSeparator()
-        file_menu.addAction(exit_act)
-
         menu_bar.addAction(help_act)
 
-    def open_file(self):
-        open_file_dlg = QFileDialog()
-        open_file_dlg.setFileMode(QFileDialog.ExistingFile)
-        open_file_dlg.setDefaultSuffix('json')
-        open_file_dlg.setNameFilter("JSON (*.json)")
-
-        if open_file_dlg.exec_():
-            file_name = open_file_dlg.selectedFiles()[0]
-            dictionary = read_graph_from_json(file_name)
-            self.__form_widget.paint_widget.link_graph(dict_to_graph(dictionary))
-
     def help_inf(self):
-        ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
+        ExtraMessages.information_message(self, 'Help', 'Check README file for extra information')
 
     def init_turn_timer(self):
         self.__turn_timer.setInterval(10000)
