@@ -1,5 +1,5 @@
 import json
-from graph import Graph
+from source.graph import Graph
 
 
 def read_graph_from_json(filename):
