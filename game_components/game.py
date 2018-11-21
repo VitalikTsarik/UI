@@ -19,6 +19,12 @@ class Game:
             if train.position == 0 or train.position == road['length']:
                 train.speed = 0
 
+    def move_train(self, train_idx, line_idx, speed):
+        res, msg = self.__client.move_action(train_idx, line_idx, speed)
+        if res == Result.OKEY.value:
+            self.__trains[train_idx].line_idx = line_idx
+            self.__trains[train_idx].speed = speed
+
     @property
     def map_graph(self):
         return self.__map_graph
