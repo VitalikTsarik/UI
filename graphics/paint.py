@@ -203,13 +203,13 @@ class PaintGraphWidget(QWidget):
         if not self.__graph:
             return
 
-        points, radius = self.calc_coordinates()
+        points, vert_radius = self.calc_coordinates()
 
         h_painter = QPainter()
         h_painter.begin(self)
 
-        self.draw_edges(h_painter, points)
-        self.draw_vertices(h_painter, points, radius)
+        self.draw_edges_and_waypoints(h_painter, points, vert_radius)
+        self.draw_vertices(h_painter, points, vert_radius)
         self.draw_trains(h_painter, self.parent().parent().game.trains, points)
 
         h_painter.end()
@@ -256,12 +256,24 @@ class PaintGraphWidget(QWidget):
             self.__h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
-    def draw_edges(self, h_painter, points):
+    def draw_edges_and_waypoints(self, h_painter, points, vert_radius):
         edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
         h_painter.setPen(edge_pen)
+        h_painter.setBrush(self.vertex_color)
         for vertex in self.__graph.get_all_vert():
             for adj_vert in self.__graph.get_adj_vert(vertex):
-                h_painter.drawLine(points[vertex], points[adj_vert])
+                p1 = points[vertex]
+                p2 = points[adj_vert]
+                h_painter.drawLine(p1, p2)
+
+                # todo: отрисовывать промежуточные кружочки получше
+                edge = next(edge for edge in self.__graph.get_adj_edge(vertex) if edge['vert_to'] == adj_vert)
+                length = edge['length']
+                a, b = self.calc_line(p1, p2)
+                for i in range(1, length):
+                    cx = p1.x() + (i / length) * (p2.x() - p1.x())
+                    cy = a * cx + b
+                    h_painter.drawEllipse(cx - vert_radius/4, cy - vert_radius/4, vert_radius/2, vert_radius/2)
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
