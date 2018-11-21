@@ -231,13 +231,11 @@ class PaintGraphWidget(QWidget):
                 p2 = points[adj_vert]
                 h_painter.drawLine(p1, p2)
 
-                # todo: отрисовывать промежуточные кружочки получше
                 h_painter.setPen(self.vertex_pen)
-                edge = next(edge for edge in self.__graph.get_adj_edges(vertex) if edge['vert_to'] == adj_vert)
-                length = edge['length']
+                edge = self.__graph.get_edge_by_adj_vert(vertex, adj_vert)
                 a, b = self.calc_line(p1, p2)
-                for i in range(1, length):
-                    cx = p1.x() + (i / length) * (p2.x() - p1.x())
+                for i in range(1, edge['length']):
+                    cx = p1.x() + (i / edge['length']) * (p2.x() - p1.x())
                     cy = a * cx + b
                     h_painter.drawEllipse(cx - vert_radius/4, cy - vert_radius/4, vert_radius/2, vert_radius/2)
 
