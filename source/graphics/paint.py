@@ -198,8 +198,8 @@ class PaintGraphWidget(QWidget):
         h_painter.setPen(edge_pen)
         for vertex in self.__graph.get_all_vert():
             for adj_vert in self.__graph.get_adj_vert(vertex):
-                h_painter.drawLine(points[vertex][0], points[vertex][1]
-                                   , points[adj_vert][0], points[adj_vert][1])
+                h_painter.drawLine(points[vertex][0], points[vertex][1],
+                                   points[adj_vert][0], points[adj_vert][1])
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
