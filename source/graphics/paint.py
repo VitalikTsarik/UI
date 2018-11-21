@@ -43,10 +43,6 @@ class MainWindow(QMainWindow):
         new_act.setStatusTip('Open a file with graph')
         new_act.triggered.connect(self.open_file)
 
-#        settings_act = QAction('Settings', self)
-#        settings_act.setStatusTip('Edit application setting')
-#        settings_act.triggered.connect(self.create_settings_dlg)
-
         exit_act = QAction('&Exit', self)
         exit_act.setStatusTip('Quit application')
         exit_act.triggered.connect(qApp.quit)
@@ -63,7 +59,6 @@ class MainWindow(QMainWindow):
         file_menu.addSeparator()
         file_menu.addAction(exit_act)
 
-#        menu_bar.addAction(settings_act)
         menu_bar.addAction(help_act)
 
     def open_file(self):
@@ -76,18 +71,6 @@ class MainWindow(QMainWindow):
             file_name = open_file_dlg.selectedFiles()[0]
             dictionary = read_graph_from_json(file_name)
             self.__form_widget.paint_widget.link_graph(dict_to_graph(dictionary))
-
-    # def create_settings_dlg(self):
-    #     draw_param = \
-    #         {
-    #             'vertex_color': self.vertex_color,
-    #             'edge_width': self.edge_width,
-    #             'edge_color': self.edge_color,
-    #             'font': self.font,
-    #             'vertex_label_style': self.vertex_label_style
-    #         }
-    #     settings_dlg = SettingsDlg(self, draw_param)
-    #     settings_dlg.show()
 
     def help_inf(self):
         ExtraMessages.information_message(self, 'Required format of file', 'Check README file for extra information')
