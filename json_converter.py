@@ -31,31 +31,30 @@ def dict_to_train(dictionary):
                  position=dictionary['position'], player_idx=dictionary['player_idx'])
 
 
-def dict_to_post(layer1):
+def dict_to_posts(layer1):
     posts = layer1['posts']
-    result = []
+    result = {}
     for post in posts:
         if post['type'] == 1:
-            result.append(dict_to_town(post))
+            result[post['idx']] = dict_to_town(post)
         elif post['type'] == 2:
-            result.append(dict_to_market(post))
+            result[post['idx']] = dict_to_market(post)
         elif post['type'] == 3:
-            result.append(dict_to_storage(post))
+            result[post['idx']] = dict_to_storage(post)
     return result
 
 
 def dict_to_town(dictionary):
-    return Town(idx=dictionary['idx'], point_idx=dictionary['point_idx'], events=dictionary['events'], name=dictionary['name'],
-                level=dictionary['level'], population=dictionary['population'], population_capacity=['population_capacity'],
+    return Town(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'], population=dictionary['population'], population_capacity=['population_capacity'],
                 armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'], product=dictionary['product'],
-                product_capacity=dictionary['product_capacity'], train_cooldown=dictionary['train_cooldown'])
+                product_capacity=dictionary['product_capacity'])
 
 
 def dict_to_market(dictionary):
-    return Market(idx=dictionary['idx'], point_idx=dictionary['point_idx'], events=dictionary['events'], name=dictionary['name'],
+    return Market(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'],
                   product=dictionary['product'], product_capacity=dictionary['product_capacity'], replenishment=dictionary['replenishment'])
 
 
 def dict_to_storage(dictionary):
-    return Storage(idx=dictionary['idx'], point_idx=dictionary['point_idx'], events=dictionary['events'], name=dictionary['name'],
+    return Storage(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'],
                    replenishment=dictionary['replenishment'], armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'])
