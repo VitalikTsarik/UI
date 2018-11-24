@@ -81,10 +81,6 @@ class FormWidget(QWidget):
 
         self.__init_layouts()
 
-        self.create_dir_btns(range(10))
-        self.add_dir_btns()
-        self.del_dir_btns()
-
     def __init_layouts(self):
         hbox_btns_move = QHBoxLayout()
         hbox_btns_move.addWidget(self.lbutton)
