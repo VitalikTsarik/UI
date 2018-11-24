@@ -44,17 +44,15 @@ class MainWindow(QMainWindow):
         self.move(qr.topLeft())
 
     def create_menu(self):
-        help_act = QAction('Help', self)
-        help_act.setStatusTip('Show file format')
-        help_act.triggered.connect(self.help_inf)
+        exit_act = QAction('&Exit', self)
+        exit_act.setStatusTip('Quit application')
+        exit_act.triggered.connect(qApp.quit)
 
         self.statusBar()
         menu_bar = self.menuBar()
 
-        menu_bar.addAction(help_act)
-
-    def help_inf(self):
-        ExtraMessages.information_message(self, 'Help', 'Check README file for extra information')
+        file_menu = menu_bar.addMenu('&Game')
+        file_menu.addAction(exit_act)
 
     def init_turn_timer(self):
         self.__turn_timer.setInterval(10000)
@@ -140,7 +138,6 @@ class PaintGraphWidget(QWidget):
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
     train_color = QColor(20, 75, 255, 200)
-    train_size = 20
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -171,14 +168,14 @@ class PaintGraphWidget(QWidget):
         if not self.__graph:
             return
 
-        points, radius = self.calc_coordinates()
+        points, vert_radius = self.calc_coordinates()
 
         h_painter = QPainter()
         h_painter.begin(self)
 
-        self.draw_edges(h_painter, points)
-        self.draw_vertices(h_painter, points, radius)
-        self.draw_trains(h_painter, self.parent().parent().game.trains, points)
+        self.draw_edges_and_waypoints(h_painter, points, vert_radius)
+        self.draw_vertices(h_painter, points, vert_radius)
+        self.draw_trains(h_painter, self.parent().parent().game.trains, points, vert_radius)
 
         h_painter.end()
 
@@ -224,29 +221,40 @@ class PaintGraphWidget(QWidget):
             self.__h_offsets[vertex] = (randint(0, int(indent / 3)))
             self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
-    def draw_edges(self, h_painter, points):
+    def draw_edges_and_waypoints(self, h_painter, points, vert_radius):
         edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
-        h_painter.setPen(edge_pen)
+        h_painter.setBrush(self.vertex_color)
         for vertex in self.__graph.get_all_vertices():
             for adj_vert in self.__graph.get_adj_vertices(vertex):
-                h_painter.drawLine(points[vertex], points[adj_vert])
+                h_painter.setPen(edge_pen)
+                p1 = points[vertex]
+                p2 = points[adj_vert]
+                h_painter.drawLine(p1, p2)
+
+                h_painter.setPen(self.vertex_pen)
+                edge = self.__graph.get_edge_by_adj_vert(vertex, adj_vert)
+                a, b = self.calc_line(p1, p2)
+                for i in range(1, edge['length']):
+                    cx = p1.x() + (i / edge['length']) * (p2.x() - p1.x())
+                    cy = a * cx + b
+                    h_painter.drawEllipse(cx - vert_radius/4, cy - vert_radius/4, vert_radius/2, vert_radius/2)
 
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
+        h_painter.setBrush(self.vertex_color)
+        h_painter.setPen(self.vertex_pen)
         for vertex in self.__graph.get_all_vertices():
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
-            h_painter.setBrush(self.vertex_color)
-            h_painter.setPen(self.vertex_pen)
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
             h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
-    def draw_trains(self, h_painter, trains, points):
+    def draw_trains(self, h_painter, trains, points, vert_radius):
         h_painter.setBrush(self.train_color)
-        for train in trains:
-            self.draw_train(h_painter, train, points)
+        for train in trains.values():
+            self.draw_train(h_painter, train, points, vert_radius)
 
-    def draw_train(self, h_painter, train, points):
+    def draw_train(self, h_painter, train, points, vert_radius):
         edge = self.__graph.get_edge_by_idx(train.line_idx)
         p1 = points[edge['vert1']]
         p2 = points[edge['vert2']]
@@ -254,7 +262,7 @@ class PaintGraphWidget(QWidget):
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
-        h_painter.drawRect(cx - self.train_size, cy - self.train_size, self.train_size*2, self.train_size*2)
+        h_painter.drawRect(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
 
     def calc_line(self, p1, p2):
         a = (p2.y() - p1.y())/(p2.x() - p1.x())
