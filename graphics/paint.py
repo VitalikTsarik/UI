@@ -72,10 +72,13 @@ class FormWidget(QWidget):
         self.paint_widget = PaintGraphWidget(self)
         self.rbutton = ControlButton(self)
         self.rbutton.right_arrow()
+        self.rbutton.clicked.connect(self.parent().game.move_forward)
         self.lbutton = ControlButton(self)
         self.lbutton.left_arrow()
+        self.lbutton.clicked.connect(self.parent().game.move_backwards)
         self.stop_btn = ControlButton(self)
         self.stop_btn.stop()
+        self.stop_btn.clicked.connect(self.parent().game.stop_train)
         self.direction_btns = [] # ставить в соответсвие каждому поезду свой массив кнопок
         self.__layouts = []
 

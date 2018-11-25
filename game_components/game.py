@@ -54,6 +54,21 @@ class Game:
         self.move_train(train_idx, new_line, self.trains[train_idx].speed)
         self.__main_window.centralWidget().del_dir_btns()
 
+    def move_forward(self):
+        train_idx = 1
+        train = self.trains[train_idx]
+        self.move_train(train.idx, train.line_idx, 1)
+
+    def stop_train(self):
+        train_idx = 1
+        train = self.trains[train_idx]
+        self.move_train(train.idx, train.line_idx, 0)
+
+    def move_backwards(self):
+        train_idx = 1
+        train = self.trains[train_idx]
+        self.move_train(train.idx, train.line_idx, -1)
+
     @property
     def map_graph(self):
         return self.__map_graph
