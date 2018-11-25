@@ -111,7 +111,7 @@ class FormWidget(QWidget):
         for num in numbers:
             btn = ControlButton(self)
             btn.post_number(num)
-            btn.clicked.connect(lambda: self.parent().game.set_direction(int(btn.text())))
+            btn.clicked.connect(lambda checked, n=num: self.parent().game.set_direction(n))
             self.direction_btns.append(btn)
 
     def add_dir_btns(self):

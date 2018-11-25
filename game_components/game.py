@@ -43,15 +43,15 @@ class Game:
             self.__trains[train_idx].speed = speed
 
     def __choose_direction(self, vert_idx):
+        train_idx = 1
+        self.__trains[train_idx].start_vert = vert_idx
         self.__main_window.centralWidget().create_dir_btns(self.__map_graph.get_adj_vertices(vert_idx))
         self.__main_window.centralWidget().add_dir_btns()
 
     def set_direction(self, next_vert_idx):
         train_idx = 1
         new_line = self.__map_graph.get_edge_by_adj_vert(next_vert_idx, self.trains[train_idx].start_vert)
-        self.trains[train_idx].start_vert = next_vert_idx
-        self.trains[train_idx].speed = 1
-        self.move_train(train_idx, new_line, self.trains[train_idx].speed)
+        self.move_train(train_idx, new_line['edge_idx'], self.trains[train_idx].speed)
         self.__main_window.centralWidget().del_dir_btns()
 
     def move_forward(self):
