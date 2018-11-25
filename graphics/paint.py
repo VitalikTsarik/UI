@@ -16,7 +16,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.game = Game(self)
+        self.game = Game()
 
         self.init_main_window()
         self.create_menu()
@@ -61,7 +61,10 @@ class MainWindow(QMainWindow):
 
     def next_turn(self):
         print('next turn')
-        self.game.next_turn()
+        vert_idx = self.game.next_turn()
+        if vert_idx != -1:
+            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(vert_idx))
+            self.centralWidget().add_dir_btns()
         self.update()
 
 
@@ -111,7 +114,7 @@ class FormWidget(QWidget):
         for num in numbers:
             btn = ControlButton(self)
             btn.post_number(num)
-            btn.clicked.connect(lambda checked, n=num: self.parent().game.set_direction(n))
+            btn.clicked.connect(self.dir_btn_clicked)
             self.direction_btns.append(btn)
 
     def add_dir_btns(self):
@@ -122,6 +125,11 @@ class FormWidget(QWidget):
         self.direction_btns.clear()
         while self.__layouts[1].count() > 0:
             self.__layouts[1].takeAt(0).widget().deleteLater()
+
+    def dir_btn_clicked(self):
+        btn = self.sender()
+        self.parent().game.set_direction(int(btn.text()))
+        self.del_dir_btns()
 
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
