@@ -29,17 +29,20 @@ class Graph(object):
     def add_edge(self, idx, length, vert_from, vert_to):
         if vert_from == vert_to:
             return
-        for vertex in self.__graph[vert_from]['adj_edge']:
-            if vertex['vert_to'] == vert_to:
-                return
 
-        if vert_from not in self.__graph.keys():
+        if vert_from in self.__graph.keys():
+            for vertex in self.__graph[vert_from]['adj_edge']:
+                if vertex['vert_to'] == vert_to:
+                    return
+        else:
             self.add_vertex(vert_from)
+
         self.__graph[vert_from]['adj_edge'].append(
             {
                 'edge_idx': idx,
                 'length': length,
-                'vert_to': vert_to
+                'vert_to': vert_to,
+                'start_vert': vert_from
             }
         )
 
@@ -49,7 +52,8 @@ class Graph(object):
             {
                 'edge_idx': idx,
                 'length': length,
-                'vert_to': vert_from
+                'vert_to': vert_from,
+                'start_vert': vert_from
             }
         )
 
@@ -70,8 +74,8 @@ class Graph(object):
             for edge in self.__graph[vert]['adj_edge']:
                 if edge['edge_idx'] == idx:
                     return {'length': edge['length'],
-                            'vert1': vert,
-                            'vert2': edge['vert_to']}
+                            'vert_from': edge['start_vert'],
+                            'vert_to': edge['vert_to'] if edge['start_vert'] != edge['vert_to'] else vert}
 
     def get_edge_by_adj_vert(self, vert1, vert2):
         for edge in self.__graph[vert1]['adj_edge']:
