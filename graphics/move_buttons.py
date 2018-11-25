@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QPushButton
-from PyQt5.QtGui import QIcon, QFont, QPalette, QColor
+from PyQt5.QtGui import QIcon, QFont
 from PyQt5.QtCore import QSize
 
 
