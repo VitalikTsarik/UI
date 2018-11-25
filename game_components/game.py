@@ -12,6 +12,7 @@ class Game:
         self.__trains = dict_to_trains(layer1)
         self.__init_trains_start_idx_()
         self.__posts = dict_to_posts(layer1)
+       # self.set_direction(self.__trains[1].start_vert)
 
     def __init_trains_start_idx_(self):
         for train in self.__trains.values():
@@ -22,13 +23,13 @@ class Game:
             train.position += train.speed
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
 
-            if train.position == 0:
+            if train.position == 0 and train.speed != 0:
                 train.speed = 0
                 if train.start_vert == road['vert_from']:
                     self.__choose_direction(road['vert_from'])
                 else:
                     self.__choose_direction(road['vert_to'])
-            elif train.position == road['length']:
+            elif train.position == road['length'] and train.speed != 0:
                 train.speed = 0
                 if train.start_vert == road['vert_from']:
                     self.__choose_direction(road['vert_to'])
@@ -45,9 +46,12 @@ class Game:
         self.__main_window.centralWidget().create_dir_btns(self.__map_graph.get_adj_vertices(vert_idx))
         self.__main_window.centralWidget().add_dir_btns()
 
-    def set_direction(self):
-        # получение line_idx
-        # вызов move_train
+    def set_direction(self, next_vert_idx):
+        train_idx = 1
+        new_line = self.__map_graph.get_edge_by_adj_vert(next_vert_idx, self.trains[train_idx].start_vert)
+        self.trains[train_idx].start_vert = next_vert_idx
+        self.trains[train_idx].speed = 1
+        self.move_train(train_idx, new_line, self.trains[train_idx].speed)
         self.__main_window.centralWidget().del_dir_btns()
 
     @property
