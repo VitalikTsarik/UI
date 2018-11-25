@@ -10,19 +10,30 @@ class Game:
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
+        self.__init_trains_start_idx_()
         self.__posts = dict_to_posts(layer1)
 
+    def __init_trains_start_idx_(self):
+        for train in self.__trains.values():
+            train.start_vert = self.__map_graph.get_edge_by_idx(train.line_idx)['vert_from']
+
     def next_turn(self):
-        for train in self.trains.values():
+        for train in self.__trains.values():
             train.position += train.speed
-            road = self.map_graph.get_edge_by_idx(train.line_idx)
-            if train.position == 0 or train.position == road['length']:
+            road = self.__map_graph.get_edge_by_idx(train.line_idx)
+
+            if train.position == 0:
                 train.speed = 0
-                edge = self.__map_graph.get_edge_by_idx(train.line_idx)
-                if train.position == 0:
-                    self.__choose_direction(edge['vert1'])
+                if train.start_vert == road['vert_from']:
+                    self.__choose_direction(road['vert_from'])
                 else:
-                    self.__choose_direction(edge['vert2'])
+                    self.__choose_direction(road['vert_to'])
+            elif train.position == road['length']:
+                train.speed = 0
+                if train.start_vert == road['vert_from']:
+                    self.__choose_direction(road['vert_to'])
+                else:
+                    self.__choose_direction(road['vert_from'])
 
     def move_train(self, train_idx, line_idx, speed):
         res, msg = self.__client.move_action(train_idx, line_idx, speed)

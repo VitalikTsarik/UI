@@ -6,6 +6,7 @@ class Train:
         self.__line_idx = line_idx
         self.__position = position
         self.__player_idx = player_idx
+        self.__start_vert_idx = None
         # self.__cooldown = cooldown
         # self.__events = events
         # self.__fuel = fuel
@@ -82,3 +83,11 @@ class Train:
     @property
     def goods_type(self):
         return self.__goods_type
+
+    @property
+    def start_vert(self):
+        return self.__start_vert_idx
+
+    @start_vert.setter
+    def start_vert(self, value):
+        self.__start_vert_idx = value
