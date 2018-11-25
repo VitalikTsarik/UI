@@ -76,7 +76,7 @@ class FormWidget(QWidget):
         self.lbutton.left_arrow()
         self.stop_btn = ControlButton(self)
         self.stop_btn.stop()
-        self.direction_btns = []
+        self.direction_btns = [] # ставить в соответсвие каждому поезду свой массив кнопок
         self.__layouts = []
 
         self.__init_layouts()
@@ -108,6 +108,7 @@ class FormWidget(QWidget):
         for num in numbers:
             btn = ControlButton(self)
             btn.post_number(num)
+            btn.clicked.connect(lambda: self.parent().game.set_direction(int(btn.text())))
             self.direction_btns.append(btn)
 
     def add_dir_btns(self):
@@ -115,6 +116,7 @@ class FormWidget(QWidget):
             self.__layouts[1].addWidget(btn)
 
     def del_dir_btns(self):
+        self.direction_btns.clear()
         while self.__layouts[1].count() > 0:
             self.__layouts[1].takeAt(0).widget().deleteLater()
 
