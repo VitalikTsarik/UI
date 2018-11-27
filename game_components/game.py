@@ -9,13 +9,8 @@ class Game:
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
-        self.__init_trains_start_idx_()
         self.__posts = dict_to_posts(layer1)
        # self.set_direction(self.__trains[1].start_vert)
-
-    def __init_trains_start_idx_(self):
-        for train in self.__trains.values():
-            train.start_vert = self.__map_graph.get_edge_by_idx(train.line_idx)['vert_from']
 
     def next_turn(self):
         for train in self.__trains.values():
@@ -24,20 +19,13 @@ class Game:
 
             if train.position == 0 and train.speed != 0:
                 train.speed = 0
-                if train.start_vert == road['vert_from']:
-                    cur_vert_idx = road['vert_from']
-                else:
-                    cur_vert_idx = road['vert_to']
+                cur_vert_idx = road['vert_from']
             elif train.position == road['length'] and train.speed != 0:
                 train.speed = 0
-                if train.start_vert == road['vert_from']:
-                    cur_vert_idx = road['vert_to']
-                else:
-                    cur_vert_idx = road['vert_from']
+                cur_vert_idx = road['vert_to']
             else:
                 return -1
-            train.start_vert = cur_vert_idx
-            train.position = 0
+
             return cur_vert_idx
 
     def move_train(self, train_idx, line_idx, speed):
@@ -49,12 +37,24 @@ class Game:
 
     def set_direction(self, next_vert_idx):
         train_idx = 1 # временно
-        new_line = self.__map_graph.get_edge_by_adj_vert(next_vert_idx, self.trains[train_idx].start_vert)
-        self.move_train(train_idx, new_line['edge_idx'], 1)
+
+        if self.__trains[train_idx].position == 0:
+            curr_vert = self.__map_graph.get_edge_by_idx(self.__trains[train_idx].line_idx)['vert_from']
+        else:
+            curr_vert = self.__map_graph.get_edge_by_idx(self.__trains[train_idx].line_idx)['vert_to']
+
+        new_line = self.__map_graph.get_edge_by_adj_vert(next_vert_idx, curr_vert)
+        if curr_vert == new_line['vert_from']:
+            self.__trains[train_idx].position = 0
+            self.move_train(train_idx, new_line['edge_idx'], 1)
+        else:
+            self.__trains[train_idx].position = new_line['length']
+            self.move_train(train_idx, new_line['edge_idx'], -1)
 
     def move_forward(self):
         train_idx = 1 # временно
         train = self.trains[train_idx]
+
         self.move_train(train.idx, train.line_idx, 1)
 
     def stop_train(self):

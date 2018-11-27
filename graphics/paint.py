@@ -30,8 +30,14 @@ class MainWindow(QMainWindow):
         self.__turn_timer = QTimer()
         self.init_turn_timer()
         train = self.game.trains[1]
-        self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(train.start_vert))
-        self.centralWidget().add_dir_btns()
+        start_line = self.game.map_graph.get_edge_by_idx(train.line_idx)
+
+        if train.position == 0:
+            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(start_line['vert_from']))
+            self.centralWidget().add_dir_btns()
+        else:
+            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(start_line['vert_to']))
+            self.centralWidget().add_dir_btns()
 
 
     def init_main_window(self):
@@ -269,8 +275,8 @@ class PaintGraphWidget(QWidget):
 
     def draw_train(self, h_painter, train, points, vert_radius):
         edge = self.__graph.get_edge_by_idx(train.line_idx)
-        p1 = points[train.start_vert]
-        p2 = points[edge['vert_from']] if train.start_vert == edge['vert_to'] else points[edge['vert_to']]
+        p1 = points[edge['vert_from']]
+        p2 = points[edge['vert_to']]
         length = edge['length']
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
