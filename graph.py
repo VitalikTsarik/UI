@@ -81,4 +81,6 @@ class Graph(object):
         for edge in self.__graph[vert1]['adj_edge']:
             if edge['vert_to'] == vert2:
                 return {'length': edge['length'],
-                        'edge_idx': edge['edge_idx']}
+                        'edge_idx': edge['edge_idx'],
+                        'vert_from': edge['start_vert'],
+                        'vert_to': vert1 if edge['start_vert'] != vert1 else vert2}
