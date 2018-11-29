@@ -1,14 +1,13 @@
 from math import sqrt
 from random import randint
 
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-
 from source.graphics.settings_dlg import *
 from source.graphics.move_buttons import *
 from source.game_components.game import Game
 
+from PyQt5.QtCore import QRectF
+from PyQt5.QtGui import QPainter
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -21,6 +20,7 @@ class MainWindow(QMainWindow):
 
         self.__form_widget = FormWidget(self)
         self.__form_widget.paint_widget.link_graph(self.game.map_graph)
+
         self.setCentralWidget(self.__form_widget)
 
         self.show()
@@ -37,7 +37,6 @@ class MainWindow(QMainWindow):
             self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(start_line['vert_to']))
             self.centralWidget().add_dir_btns()
 
-
     def init_main_window(self):
         self.set_geometry()
 
@@ -46,6 +45,7 @@ class MainWindow(QMainWindow):
 
     def set_geometry(self):
         self.resize(1300, 900)
+
         qr = self.geometry()
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
@@ -285,3 +285,4 @@ class PaintGraphWidget(QWidget):
         a = (p2.y() - p1.y())/(p2.x() - p1.x())
         b = p1.y() - a*p1.x()
         return a, b
+ 

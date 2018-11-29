@@ -9,7 +9,7 @@ def read_graph_from_json(filename):
         graph = json.load(json_data)
     return graph
 
-
+  
 def dict_to_graph(layer0):
     graph = Graph(idx=layer0['idx'], name=layer0['name'])
     for point in layer0['points']:
