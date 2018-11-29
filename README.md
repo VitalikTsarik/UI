@@ -1,12 +1,5 @@
 ﻿# UI
 
-## Team members
-* Fiodor Suslionkov 
-* Сычык Кацярына
-* Виталик Царик
-
-## Граф визуальный прекрасный I
-
 Программа, которая визуализирует граф представленный в формате JSON
 ```json
 {
@@ -51,11 +44,20 @@
 * name - имя графа
 * Каждую линию образует 2 точки (points).
 
+## Team members
+* [Fiodor Suslinkov](https://github.com/FiodorSuslionkov) - Fiodor Suslionkov 
+* [Katia Sychik](https://github.com/KatiaSychik) - Сычык Кацярына
+* [Vitalik Tsarik](https://github.com/VitalikTsarik) - Виталик Царик
+
 ## Запуск приложения
 * установите python3 на ваш пк
 * в командной строке пропишите pip3 install pyqt5
 * в командной строке пропишите python app.py
 
- или 
-
-* используйте ярлык application.exe
+## Задания
+### Граф визуальный прекрасный I
+[Задание 1](tasks/task_1.md)
+### Клиент игровой великолепный II
+[Задание 2](tasks/task_2.md)
+### Мир огромный удивительный III
+[Задание 3](tasks/task_3.md)

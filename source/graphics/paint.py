@@ -42,7 +42,7 @@ class MainWindow(QMainWindow):
         self.set_geometry()
 
         self.setWindowTitle('Graph visualisation')
-        self.setWindowIcon(QIcon('icons/ui.jpg'))
+        self.setWindowIcon(QIcon('source/icons/ui.jpg'))
 
     def set_geometry(self):
         self.resize(1300, 900)
