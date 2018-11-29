@@ -5,7 +5,7 @@ from source.graphics.settings_dlg import *
 from source.graphics.move_buttons import *
 from source.game_components.game import Game
 
-from PyQt5.QtCore import QRectF
+from PyQt5.QtCore import QRectF, QTimer, QPointF
 from PyQt5.QtGui import QPainter
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 

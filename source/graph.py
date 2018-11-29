@@ -29,8 +29,7 @@ class Graph(object):
     def add_edge(self, idx, length, vert_from, vert_to):
         if vert_from == vert_to:
             return
-
-          if vert_from in self.__graph.keys():
+        if vert_from in self.__graph.keys():
             for vertex in self.__graph[vert_from]['adj_edge']:
                 if vertex['vert_to'] == vert_to:
                     return
