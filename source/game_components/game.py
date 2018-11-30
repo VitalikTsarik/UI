@@ -11,7 +11,7 @@ class Game:
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
         self.__posts = dict_to_posts(layer1)
-        self.__path = Path([14, 20, 19, 13])
+        self.__path = Path()
         self.set_direction(self.__path.next_vert())
 
     def next_turn(self):

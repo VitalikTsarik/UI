@@ -1,6 +1,6 @@
 class Path:
-    def __init__(self, vertices):
-        self.__vertices = vertices
+    def __init__(self):
+        self.__vertices = [14, 20, 19, 13]
         self.__i = 0
 
     def next_vert(self):
