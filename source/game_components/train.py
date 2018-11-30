@@ -1,5 +1,5 @@
 class Train:
-    def __init__(self, idx, speed, line_idx, position, player_idx):
+    def __init__(self, idx, speed, line_idx, position, player_idx, goods, goods_capacity):
         self.__idx = idx
         self.__speed = speed
         # self.__level = level
@@ -11,8 +11,8 @@ class Train:
         # self.__fuel = fuel
         # self.__fuel_capacity = fuel_capacity
         # self.__fuel_consumption = fuel_consumption
-        # self.__goods = goods
-        # self.__goods_capacity = goods_capacity
+        self.__goods = goods
+        self.__goods_capacity = goods_capacity
         # self.__goods_type = goods_type
 
     @property
