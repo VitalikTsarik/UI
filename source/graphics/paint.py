@@ -7,7 +7,8 @@ from source.game_components.game import Game
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF
 from PyQt5.QtGui import QPainter
-from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QFileDialog, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -69,10 +70,7 @@ class MainWindow(QMainWindow):
 
     def next_turn(self):
         print('next turn')
-        vert_idx = self.game.next_turn()
-        if vert_idx != -1:
-            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(vert_idx))
-            self.centralWidget().add_dir_btns()
+        self.game.next_turn()
         self.update()
 
 

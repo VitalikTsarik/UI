@@ -1,5 +1,6 @@
 from source.client import *
 from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts
+from source.game_components.path import Path
 
 
 class Game:
@@ -10,22 +11,18 @@ class Game:
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
         self.__posts = dict_to_posts(layer1)
+        self.__path = Path([14, 20, 19, 13])
+        self.set_direction(self.__path.next_vert())
 
     def next_turn(self):
         for train in self.__trains.values():
             train.position += train.speed
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
 
-            if train.position == 0 and train.speed != 0:
-                train.speed = 0
-                cur_vert_idx = road['vert_from']
-            elif train.position == road['length'] and train.speed != 0:
-                train.speed = 0
-                cur_vert_idx = road['vert_to']
-            else:
-                return -1
-
-            return cur_vert_idx
+            if train.position == 0 or train.position == road['length']:
+                if train.speed != 0:
+                    train.speed = 0
+                    self.set_direction(self.__path.next_vert())
 
     def move_train(self, train_idx, line_idx, speed):
         res, msg = self.__client.move_action(train_idx, line_idx, speed)
