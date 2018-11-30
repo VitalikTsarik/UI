@@ -10,7 +10,7 @@ class Game:
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
-        self.__posts = dict_to_posts(layer1)
+        self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
         self.__path = Path()
         self.set_direction(self.__path.next_vert())
 
@@ -71,5 +71,13 @@ class Game:
         return self.__trains
 
     @property
-    def posts(self):
-        return self.__posts
+    def town(self):
+        return self.__town
+
+    @property
+    def markets(self):
+        return self.__markets
+
+    @property
+    def storages(self):
+        return self.__storages

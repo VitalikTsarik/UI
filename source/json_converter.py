@@ -34,15 +34,17 @@ def dict_to_train(dictionary):
 
 def dict_to_posts(layer1):
     posts = layer1['posts']
-    result = {}
+    town = None
+    markets = {}
+    storages = {}
     for post in posts:
         if post['type'] == 1:
-            result[post['idx']] = dict_to_town(post)
+            town = dict_to_town(post)
         elif post['type'] == 2:
-            result[post['idx']] = dict_to_market(post)
+            markets[post['idx']] = dict_to_market(post)
         elif post['type'] == 3:
-            result[post['idx']] = dict_to_storage(post)
-    return result
+            storages[post['idx']] = dict_to_storage(post)
+    return town, markets, storages
 
 
 def dict_to_town(dictionary):
