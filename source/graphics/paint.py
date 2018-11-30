@@ -28,15 +28,6 @@ class MainWindow(QMainWindow):
 
         self.__turn_timer = QTimer()
         self.init_turn_timer()
-        train = self.game.trains[1]
-        start_line = self.game.map_graph.get_edge_by_idx(train.line_idx)
-
-        if train.position == 0:
-            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(start_line['vert_from']))
-            self.centralWidget().add_dir_btns()
-        else:
-            self.centralWidget().create_dir_btns(self.game.map_graph.get_adj_vertices(start_line['vert_to']))
-            self.centralWidget().add_dir_btns()
 
     def init_main_window(self):
         self.set_geometry()
@@ -79,63 +70,21 @@ class FormWidget(QWidget):
         super().__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
-        self.rbutton = ControlButton(self)
-        self.rbutton.right_arrow()
-        self.rbutton.clicked.connect(self.parent().game.move_forward)
-        self.lbutton = ControlButton(self)
-        self.lbutton.left_arrow()
-        self.lbutton.clicked.connect(self.parent().game.move_backwards)
-        self.stop_btn = ControlButton(self)
-        self.stop_btn.stop()
-        self.stop_btn.clicked.connect(self.parent().game.stop_train)
-        self.direction_btns = [] # ставить в соответсвие каждому поезду свой массив кнопок
-        self.__layouts = []
 
+        self.__layouts = []
         self.__init_layouts()
 
     def __init_layouts(self):
-        hbox_btns_move = QHBoxLayout()
-        hbox_btns_move.addWidget(self.lbutton)
-        hbox_btns_move.addWidget(self.stop_btn)
-        hbox_btns_move.addWidget(self.rbutton)
-
         hbox_widg = QHBoxLayout()
         hbox_widg.addWidget(self.paint_widget)
 
-        hbox_btns_dir = QHBoxLayout()
-
         main_vbox = QVBoxLayout(self)
-        main_vbox.addLayout(hbox_btns_dir)
         main_vbox.addLayout(hbox_widg)
-        main_vbox.addLayout(hbox_btns_move)
 
         self.__layouts.append(main_vbox)
-        self.__layouts.append(hbox_btns_dir)
         self.__layouts.append(hbox_widg)
-        self.__layouts.append(hbox_btns_move)
 
         self.setLayout(main_vbox)
-
-    def create_dir_btns(self, numbers):
-        for num in numbers:
-            btn = ControlButton(self)
-            btn.post_number(num)
-            btn.clicked.connect(self.dir_btn_clicked)
-            self.direction_btns.append(btn)
-
-    def add_dir_btns(self):
-        for btn in self.direction_btns:
-            self.__layouts[1].addWidget(btn)
-
-    def del_dir_btns(self):
-        self.direction_btns.clear()
-        while self.__layouts[1].count() > 0:
-            self.__layouts[1].takeAt(0).widget().deleteLater()
-
-    def dir_btn_clicked(self):
-        btn = self.sender()
-        self.parent().game.set_direction(int(btn.text()))
-        self.del_dir_btns()
 
     def paintEvent(self, event):
         self.setAutoFillBackground(True)
