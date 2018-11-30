@@ -285,4 +285,3 @@ class PaintGraphWidget(QWidget):
         a = (p2.y() - p1.y())/(p2.x() - p1.x())
         b = p1.y() - a*p1.x()
         return a, b
- 

@@ -10,7 +10,6 @@ class Game:
         layer1 = self.__client.map_action(Layer.Layer1)[1]
         self.__trains = dict_to_trains(layer1)
         self.__posts = dict_to_posts(layer1)
-       # self.set_direction(self.__trains[1].start_vert)
 
     def next_turn(self):
         for train in self.__trains.values():
@@ -33,10 +32,9 @@ class Game:
         if res == Result.OKEY.value:
             self.__trains[train_idx].line_idx = line_idx
             self.__trains[train_idx].speed = speed
-        a =0
 
     def set_direction(self, next_vert_idx):
-        train_idx = 1 # временно
+        train_idx = 1  # временно
 
         if self.__trains[train_idx].position == 0:
             curr_vert = self.__map_graph.get_edge_by_idx(self.__trains[train_idx].line_idx)['vert_from']
@@ -52,18 +50,18 @@ class Game:
             self.move_train(train_idx, new_line['edge_idx'], -1)
 
     def move_forward(self):
-        train_idx = 1 # временно
+        train_idx = 1  # временно
         train = self.trains[train_idx]
 
         self.move_train(train.idx, train.line_idx, 1)
 
     def stop_train(self):
-        train_idx = 1 # временно
+        train_idx = 1  # временно
         train = self.trains[train_idx]
         self.move_train(train.idx, train.line_idx, 0)
 
     def move_backwards(self):
-        train_idx = 1 # временно
+        train_idx = 1  # временно
         train = self.trains[train_idx]
         self.move_train(train.idx, train.line_idx, -1)
 
