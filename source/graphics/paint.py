@@ -4,6 +4,7 @@ from random import randint
 from source.graphics.settings_dlg import *
 from source.graphics.move_buttons import *
 from source.game_components.game import Game
+from source.graphics.extra_messages import ExtraMessages
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF
 from PyQt5.QtGui import QPainter
@@ -61,7 +62,10 @@ class MainWindow(QMainWindow):
 
     def next_turn(self):
         print('next turn')
-        self.game.next_turn()
+        res = self.game.next_turn()
+        if res == -1:
+            ExtraMessages.information_message(self, 'Game Over', 'Game Over')
+            self.__turn_timer.stop()
         self.update()
 
 

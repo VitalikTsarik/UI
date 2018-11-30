@@ -15,7 +15,10 @@ class Game:
         self.set_direction(self.__path.next_vert())
 
     def next_turn(self):
-        for train in self.__trains.values():
+        if self.town.product < self.town.population:
+            return -1
+        self.town.product -= self.town.population
+        for train in self.__trains.values():  # todo: добавить загрузку продуктов в поезд из маркета и выгрузку в город
             train.position += train.speed
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
 
@@ -23,6 +26,7 @@ class Game:
                 if train.speed != 0:
                     train.speed = 0
                     self.set_direction(self.__path.next_vert())
+        return 0
 
     def move_train(self, train_idx, line_idx, speed):
         res, msg = self.__client.move_action(train_idx, line_idx, speed)
