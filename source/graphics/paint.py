@@ -229,6 +229,9 @@ class PaintGraphWidget(QWidget):
         h_painter.drawRect(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
 
     def calc_line(self, p1, p2):
-        a = (p2.y() - p1.y())/(p2.x() - p1.x())
+        if p1.x() == p2.x():
+            a = 999999999999
+        else:
+            a = (p2.y() - p1.y())/(p2.x() - p1.x())
         b = p1.y() - a*p1.x()
         return a, b
