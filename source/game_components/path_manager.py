@@ -1,18 +1,6 @@
 import heapq
 from math import inf
 
-if __name__ == '__main__':
-    H = [(21, 'fofo', False),(1,'hoho'),(45, 'a'),(78, 'd'),(3, 'j'),(5, 'j')]
-    # Covert to a heap
-    heapq.heapify(H)
-    print(H)
-    # Add element
-    heapq.heappush(H,(2, 'sdf'))
-    print(H)
-    min = heapq.heappop(H)
-    print(min)
-    print(H)
-
 
 class PathManager:
     def __init__(self):
