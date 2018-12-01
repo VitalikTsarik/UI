@@ -38,7 +38,7 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(self.__graph.get_edge_by_idx(2), {'length': 0, 'vert_from': 1, 'vert_to': 3})
         self.assertEqual(self.__graph.get_edge_by_idx(6), None)
 
-        self.assertEqual(self.__graph.get_edge_by_adj_vert(1, 3), {'length': 0, 'edge_idx': 2})
+        self.assertEqual(self.__graph.get_edge_by_adj_vert(3, 1), {'length': 0, 'edge_idx': 2, 'vert_from': 1, 'vert_to': 3})
 
     def test_not_add_existing_vert(self):
         self.assertEqual(self.__graph.get_vertex_post_idx(1), 1)
