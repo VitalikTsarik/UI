@@ -13,7 +13,7 @@ class Game:
         self.__path_manager.init_all_paths(self.__map_graph, self.town.point_idx)
         self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
         self.__i = 0
-        self.set_direction(self.__path[i])
+        self.set_direction(self.__path[self.__i])
         self.__i += 1
 
     def next_turn(self):
