@@ -59,6 +59,9 @@ class Graph(object):
     def get_all_vertices(self):
         return tuple(self.__graph.keys())
 
+    def get_post_vertices(self):
+        return tuple([idx for idx in self.__graph.keys() if self.__graph[idx]['post_idx']])
+
     def get_adj_edges(self, idx):
         return self.__graph[idx]['adj_edges']
 

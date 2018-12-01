@@ -8,7 +8,7 @@ class TestGraphMethods(unittest.TestCase):
         self.__graph.add_vertex(1, 1)
         self.__graph.add_vertex(2)
         self.__graph.add_vertex(3)
-        self.__graph.add_vertex(4)
+        self.__graph.add_vertex(4, 12)
         self.__graph.add_edge(1, 0, 1, 2)
         self.__graph.add_edge(2, 0, 1, 3)
 
@@ -27,6 +27,7 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(self.__graph.get_adj_vertices(1), (2, 3))
         self.assertEqual(self.__graph.get_adj_vertices(2), (1,))
         self.assertEqual(self.__graph.get_adj_vertices(4), ())
+        self.assertEqual(self.__graph.get_post_vertices(), (1, 4))
 
     def test_get_edge(self):
         self.assertEqual(self.__graph.get_adj_edges(3), [{'edge_idx': 2, 'length': 0, 'vert_to': 1, 'start_vert': 1}])
