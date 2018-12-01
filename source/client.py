@@ -88,8 +88,12 @@ class ServerConnection:
                 data += self.__socket.recv(4)
                 size -= 4
             data += self.__socket.recv(size)
-            return res, loads(data.decode('UTF-8'))
-        return res, 0
+            if res != Result.OKEY.value:
+                raise ConnectionError('res: {}, mag: {}'.format(res, data))
+            return loads(data.decode('UTF-8'))
+        if res != Result.OKEY.value:
+            raise ConnectionError('res: {}'.format(res))
+        return 0
 
 
 if __name__ == '__main__':

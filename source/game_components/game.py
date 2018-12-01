@@ -7,7 +7,7 @@ class Game:
     def __init__(self):
         self.__client = ServerConnection()
         self.__client.login_action('NeBoris')
-        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
+        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
         self.__path = Path()
         self.set_direction(self.__path.next_vert())
@@ -20,15 +20,14 @@ class Game:
                 self.set_direction(self.__path.next_vert())
 
     def update_layer1(self):
-        res, layer1 = self.__client.map_action(Layer.Layer1)
+        layer1 = self.__client.map_action(Layer.Layer1)
         self.__trains = dict_to_trains(layer1)
         self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def move_train(self, train_idx, line_idx, speed):
-        res, msg = self.__client.move_action(train_idx, line_idx, speed)
-        if res == Result.OKEY.value:
-            self.__trains[train_idx].line_idx = line_idx
-            self.__trains[train_idx].speed = speed
+        self.__client.move_action(train_idx, line_idx, speed)
+        self.__trains[train_idx].line_idx = line_idx
+        self.__trains[train_idx].speed = speed
 
     def set_direction(self, next_vert_idx):
         train_idx = 1  # временно
@@ -49,7 +48,6 @@ class Game:
     def move_forward(self):
         train_idx = 1  # временно
         train = self.trains[train_idx]
-
         self.move_train(train.idx, train.line_idx, 1)
 
     def stop_train(self):
