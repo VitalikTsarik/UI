@@ -60,6 +60,9 @@ class Game:
         train = self.trains[train_idx]
         self.move_train(train.idx, train.line_idx, -1)
 
+    def next_turn_action(self):
+        self.__client.turn_action()
+
     @property
     def map_graph(self):
         return self.__map_graph
