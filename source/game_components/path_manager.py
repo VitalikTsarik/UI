@@ -12,9 +12,11 @@ if __name__ == '__main__':
     print(min)
     print(H)
 
+
 class PathManager:
     def __init__(self, graph, town_idx):
         self.__paths = {}
+        self.dijkstra(graph, town_idx)
 
     def dijkstra(self, graph, town_idx):
         is_visited = {}
@@ -23,10 +25,14 @@ class PathManager:
         path_priority = [(0, town_idx)]
 
         while path_priority: # проверка пуст ли, норм?
-            min = heapq.heappop(path_priority)
-            if not is_visited[min[1]]:
-                is_visited[min[1]] = True
-                self.__paths[min[1]] = min[0]
-                for vertex in graph.get_adj_vertices(min[1]):
+            min_path = heapq.heappop(path_priority)
+            if not is_visited[min_path[1]]:
+                is_visited[min_path[1]] = True
+                self.__paths[min_path[1]] = min_path[0]
+                for vertex in graph.get_adj_vertices(min_path[1]):
                     if not is_visited[vertex]:
-                        heapq.heappush(path_priority, (min[0] + 1, vertex))
+                        heapq.heappush(path_priority, (min_path[0] + 1, vertex))
+
+    @property
+    def paths(self):
+        return self.__paths
