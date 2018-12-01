@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
 from source.graphics.move_buttons import ControlButton
 
+
 class ExtraMessages:
     @staticmethod
     def __initialize_message(pwindow, title, message):

@@ -50,4 +50,3 @@ class ControlButton(QPushButton):
                             }
                          """)
         self.resize(self.parent().width(), self.height())
- 
