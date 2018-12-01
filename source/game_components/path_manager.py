@@ -29,9 +29,9 @@ class PathManager:
             if not is_visited[min_path[1]]:
                 is_visited[min_path[1]] = True
                 self.__paths[min_path[1]] = min_path[0]
-                for vertex in graph.get_adj_vertices(min_path[1]):
-                    if not is_visited[vertex]:
-                        heapq.heappush(path_priority, (min_path[0] + 1, vertex))
+                for edge in graph.get_adj_edges(min_path[1]):
+                    if not is_visited[edge['vert_to']]:
+                        heapq.heappush(path_priority, (min_path[0] + edge['length'], edge['vert_to']))
 
     @property
     def paths(self):
