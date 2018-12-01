@@ -43,7 +43,7 @@ class PathManager:
             path.append(idx)
             idx = self.__ancestors[idx]
 
-        return path
+        return path[-2::-1] + path[1:]
 
     def find_best_market(self, town, markets, train_capacity):
         best_market = -1
