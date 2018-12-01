@@ -41,7 +41,7 @@ class PathManager:
 
         while idx != -1:
             path.append(idx)
-            idx = self.__length[idx]
+            idx = self.__ancestors[idx]
 
         return path
 
@@ -51,7 +51,7 @@ class PathManager:
         min_len = inf
 
         for market in markets.values():
-            if 2 * self.__length[market.point_idx] * town.population >= town.product:
+            if 2 * self.__length[market.point_idx] * town.population <= town.product:
                 from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__length[market.point_idx])
                 if from_market > max_goods or (from_market == max_goods and min_len > self.__length[market.point_idx]):
                     max_goods = from_market
