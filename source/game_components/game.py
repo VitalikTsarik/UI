@@ -1,38 +1,41 @@
 from source.client import *
 from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts
-from source.game_components.path import Path
+from source.game_components.path_manager import PathManager
 
 
 class Game:
     def __init__(self):
         self.__client = ServerConnection()
         self.__client.login_action('NeBoris')
-        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
-        layer1 = self.__client.map_action(Layer.Layer1)[1]
-        self.__trains = dict_to_trains(layer1)
-        self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
-        self.__path = Path()
-        self.set_direction(self.__path.next_vert())
+        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
+        self.update_layer1()
+        self.__path_manager = PathManager()
+        self.__path_manager.init_all_paths(self.__map_graph, self.town.point_idx)
+        self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+        self.__i = 0
+        self.set_direction(self.__path[i])
+        self.__i += 1
 
     def next_turn(self):
-        if self.town.product < self.town.population:
-            return -1
-        self.town.product -= self.town.population
-        for train in self.__trains.values():  # todo: добавить загрузку продуктов в поезд из маркета и выгрузку в город
-            train.position += train.speed
+        self.update_layer1()
+        for train in self.__trains.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
-
             if train.position == 0 or train.position == road['length']:
-                if train.speed != 0:
-                    train.speed = 0
-                    self.set_direction(self.__path.next_vert())
-        return 0
+                if self.__i == len(self.__path):
+                    self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+                    self.__i = 0
+                self.set_direction(self.__path[i])
+                self.__i += 1
+
+    def update_layer1(self):
+        layer1 = self.__client.map_action(Layer.Layer1)
+        self.__trains = dict_to_trains(layer1)
+        self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def move_train(self, train_idx, line_idx, speed):
-        res, msg = self.__client.move_action(train_idx, line_idx, speed)
-        if res == Result.OKEY.value:
-            self.__trains[train_idx].line_idx = line_idx
-            self.__trains[train_idx].speed = speed
+        self.__client.move_action(train_idx, line_idx, speed)
+        self.__trains[train_idx].line_idx = line_idx
+        self.__trains[train_idx].speed = speed
 
     def set_direction(self, next_vert_idx):
         train_idx = 1  # временно
@@ -53,7 +56,6 @@ class Game:
     def move_forward(self):
         train_idx = 1  # временно
         train = self.trains[train_idx]
-
         self.move_train(train.idx, train.line_idx, 1)
 
     def stop_train(self):
@@ -65,6 +67,9 @@ class Game:
         train_idx = 1  # временно
         train = self.trains[train_idx]
         self.move_train(train.idx, train.line_idx, -1)
+
+    def next_turn_action(self):
+        self.__client.turn_action()
 
     @property
     def map_graph(self):

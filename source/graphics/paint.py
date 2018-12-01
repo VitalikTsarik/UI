@@ -68,25 +68,40 @@ class MainWindow(QMainWindow):
             self.__turn_timer.stop()
         self.update()
 
+    def next_turn_btn_clicked(self):
+        self.game.next_turn_action()
+        self.next_turn()
+        self.__turn_timer.start()
+
 
 class FormWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
         self.paint_widget = PaintGraphWidget(self)
+        self.next_turn_btn = ControlButton(self)
+        self.next_turn_btn.resize(50, 50)
+        self.next_turn_btn.next_turn()
+        self.next_turn_btn.clicked.connect(self.parent().next_turn_btn_clicked)
 
         self.__layouts = []
         self.__init_layouts()
 
     def __init_layouts(self):
+        hbox_next_turn_btn = QHBoxLayout()
+        hbox_next_turn_btn.addStretch(0)
+        hbox_next_turn_btn.addWidget(self.next_turn_btn)
+
         hbox_widg = QHBoxLayout()
         hbox_widg.addWidget(self.paint_widget)
 
         main_vbox = QVBoxLayout(self)
         main_vbox.addLayout(hbox_widg)
+        main_vbox.addLayout(hbox_next_turn_btn)
 
         self.__layouts.append(main_vbox)
         self.__layouts.append(hbox_widg)
+        self.__layouts.append(hbox_next_turn_btn)
 
         self.setLayout(main_vbox)
 
