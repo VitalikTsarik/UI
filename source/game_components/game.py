@@ -1,6 +1,6 @@
 from source.client import *
 from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts
-from source.game_components.path import Path
+from source.game_components.path_manager import PathManager
 
 
 class Game:
@@ -9,15 +9,23 @@ class Game:
         self.__client.login_action('NeBoris')
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
-        self.__path = Path()
-        self.set_direction(self.__path.next_vert())
+        self.__path_manager = PathManager()
+        self.__path_manager.init_all_paths(self.__map_graph, self.town.point_idx)
+        self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+        self.__i = 0
+        self.set_direction(self.__path[i])
+        self.__i += 1
 
     def next_turn(self):
         self.update_layer1()
         for train in self.__trains.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
-                self.set_direction(self.__path.next_vert())
+                if self.__i == len(self.__path):
+                    self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+                    self.__i = 0
+                self.set_direction(self.__path[i])
+                self.__i += 1
 
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
