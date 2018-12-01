@@ -24,7 +24,7 @@ class Game:
                 if self.__i == len(self.__path):
                     self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
                     self.__i = 0
-                self.set_direction(self.__path[i])
+                self.set_direction(self.__path[self.__i])
                 self.__i += 1
 
     def update_layer1(self):
