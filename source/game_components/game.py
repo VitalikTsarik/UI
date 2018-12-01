@@ -8,25 +8,21 @@ class Game:
         self.__client = ServerConnection()
         self.__client.login_action('NeBoris')
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0)[1])
-        layer1 = self.__client.map_action(Layer.Layer1)[1]
-        self.__trains = dict_to_trains(layer1)
-        self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
+        self.update_layer1()
         self.__path = Path()
         self.set_direction(self.__path.next_vert())
 
     def next_turn(self):
-        if self.town.product < self.town.population:
-            return -1
-        self.town.product -= self.town.population
-        for train in self.__trains.values():  # todo: добавить загрузку продуктов в поезд из маркета и выгрузку в город
-            train.position += train.speed
+        self.update_layer1()
+        for train in self.__trains.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
-
             if train.position == 0 or train.position == road['length']:
-                if train.speed != 0:
-                    train.speed = 0
-                    self.set_direction(self.__path.next_vert())
-        return 0
+                self.set_direction(self.__path.next_vert())
+
+    def update_layer1(self):
+        res, layer1 = self.__client.map_action(Layer.Layer1)
+        self.__trains = dict_to_trains(layer1)
+        self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def move_train(self, train_idx, line_idx, speed):
         res, msg = self.__client.move_action(train_idx, line_idx, speed)
