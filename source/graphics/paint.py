@@ -246,7 +246,9 @@ class PaintGraphWidget(QWidget):
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
         rect = QRectF(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
+        h_painter.setPen(Qt.black)
         h_painter.drawRect(rect)
+        h_painter.setPen(Qt.white)
         h_painter.drawText(rect, Qt.AlignCenter | Qt.AlignTop, '{}/{}'.format(train.goods, train.goods_capacity))
 
     def calc_line(self, p1, p2):
