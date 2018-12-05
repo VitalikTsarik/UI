@@ -64,7 +64,7 @@ class PathManager:
     def __count_died_people(self, town, turns):
         product = town.product
         population = town.population
-        while product:
+        while product >= 0:
             if turns == 0:
                 return 0
             product -= population
