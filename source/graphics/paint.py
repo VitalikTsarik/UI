@@ -33,8 +33,8 @@ class MainWindow(QMainWindow):
     def init_main_window(self):
         self.set_geometry()
 
-        self.setWindowTitle('Graph visualisation')
-        self.setWindowIcon(QIcon('source/icons/ui.jpg'))
+        self.setWindowTitle('World of Wartrains')
+        self.setWindowIcon(QIcon('source/icons/icon.png'))
 
     def set_geometry(self):
         self.resize(1300, 900)
