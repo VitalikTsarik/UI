@@ -34,8 +34,13 @@ class PathManager:
         is_visited = {}
         paths = {}
         ancestors = {}
+        post_idx = None
         for vertex in graph.get_all_vertices():
-            is_visited[vertex] = False
+            post_idx = graph.get_post_idx(vertex)
+            if not post_idx or post_idx in markets.keys():
+                is_visited[vertex] = False
+            else:
+                is_visited[vertex] = True
 
         path_priority = [(0, start, -1)]
         while path_priority:
