@@ -69,9 +69,9 @@ class PathManager:
         min_people_died = inf
 
         for market in markets.values():
-            if self.__count_died_people(town, 2*self.__length[market.point_idx]) <= min_people_died:
-                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__length[market.point_idx])
-                if from_market > max_goods or (from_market == max_goods and min_len > self.__length[market.point_idx]):
+            if self.__count_died_people(town, 2*self.__lengths[market.point_idx]) <= min_people_died:
+                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths[market.point_idx])
+                if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths[market.point_idx]):
                     max_goods = from_market
                     best_market = market.point_idx
                     min_len = self.__lengths[market.point_idx]
