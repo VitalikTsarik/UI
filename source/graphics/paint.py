@@ -235,7 +235,12 @@ class PaintGraphWidget(QWidget):
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
 
     def draw_town(self, h_painter, town, points, radius):
-        pixmap = QPixmap("source\icons\\town.png")
+        if town.level == 1:
+            pixmap = QPixmap("source\icons\\town_lvl1.png")
+        elif town.level == 2:
+            pixmap = QPixmap("source\icons\\town_lvl2.png")
+        elif town.level == 3:
+            pixmap = QPixmap("source\icons\\town_lvl3.png")
         x = points[town.point_idx].x() - radius
         y = points[town.point_idx].y() - radius
         h_painter.drawPixmap(QPointF(x, y),
