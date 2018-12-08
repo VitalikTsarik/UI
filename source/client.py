@@ -64,6 +64,11 @@ class ServerConnection:
         self.__request(Action.TURN)
         return self.__response()
 
+    def upgrade_action(self, posts_idxs, trains_idxs):
+        data = dumps({"posts": posts_idxs, "trains": trains_idxs})
+        self.__request(Action.UPGRADE, data)
+        return self.__response()
+
     def logout_action(self):
         self.__request(Action.LOGOUT)
         return self.__response()
