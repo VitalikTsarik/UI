@@ -15,7 +15,7 @@
     },
     {
       "idx": 4,
-      "post_idx": 3
+      "post_idx": null
     },
     {
       "idx": 5,
@@ -27,7 +27,7 @@
     },
     {
       "idx": 7,
-      "post_idx": 5
+      "post_idx": null
     }
   ],
   "lines": [

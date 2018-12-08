@@ -1,0 +1,5 @@
+{"posts": [{"armor": 0, "armor_capacity": 200, "events": [], "idx": 0, "level": 1, "name": "town-one", "next_level_price": 100, "player_idx": "cffb05c3-c169-423d-bc38-617fc46c486b", "point_idx": 4, "population": 3, "population_capacity": 10, "product": 60, "product_capacity": 200, "type": 1},
+            {"events": [], "idx": 1, "name": "market-big", "point_idx": 1, "product": 72, "product_capacity": 72, "replenishment": 6, "type": 2},
+            {"events": [], "idx": 2, "name": "market-medium", "point_idx": 11, "product": 56, "product_capacity": 56, "replenishment": 4, "type": 2},
+            {"events": [], "idx": 3, "name": "market-small", "point_idx": 2, "product": 4, "product_capacity": 4, "replenishment": 1, "type": 2},
+            {"armor": 28, "armor_capacity": 28, "events": [], "idx": 4, "name": "storage-medium", "point_idx": 3, "replenishment": 2, "type": 3}]}
