@@ -233,7 +233,6 @@ class PaintGraphWidget(QWidget):
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
-            h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
 
     def draw_town(self, h_painter, town, points, radius):
         pixmap = QPixmap("source\icons\\town.png")
