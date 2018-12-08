@@ -4,18 +4,13 @@ from math import inf
 
 class PathManager:
     def __init__(self):
-        self.__length = {}
+        self.__lengths = {}
         self.__ancestors = {}
-        # self.__markets_lengths = {}
 
     def init_all_paths(self, graph, town_idx):
-        self.__length, self.__ancestors = self.min_paths_from_town(graph, town_idx)
+        self.__lengths, self.__ancestors = self.min_paths_from_point(graph, town_idx)
 
-    # def init_market_lengths(self, graph):
-    #     for vertex in graph.get_post_vertices():
-    #         self.__markets_lengths[vertex] = self.__length[vertex]
-
-    def min_paths_from_town(self, graph, start):
+    def min_paths_from_point(self, graph, start):
         is_visited = {}
         paths = {}
         ancestors = {}
@@ -51,11 +46,19 @@ class PathManager:
         min_len = inf
 
         for market in markets.values():
-            if 2 * self.__length[market.point_idx] * town.population <= town.product:
-                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__length[market.point_idx])
-                if from_market > max_goods or (from_market == max_goods and min_len > self.__length[market.point_idx]):
+            if 2 * self.__lengths[market.point_idx] * town.population <= town.product:
+                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths[market.point_idx])
+                if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths[market.point_idx]):
                     max_goods = from_market
                     best_market = market.point_idx
-                    min_len = self.__length[market.point_idx]
+                    min_len = self.__lengths[market.point_idx]
 
         return best_market
+
+    @property
+    def lengths(self):
+        return self.__lengths
+
+    @property
+    def ancestors(self):
+        return self.__ancestors
