@@ -12,7 +12,8 @@ class Game:
         self.__to_upgrade = {'posts': [], 'trains': []}
         self.__path_manager = PathManager()
         self.__path_manager.init_all_paths(self.__map_graph, self.town.point_idx, self.__markets, self.__storages)
-        self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+        self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.storages,
+                                                         self.trains[1].goods_capacity)
         self.__i = 0
         self.set_direction(self.__path[self.__i])
         self.__i += 1
@@ -24,7 +25,8 @@ class Game:
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
                 if self.__i == len(self.__path):
-                    self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
+                    self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.storages,
+                                                                     self.trains[1].goods_capacity)
                     self.__i = 0
                 self.set_direction(self.__path[self.__i])
                 self.__i += 1
