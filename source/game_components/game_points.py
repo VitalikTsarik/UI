@@ -45,7 +45,7 @@ class Town(GamePoint):
 
     @property
     def level(self):
-        return self.__armor
+        return self.__level
 
     @property
     def population(self):
