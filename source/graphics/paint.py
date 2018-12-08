@@ -7,7 +7,7 @@ from source.game_components.game import Game
 from source.graphics.extra_messages import ExtraMessages
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF
-from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
 
@@ -158,6 +158,9 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges_and_waypoints(h_painter, points, vert_radius)
         self.draw_vertices(h_painter, points, vert_radius)
+        self.draw_town(h_painter, self.parent().parent().game.town, points, vert_radius)
+        self.draw_markets(h_painter, self.parent().parent().game.markets, points, vert_radius)
+        self.draw_storages(h_painter, self.parent().parent().game.storages, points, vert_radius)
         self.draw_trains(h_painter, self.parent().parent().game.trains, points, vert_radius)
 
         h_painter.end()
@@ -230,7 +233,36 @@ class PaintGraphWidget(QWidget):
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
-            h_painter.drawText(QRectF(x, y, 2 * radius, 2 * radius), Qt.AlignCenter, vertex.__str__())
+
+    def draw_town(self, h_painter, town, points, radius):
+        pixmap = QPixmap("source\icons\\town.png")
+        x = points[town.point_idx].x() - radius
+        y = points[town.point_idx].y() - radius
+        h_painter.drawPixmap(QPointF(x, y),
+                             pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
+        rect = QRectF(x, y, 2 * radius, radius * 9/5)
+        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.product, town.product_capacity))
+        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, str(town.population))
+
+    def draw_markets(self, h_painter, markets, points, radius):
+        pixmap = QPixmap("source\icons\market.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
+        for market in markets.values():
+            x = points[market.point_idx].x() - radius
+            y = points[market.point_idx].y() - radius
+            h_painter.drawPixmap(QPointF(x, y), pixmap)
+            rect = QRectF(x, y, 2 * radius, radius * 9 / 5)
+            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom,
+                               '+{}  {}/{}'.format(market.replenishment, market.product, market.product_capacity))
+
+    def draw_storages(self, h_painter, storages, points, radius):
+        pixmap = QPixmap("source\icons\storage.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
+        for storage in storages.values():
+            x = points[storage.point_idx].x() - radius
+            y = points[storage.point_idx].y() - radius
+            h_painter.drawPixmap(QPointF(x, y), pixmap)
+            rect = QRectF(x, y, 2 * radius, radius * 9 / 5)
+            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom,
+                               '+{}  {}/{}'.format(storage.replenishment, storage.armor, storage.armor_capacity))
 
     def draw_trains(self, h_painter, trains, points, vert_radius):
         h_painter.setBrush(self.train_color)

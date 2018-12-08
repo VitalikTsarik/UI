@@ -8,7 +8,7 @@ class PathManager:
         self.__ancestors = {}
 
     def init_all_paths(self, graph, town_idx):
-        self.__lengths, self.__ancestors = self.min_paths(graph, town_idx)
+        self.__length, self.__ancestors = self.min_paths_from_point(graph, town_idx)
 
     def min_paths(self, graph, start):
         is_visited = {}
@@ -17,20 +17,7 @@ class PathManager:
         for vertex in graph.get_all_vertices():
             is_visited[vertex] = False
 
-        path_priority = [(0, start, -1)]
-        while path_priority:
-            min_path = heapq.heappop(path_priority)
-            if not is_visited[min_path[1]]:
-                is_visited[min_path[1]] = True
-                paths[min_path[1]] = min_path[0]
-                ancestors[min_path[1]] = min_path[2]
-                for edge in graph.get_adj_edges(min_path[1]):
-                    if not is_visited[edge['vert_to']]:
-                        heapq.heappush(path_priority, (min_path[0] + edge['length'], edge['vert_to'], min_path[1]))
-
-        return paths, ancestors
-
-    def min_path_for_markets(self, graph, start, markets):
+    def min_paths_from_point(self, graph, start):
         is_visited = {}
         paths = {}
         ancestors = {}
@@ -69,22 +56,21 @@ class PathManager:
         min_people_died = inf
 
         for market in markets.values():
-            if self.__count_died_people(town, 2*self.__lengths[market.point_idx]) <= min_people_died:
-                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths[market.point_idx])
-                if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths[market.point_idx]):
+            people_died = self.__count_died_people(town, 2*self.__length[market.point_idx])
+            if people_died <= min_people_died:
+                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__length[market.point_idx])
+                if from_market > max_goods or (from_market == max_goods and min_len > self.__length[market.point_idx]):
                     max_goods = from_market
                     best_market = market.point_idx
-                    min_len = self.__lengths[market.point_idx]
-
+                    min_len = self.__length[market.point_idx]
+                    min_people_died = people_died
         return best_market
 
     def __count_died_people(self, town, turns):
         product = town.product
         population = town.population
-        while product >= 0:
-            if turns == 0:
-                return 0
-            product -= population
-            turns -= 1
-        return turns
+        product -= population*turns
+        if product >= 0:
+            return 0
+        return -(product//population)
 
