@@ -10,37 +10,21 @@ class PathManager:
     def init_all_paths(self, graph, town_idx):
         self.__lengths, self.__ancestors = self.min_paths(graph, town_idx)
 
-    def min_paths(self, graph, start):
+    def min_paths(self, graph, start, posts_to_find=None):
         is_visited = {}
         paths = {}
         ancestors = {}
-        for vertex in graph.get_all_vertices():
-            is_visited[vertex] = False
 
-        path_priority = [(0, start, -1)]
-        while path_priority:
-            min_path = heapq.heappop(path_priority)
-            if not is_visited[min_path[1]]:
-                is_visited[min_path[1]] = True
-                paths[min_path[1]] = min_path[0]
-                ancestors[min_path[1]] = min_path[2]
-                for edge in graph.get_adj_edges(min_path[1]):
-                    if not is_visited[edge['vert_to']]:
-                        heapq.heappush(path_priority, (min_path[0] + edge['length'], edge['vert_to'], min_path[1]))
-
-        return paths, ancestors
-
-    def min_path_for_markets(self, graph, start, markets):
-        is_visited = {}
-        paths = {}
-        ancestors = {}
-        post_idx = None
-        for vertex in graph.get_all_vertices():
-            post_idx = graph.get_post_idx(vertex)
-            if not post_idx or post_idx in markets.keys():
+        if posts_to_find:
+            for vertex in graph.get_all_vertices():
+                post_idx = graph.get_post_idx(vertex)
+                if not post_idx or post_idx in posts_to_find.keys():
+                    is_visited[vertex] = False
+                else:
+                    is_visited[vertex] = True
+        else:
+            for vertex in graph.get_all_vertices():
                 is_visited[vertex] = False
-            else:
-                is_visited[vertex] = True
 
         path_priority = [(0, start, -1)]
         while path_priority:
@@ -54,8 +38,6 @@ class PathManager:
                         heapq.heappush(path_priority, (min_path[0] + edge['length'], edge['vert_to'], min_path[1]))
 
         return paths, ancestors
-
-
 
     def find_best_path(self, town, markets, train_capacity):
         idx = self.find_best_market(town, markets, train_capacity)

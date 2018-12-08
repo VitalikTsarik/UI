@@ -31,14 +31,14 @@ class TestPathManager(unittest.TestCase):
                           {13: -1, 19: 13, 14: 13, 20: 19, 24: 19, 18: 13, 15: 14, 21: 20, 17: 18, 16: 15, 23: 17, 22: 16}))
 
     def test_Dijkstra_for_markets_visiting(self):
-        self.assertEqual(PathManager().min_path_for_markets(self.__my_graph, self.__town_my_graph.point_idx, self.__markets_my_graph),
+        self.assertEqual(PathManager().min_paths(self.__my_graph, self.__town_my_graph.point_idx, self.__markets_my_graph),
                          ({2: 0, 9: 1, 7: 1, 5: 3, 6: 3, 4: 4},
                           {2: -1, 9: 2, 7: 2, 6: 7, 5: 7, 4: 5}))
 
-        self.assertEqual(PathManager().min_path_for_markets(self.__small_graph, self.__town_small_graph.point_idx, self.__markets_small_graph),
+        self.assertEqual(PathManager().min_paths(self.__small_graph, self.__town_small_graph.point_idx, self.__markets_small_graph),
                          ({4: 0, 10: 1, 11: 2, 5: 3, 9: 3, 8: 5, 7: 6, 12: 5, 2: 6, 6: 4, 1: 7},
                           {4: -1, 10: 4, 11: 10, 5: 4, 9: 10, 8: 9, 7: 8, 12: 11, 2: 8, 6: 5, 1: 6}))
 
-        self.assertEqual(PathManager().min_path_for_markets(self.__task3_graph, self.__town_task3_graph.point_idx, self.__markets_task3_graph),
+        self.assertEqual(PathManager().min_paths(self.__task3_graph, self.__town_task3_graph.point_idx, self.__markets_task3_graph),
                          ({13: 0, 14: 2, 18: 3, 15: 4, 21: 5, 24: 2, 19: 1, 23: 5, 22: 6, 17: 4},
                           {13: -1, 14: 13, 18: 13, 15: 14, 21: 15, 24: 19, 19: 13, 23: 17, 22: 23, 17: 18}))
