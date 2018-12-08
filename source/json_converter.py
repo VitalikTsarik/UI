@@ -27,7 +27,7 @@ def dict_to_trains(layer1):
 
 
 def dict_to_train(dictionary):
-    return Train(idx=dictionary['idx'], speed=dictionary['speed'], line_idx=dictionary['line_idx'],
+    return Train(idx=dictionary['idx'], speed=dictionary['speed'], level=dictionary['level'], line_idx=dictionary['line_idx'],
                  position=dictionary['position'], player_idx=dictionary['player_idx'], goods=dictionary['goods'],
                  goods_capacity=dictionary['goods_capacity'])
 
@@ -48,8 +48,10 @@ def dict_to_posts(layer1):
 
 
 def dict_to_town(dictionary):
-    return Town(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'], population=dictionary['population'], population_capacity=['population_capacity'],
-                armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'], product=dictionary['product'],
+    return Town(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'],
+                population=dictionary['population'], population_capacity=['population_capacity'],
+                armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'],
+                product=dictionary['product'], level=dictionary['level'],
                 product_capacity=dictionary['product_capacity'])
 
 

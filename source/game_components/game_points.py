@@ -23,12 +23,12 @@ class GamePoint:
 
 
 class Town(GamePoint):
-    def __init__(self, idx, name, point_idx, armor, armor_capacity,
+    def __init__(self, idx, name, point_idx, armor, armor_capacity, level,
                  population, population_capacity, product, product_capacity):
         super().__init__(idx, name, point_idx)
         self.__armor = armor
         self.__armor_capacity = armor_capacity
-        # self.__level = level
+        self.__level = level
         self.__population = population
         self.__population_capacity = population_capacity
         self.__product = product
