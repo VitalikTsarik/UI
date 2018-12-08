@@ -9,6 +9,7 @@ class Game:
         self.__client.login_action('NeBoris')
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
+        self.__to_upgrade = {'posts': [], 'trains': []}
         self.__path_manager = PathManager()
         self.__path_manager.init_all_paths(self.__map_graph, self.town.point_idx)
         self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.trains[1].goods_capacity)
@@ -18,6 +19,7 @@ class Game:
 
     def next_turn(self):
         self.update_layer1()
+        self.__to_upgrade = {'posts': [], 'trains': []}
         for train in self.__trains.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
@@ -70,6 +72,14 @@ class Game:
 
     def next_turn_action(self):
         self.__client.turn_action()
+
+    def upgrade_train(self, train):
+        self.__to_upgrade['trains'].append(train.idx)
+        self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+
+    def upgrade_post(self, post):
+        self.__to_upgrade['posts'].append(post.idx)
+        self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
 
     @property
     def map_graph(self):
