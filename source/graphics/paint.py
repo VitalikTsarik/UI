@@ -240,8 +240,10 @@ class PaintGraphWidget(QWidget):
         y = points[town.point_idx].y() - radius
         h_painter.drawPixmap(QPointF(x, y),
                              pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
-        rect = QRectF(x, y, 2 * radius, radius * 9/5)
+        rect = QRectF(x, y, 2 * radius, radius * 8/5)
         h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.product, town.product_capacity))
+        rect = QRectF(x, y, 2 * radius, radius * 19/10)
+        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.armor, town.armor_capacity))
         h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, str(town.population))
 
     def draw_markets(self, h_painter, markets, points, radius):
