@@ -107,7 +107,6 @@ if __name__ == '__main__':
     l = cnt.map_action(Layer.Layer0)
     print(l)
     q = cnt.map_action(Layer.Layer1)
-    cnt.move_action(1, 1, 1)
     print(q)
     for i in range(0, 12):
         cnt.turn_action()

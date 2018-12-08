@@ -59,3 +59,9 @@ class TestGraphMethods(unittest.TestCase):
         self.assertEqual(self.__graph.get_edge_by_idx(3), {'length': 0 , 'vert_from': 6, 'vert_to': 5})
         self.assertEqual(self.__graph.get_edge_by_idx(4), {'length': 0, 'vert_from': 7, 'vert_to': 5})
         self.assertEqual(self.__graph.get_edge_by_idx(5), {'length': 0, 'vert_from': 5, 'vert_to': 8})
+
+    def test_work_with_posts(self):
+        self.assertEqual(self.__graph.get_post_vertices(), (1, 4))
+        self.assertEqual(self.__graph.get_post_idx(1), 1)
+        self.assertEqual(self.__graph.get_post_idx(4), 12)
+        self.assertEqual(self.__graph.get_post_idx(3), None)

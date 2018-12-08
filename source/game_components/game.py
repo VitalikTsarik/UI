@@ -33,6 +33,7 @@ class Game:
         layer1 = self.__client.map_action(Layer.Layer1)
         self.__trains = dict_to_trains(layer1)
         self.__town, self.__markets, self.__storages = dict_to_posts(layer1)
+        print(f"product: {self.__town.product}, people: {self.__town.population}")  # delete later
 
     def move_train(self, train_idx, line_idx, speed):
         self.__client.move_action(train_idx, line_idx, speed)

@@ -4,16 +4,18 @@ from math import inf
 
 class PathManager:
     def __init__(self):
-        self.__length = {}
+        self.__lengths = {}
         self.__ancestors = {}
-        # self.__markets_lengths = {}
 
     def init_all_paths(self, graph, town_idx):
         self.__length, self.__ancestors = self.min_paths_from_point(graph, town_idx)
 
-    # def init_market_lengths(self, graph):
-    #     for vertex in graph.get_post_vertices():
-    #         self.__markets_lengths[vertex] = self.__length[vertex]
+    def min_paths(self, graph, start):
+        is_visited = {}
+        paths = {}
+        ancestors = {}
+        for vertex in graph.get_all_vertices():
+            is_visited[vertex] = False
 
     def min_paths_from_point(self, graph, start):
         is_visited = {}
@@ -34,6 +36,8 @@ class PathManager:
                         heapq.heappush(path_priority, (min_path[0] + edge['length'], edge['vert_to'], min_path[1]))
 
         return paths, ancestors
+
+
 
     def find_best_path(self, town, markets, train_capacity):
         idx = self.find_best_market(town, markets, train_capacity)
@@ -69,3 +73,4 @@ class PathManager:
         if product >= 0:
             return 0
         return -(product//population)
+
