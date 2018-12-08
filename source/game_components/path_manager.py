@@ -9,13 +9,13 @@ class PathManager:
         # self.__markets_lengths = {}
 
     def init_all_paths(self, graph, town_idx):
-        self.__length, self.__ancestors = self.min_paths_from_town(graph, town_idx)
+        self.__length, self.__ancestors = self.min_paths_from_point(graph, town_idx)
 
     # def init_market_lengths(self, graph):
     #     for vertex in graph.get_post_vertices():
     #         self.__markets_lengths[vertex] = self.__length[vertex]
 
-    def min_paths_from_town(self, graph, start):
+    def min_paths_from_point(self, graph, start):
         is_visited = {}
         paths = {}
         ancestors = {}
