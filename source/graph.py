@@ -86,3 +86,6 @@ class Graph(object):
                         'edge_idx': edge['edge_idx'],
                         'vert_from': edge['start_vert'],
                         'vert_to': vert1 if edge['start_vert'] != vert1 else vert2}
+
+    def get_post_idx(self, idx):
+        return self.__graph[idx]['post_idx']

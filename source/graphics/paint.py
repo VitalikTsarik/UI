@@ -33,8 +33,8 @@ class MainWindow(QMainWindow):
     def init_main_window(self):
         self.set_geometry()
 
-        self.setWindowTitle('Graph visualisation')
-        self.setWindowIcon(QIcon('source/icons/ui.jpg'))
+        self.setWindowTitle('World of Wartrains')
+        self.setWindowIcon(QIcon('source/icons/icon.png'))
 
     def set_geometry(self):
         self.resize(1300, 900)
@@ -120,7 +120,7 @@ class PaintGraphWidget(QWidget):
     edge_color = QColor(50, 50, 50)
     font = QFont('Decorative', 10)
     vertex_label_style = 'inside'
-    train_color = QColor(20, 75, 255, 200)
+    train_color = QColor(25, 64, 255)
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -245,7 +245,11 @@ class PaintGraphWidget(QWidget):
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
-        h_painter.drawRect(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
+        rect = QRectF(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
+        h_painter.setPen(Qt.black)
+        h_painter.drawRect(rect)
+        h_painter.setPen(Qt.white)
+        h_painter.drawText(rect, Qt.AlignCenter | Qt.AlignTop, '{}/{}'.format(train.goods, train.goods_capacity))
 
     def calc_line(self, p1, p2):
         if p1.x() == p2.x():
