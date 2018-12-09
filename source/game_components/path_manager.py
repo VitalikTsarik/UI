@@ -90,13 +90,13 @@ class PathManager:
         min_people_died = inf
 
         for market in markets.values():
-            people_died = self.__count_died_people(town, 2*self.__lengths[market.point_idx])
+            people_died = self.__count_died_people(town, self.__lengths[market.point_idx] + self.__lengths_markets[market.point_idx])
             if people_died <= min_people_died:
-                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths[market.point_idx])
-                if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths[market.point_idx]):
+                from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths_markets[market.point_idx])
+                if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths_markets[market.point_idx] + self.__lengths[market.point_idx]):
                     max_goods = from_market
                     best_market = market.point_idx
-                    min_len = self.__lengths[market.point_idx]
+                    min_len = self.__lengths_markets[market.point_idx] + self.__lengths[market.point_idx]
                     min_people_died = people_died
         return best_market
 
@@ -107,13 +107,13 @@ class PathManager:
         min_people_died = inf
 
         for storage in storages.values():
-            people_died = self.__count_died_people(town, 2*self.__lengths[storage.point_idx])
+            people_died = self.__count_died_people(town, self.__lengths[storage.point_idx] + self.__lengths_storage[storage.point_idx])
             if people_died <= min_people_died:
-                from_storage = min(train_capacity, storage.armor_capacity, storage.armor + storage.replenishment * self.__lengths[storage.point_idx])
-                if from_storage > max_goods or (from_storage == max_goods and min_len > self.__lengths[storage.point_idx]):
+                from_storage = min(train_capacity, storage.armor_capacity, storage.armor + storage.replenishment * self.__lengths_storage[storage.point_idx])
+                if from_storage > max_goods or (from_storage == max_goods and min_len > self.__lengths_storage[storage.point_idx] + self.__lengths[storage.point_idx]):
                     max_goods = from_storage
                     best_storage = storage.point_idx
-                    min_len = self.__lengths[storage.point_idx]
+                    min_len = self.__lengths_markets[storage.point_idx] + self.__lengths[storage.point_idx]
                     min_people_died = people_died
         return best_storage
 
