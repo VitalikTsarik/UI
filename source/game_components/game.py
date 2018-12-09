@@ -25,6 +25,8 @@ class Game:
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
                 if self.__i == len(self.__path):
+                    self.upgrade_train_if_possible(train)
+                    self.upgrade_post_if_possible(self.town)
                     self.__path = self.__path_manager.find_best_path(self.town, self.markets, self.storages,
                                                                      self.trains[1].goods_capacity)
                     self.__i = 0
@@ -75,13 +77,15 @@ class Game:
     def next_turn_action(self):
         self.__client.turn_action()
 
-    def upgrade_train(self, train):
-        self.__to_upgrade['trains'].append(train.idx)
-        self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+    def upgrade_train_if_possible(self, train):
+        if train.level == 1 and self.town.armor >= 40 or train.level == 2 and self.town.armor >= 80:
+            self.__to_upgrade['trains'].append(train.idx)
+            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
 
-    def upgrade_post(self, post):
-        self.__to_upgrade['posts'].append(post.idx)
-        self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+    def upgrade_post_if_possible(self, post):
+        if post.level == 1 and self.town.armor >= 100 or post.level == 2 and self.town.armor >= 200:
+            self.__to_upgrade['posts'].append(post.idx)
+            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
 
     @property
     def map_graph(self):
