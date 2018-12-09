@@ -113,7 +113,7 @@ class PathManager:
                 if from_storage > max_goods or (from_storage == max_goods and min_len > self.__lengths_storage[storage.point_idx] + self.__lengths[storage.point_idx]):
                     max_goods = from_storage
                     best_storage = storage.point_idx
-                    min_len = self.__lengths_markets[storage.point_idx] + self.__lengths[storage.point_idx]
+                    min_len = self.__lengths_storage[storage.point_idx] + self.__lengths[storage.point_idx]
                     min_people_died = people_died
         return best_storage
 
