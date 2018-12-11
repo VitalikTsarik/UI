@@ -158,7 +158,7 @@ class PaintGraphWidget(QWidget):
 
         self.draw_edges_and_waypoints(h_painter, points, vert_radius)
         self.draw_vertices(h_painter, points, vert_radius)
-        self.draw_town(h_painter, self.parent().parent().game.town, points, vert_radius)
+        self.draw_towns(h_painter, self.parent().parent().game.towns, points, vert_radius)
         self.draw_markets(h_painter, self.parent().parent().game.markets, points, vert_radius)
         self.draw_storages(h_painter, self.parent().parent().game.storages, points, vert_radius)
         self.draw_trains(h_painter, self.parent().parent().game.trains, points, vert_radius)
@@ -234,22 +234,22 @@ class PaintGraphWidget(QWidget):
             y = points[vertex].y() - radius
             h_painter.drawEllipse(x, y, 2 * radius, 2 * radius)
 
-    def draw_town(self, h_painter, town, points, radius):
-        if town.level == 1:
-            pixmap = QPixmap("source\icons\\town_lvl1.png")
-        elif town.level == 2:
-            pixmap = QPixmap("source\icons\\town_lvl2.png")
-        elif town.level == 3:
-            pixmap = QPixmap("source\icons\\town_lvl3.png")
-        x = points[town.point_idx].x() - radius
-        y = points[town.point_idx].y() - radius
-        h_painter.drawPixmap(QPointF(x, y),
-                             pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
-        rect = QRectF(x, y, 2 * radius, radius * 8/5)
-        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.product, town.product_capacity))
-        rect = QRectF(x, y, 2 * radius, radius * 19/10)
-        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.armor, town.armor_capacity))
-        h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, str(town.population))
+    def draw_towns(self, h_painter, towns, points, radius):
+        for town in towns.values():
+            if town.level == 1:
+                pixmap = QPixmap("source\icons\\town_lvl1.png")
+            elif town.level == 2:
+                pixmap = QPixmap("source\icons\\town_lvl2.png")
+            elif town.level == 3:
+                pixmap = QPixmap("source\icons\\town_lvl3.png")
+            x = points[town.point_idx].x() - radius
+            y = points[town.point_idx].y() - radius
+            h_painter.drawPixmap(QPointF(x, y), pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
+            rect = QRectF(x, y, 2 * radius, radius * 8/5)
+            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.product, town.product_capacity))
+            rect = QRectF(x, y, 2 * radius, radius * 19/10)
+            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignBottom, '{}/{}'.format(town.armor, town.armor_capacity))
+            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, str(town.population))
 
     def draw_markets(self, h_painter, markets, points, radius):
         pixmap = QPixmap("source\icons\market.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
@@ -273,6 +273,7 @@ class PaintGraphWidget(QWidget):
 
     def draw_trains(self, h_painter, trains, points, vert_radius):
         h_painter.setBrush(self.train_color)
+        h_painter.setFont(QFont("Times", 7))
         for train in trains.values():
             self.draw_train(h_painter, train, points, vert_radius)
 
@@ -284,11 +285,11 @@ class PaintGraphWidget(QWidget):
         a, b = self.calc_line(p1, p2)
         cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
         cy = a*cx + b
-        rect = QRectF(cx - vert_radius/2, cy - vert_radius/2, vert_radius, vert_radius)
+        rect = QRectF(cx - vert_radius*2/3, cy - vert_radius*2/3, vert_radius*4/3, vert_radius*4/3)
         h_painter.setPen(Qt.black)
         h_painter.drawRect(rect)
         h_painter.setPen(Qt.white)
-        h_painter.drawText(rect, Qt.AlignCenter | Qt.AlignTop, '{}/{}'.format(train.goods, train.goods_capacity))
+        h_painter.drawText(rect, Qt.AlignCenter, str(train.goods))
 
     def calc_line(self, p1, p2):
         if p1.x() == p2.x():
