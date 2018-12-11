@@ -2,6 +2,7 @@ import json
 from source.graph import Graph
 from source.game_components.train import Train
 from source.game_components.game_points import *
+from source.game_components.player import Player
 
 
 def read_graph_from_json(filename):
@@ -34,12 +35,12 @@ def dict_to_train(dictionary):
 
 def dict_to_posts(layer1):
     posts = layer1['posts']
-    town = None
+    town = {}
     markets = {}
     storages = {}
     for post in posts:
         if post['type'] == 1:
-            town = dict_to_town(post)
+            town[post['idx']] = dict_to_town(post)
         elif post['type'] == 2:
             markets[post['idx']] = dict_to_market(post)
         elif post['type'] == 3:
@@ -63,3 +64,9 @@ def dict_to_market(dictionary):
 def dict_to_storage(dictionary):
     return Storage(idx=dictionary['idx'], point_idx=dictionary['point_idx'], name=dictionary['name'],
                    replenishment=dictionary['replenishment'], armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'])
+
+
+def dict_to_player(dictionary):
+    return Player(idx=dictionary['idx'], in_game=dictionary['in_game'],
+                  name=dictionary['name'], rating=dictionary['rating'],
+                  town=dict_to_town(dictionary['town']))
