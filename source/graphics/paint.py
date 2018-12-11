@@ -37,7 +37,7 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('source/icons/icon.png'))
 
     def set_geometry(self):
-        self.resize(1300, 900)
+        self.resize(900, 1000)
 
         qr = self.geometry()
         cp = QDesktopWidget().availableGeometry().center()
