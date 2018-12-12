@@ -12,26 +12,25 @@ class Game:
         self.__to_upgrade = {'posts': [], 'trains': []}
         self.__path_manager = PathManager()
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx, self.__markets, self.__storages)
+
         self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
                                                          self.trains[1].goods_capacity)
-        self.__i = 0
-        self.set_direction(self.__path[self.__i])
-        self.__i += 1
+        self.set_direction(self.__path.next())
 
     def next_turn(self):
         self.update_layer1()
+        self.update_player()
         self.__to_upgrade = {'posts': [], 'trains': []}
         train = self.__trains[1]  # todo: сделать цикл для всех поездов !!!
         road = self.__map_graph.get_edge_by_idx(train.line_idx)
         if train.position == 0 or train.position == road['length']:
-            if self.__i == len(self.__path):
+            if self.__path.has_next():
+                self.set_direction(self.__path.next())
+            else:
                 self.upgrade_train_if_possible(train)
                 self.upgrade_post_if_possible(self.player.town)
                 self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
                                                                  self.trains[1].goods_capacity)
-                self.__i = 0
-            self.set_direction(self.__path[self.__i])
-            self.__i += 1
 
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
@@ -81,16 +80,24 @@ class Game:
         self.__client.turn_action()
 
     def upgrade_train_if_possible(self, train):
-        if train.level == 1 and self.player.town.armor >= 40 or train.level == 2 and self.player.town.armor >= 80:
+        if train.level == 1 and self.player.town.armor >= 40:
             self.__to_upgrade['trains'].append(train.idx)
             self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
-            self.update_player()
+            self.player.town.armor -= 40
+        elif train.level == 2 and self.player.town.armor >= 80:
+            self.__to_upgrade['trains'].append(train.idx)
+            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            self.player.town.armor -= 80
 
     def upgrade_post_if_possible(self, post):
-        if post.level == 1 and self.player.town.armor >= 100 or post.level == 2 and self.player.town.armor >= 200:
+        if post.level == 1 and self.player.town.armor >= 100:
             self.__to_upgrade['posts'].append(post.idx)
             self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
-            self.update_player()
+            self.player.town.armor -= 100
+        elif post.level == 2 and self.player.town.armor >= 200:
+            self.__to_upgrade['posts'].append(post.idx)
+            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            self.player.town.armor -= 200
 
     @property
     def map_graph(self):

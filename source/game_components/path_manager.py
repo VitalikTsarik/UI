@@ -1,5 +1,6 @@
 import heapq
 from math import inf
+from source.game_components.path import Path
 
 
 class PathManager:
@@ -60,7 +61,8 @@ class PathManager:
             path_from_market.append(idx)
             idx = self.__ancestors[idx]
 
-        market_path = path_to_market[-2::-1] + path_from_market[1:]
+        market_path = Path(path_to_market[-2::-1] + path_from_market[1:],
+                           self.__lengths_markets[market_idx] + self.__lengths[market_idx])
 
         storage_idx = self.find_best_storage(town, storages, train_capacity)
         path_to_storage = []
@@ -76,10 +78,10 @@ class PathManager:
             path_from_storage.append(idx)
             idx = self.__ancestors[idx]
 
-        storage_path = path_to_storage[-2::-1] + path_from_storage[1:]
+        storage_path = Path(path_to_storage[-2::-1] + path_from_storage[1:],
+                            self.__lengths_storage[storage_idx] + self.__lengths[storage_idx])
 
-        if self.__count_died_people(town, self.__lengths_markets[market_idx] + self.__lengths[market_idx] +
-                                    self.__lengths_storage[storage_idx] + self.__lengths[storage_idx]) > 0:
+        if self.__count_died_people(town, storage_path.length + market_path.length) > 0 or town.population == 0:
             return market_path
         return storage_path
 
