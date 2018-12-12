@@ -39,6 +39,10 @@ class Town(GamePoint):
     def armor(self):
         return self.__armor
 
+    @armor.setter
+    def armor(self, value):
+        self.__armor = value
+
     @property
     def armor_capacity(self):
         return self.__armor_capacity

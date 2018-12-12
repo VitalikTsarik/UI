@@ -9,10 +9,12 @@ class Game:
         self.player = dict_to_player(self.__client.login_action('NeBoris'))
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
-        self.__to_upgrade = {'posts': [], 'trains': []}
         self.__path_manager = PathManager()
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx, self.__markets, self.__storages)
 
+        for train in self.trains.values():
+            self.upgrade_train_if_possible(train)
+        self.upgrade_post_if_possible(self.player.town)
         self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
                                                          self.trains[1].goods_capacity)
         self.set_direction(self.__path.next())
@@ -81,11 +83,11 @@ class Game:
 
     def upgrade_train_if_possible(self, train):
         if train.level == 1 and self.player.town.armor >= 40:
-            self.__to_upgrade['trains'].append(train.idx)
-            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            self.__client.upgrade_action([], [train.idx])
             self.player.town.armor -= 40
+            if self.player.town.armor >= 80:
+                self.__client.upgrade_action([], [train.idx])
         elif train.level == 2 and self.player.town.armor >= 80:
-            self.__to_upgrade['trains'].append(train.idx)
             self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
             self.player.town.armor -= 80
 
@@ -95,8 +97,7 @@ class Game:
             self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
             self.player.town.armor -= 100
         elif post.level == 2 and self.player.town.armor >= 200:
-            self.__to_upgrade['posts'].append(post.idx)
-            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            self.__client.upgrade_action([post.idx], [])
             self.player.town.armor -= 200
 
     @property
