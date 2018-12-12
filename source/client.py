@@ -16,6 +16,7 @@ class Action(Enum):
     UPGRADE = 4
     TURN = 5
     PLAYER = 6
+    GAMES = 7
     MAP = 10
 
 
@@ -73,6 +74,10 @@ class ServerConnection:
         self.__request(Action.LOGOUT)
         return self.__response()
 
+    def games_action(self):
+        self.__request(Action.GAMES)
+        return self.__response()
+
     def close(self):
         self.__socket.close()
         return self.__response()
@@ -103,13 +108,5 @@ class ServerConnection:
 
 if __name__ == '__main__':
     cnt = ServerConnection()
-    cnt.login_action('qeweeq')
-    l = cnt.map_action(Layer.Layer0)
-    print(l)
-    q = cnt.map_action(Layer.Layer1)
-    print(q)
-    for i in range(0, 12):
-        cnt.turn_action()
-        time.sleep(2)
-        q = cnt.map_action(Layer.Layer1)
-        print(q)
+    g = cnt.games_action()
+    print(g)
