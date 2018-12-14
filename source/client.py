@@ -42,8 +42,8 @@ class ServerConnection:
         self.__socket.settimeout(10)
         self.__socket.connect((server, port))
 
-    def login_action(self, name):
-        data = dumps({'name': name})
+    def login_action(self, name, game, num_players=1, num_turns=-1):
+        data = dumps({'name': name, 'game': game, 'num_players': num_players, 'num_turns': num_turns})
         self.__request(Action.LOGIN, data)
         return self.__response()
 
