@@ -3,6 +3,7 @@ from source.graph import Graph
 from source.game_components.train import Train
 from source.game_components.game_points import *
 from source.game_components.player import Player
+from source.game_components.lobby import Lobby
 
 
 def read_graph_from_json(filename):
@@ -70,3 +71,8 @@ def dict_to_player(dictionary):
     return Player(idx=dictionary['idx'], in_game=dictionary['in_game'],
                   name=dictionary['name'], rating=dictionary['rating'],
                   town=dict_to_town(dictionary['town']))
+
+
+def dict_to_lobby(dictionary):
+    return Lobby(name=dictionary['name'], num_players=dictionary['num_players'],
+                 num_turns=dictionary['num_turns'], state=dictionary['state'])
