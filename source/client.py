@@ -37,12 +37,13 @@ class Layer(Enum):
 
 
 class ServerConnection:
-    def __init__(self, server=SERVER, port=PORT):
+    def __init__(self):
         self.__socket = socket.socket()
         self.__socket.settimeout(10)
-        self.__socket.connect((server, port))
 
     def login_action(self, name, game, num_players=1, num_turns=-1):
+        self.__socket = socket.socket()
+        self.__socket.connect((SERVER, PORT))
         data = dumps({'name': name, 'game': game, 'num_players': num_players, 'num_turns': num_turns})
         self.__request(Action.LOGIN, data)
         return self.__response()
@@ -72,7 +73,10 @@ class ServerConnection:
 
     def logout_action(self):
         self.__request(Action.LOGOUT)
-        return self.__response()
+        res = self.__response()
+        if res == 0:
+            self.__socket.close()
+            return res
 
     def games_action(self):
         self.__request(Action.GAMES)
@@ -108,5 +112,9 @@ class ServerConnection:
 
 if __name__ == '__main__':
     cnt = ServerConnection()
-    g = cnt.games_action()
+    g = cnt.login_action('wqe', 'wqe')
+    print(g)
+    g = cnt.logout_action()
+    print(g)
+    g = cnt.login_action('asdasdad', 'wqe')
     print(g)
