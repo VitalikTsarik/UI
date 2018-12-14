@@ -11,7 +11,10 @@ class Lobby:
     def __init__(self, name, num_players, num_turns, state):
         self.name = name
         self.num_players = num_players
-        self.num_turns = num_turns
+        if num_turns < 0:
+            self.num_turns = 'infinite'
+        else:
+            self.num_turns = num_turns
         if state == GameState.INIT.value:
             self.state = 'init'
         elif state == GameState.RUN.value:
