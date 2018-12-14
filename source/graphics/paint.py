@@ -7,7 +7,7 @@ from source.game_components.game import Game
 from source.graphics.extra_messages import ExtraMessages
 from source.graphics.new_game_dlg import NewGameDlg
 
-from PyQt5.QtCore import QRectF, QTimer, QPointF
+from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF
 from PyQt5.QtGui import QPainter, QPixmap
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
@@ -234,10 +234,10 @@ class PaintGraphWidget(QWidget):
 
                 h_painter.setPen(self.vertex_pen)
                 edge = self.__graph.get_edge_by_adj_vert(vertex, adj_vert)
-                a, b = self.calc_line(p1, p2)
+                line = QLineF(p1, p2)
                 for i in range(1, edge['length']):
-                    cx = p1.x() + (i / edge['length']) * (p2.x() - p1.x())
-                    cy = a * cx + b
+                    cx = p1.x() + (i / edge['length']) * line.dx()
+                    cy = p1.y() + (i / edge['length']) * line.dy()
                     h_painter.drawEllipse(cx - vert_radius/4, cy - vert_radius/4, vert_radius/2, vert_radius/2)
 
     def draw_vertices(self, h_painter, points, radius):
@@ -296,19 +296,11 @@ class PaintGraphWidget(QWidget):
         p1 = points[edge['vert_from']]
         p2 = points[edge['vert_to']]
         length = edge['length']
-        a, b = self.calc_line(p1, p2)
-        cx = p1.x() + (train.position/length)*(p2.x() - p1.x())
-        cy = a*cx + b
+        line = QLineF(p1, p2)
+        cx = p1.x() + (train.position/length)*line.dx()
+        cy = p1.y() + (train.position/length)*line.dy()
         rect = QRectF(cx - vert_radius*2/3, cy - vert_radius*2/3, vert_radius*4/3, vert_radius*4/3)
         h_painter.setPen(Qt.black)
         h_painter.drawRect(rect)
         h_painter.setPen(Qt.white)
         h_painter.drawText(rect, Qt.AlignCenter, str(train.goods))
-
-    def calc_line(self, p1, p2):
-        if p1.x() == p2.x():
-            a = 999999999999
-        else:
-            a = (p2.y() - p1.y())/(p2.x() - p1.x())
-        b = p1.y() - a*p1.x()
-        return a, b
