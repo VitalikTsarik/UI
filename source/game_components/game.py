@@ -99,6 +99,7 @@ class Game:
     def new_game(self, player_name, game_name, num_players=1, num_turns=-1):
         if self.player is not None:
             self.__client.logout_action()
+            self.__client = ServerConnection()
         if game_name == '':
             game_name = 'Game of ' + player_name
         self.player = dict_to_player(self.__client.login_action(player_name, game_name, num_players, num_turns))

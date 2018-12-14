@@ -3,7 +3,6 @@ import socket
 from enum import Enum
 from json import dumps, loads
 from struct import pack, unpack
-import time
 
 SERVER = 'wgforge-srv.wargaming.net'
 PORT = 443
@@ -39,11 +38,10 @@ class Layer(Enum):
 class ServerConnection:
     def __init__(self):
         self.__socket = socket.socket()
-        self.__socket.settimeout(10)
-
-    def login_action(self, name, game, num_players=1, num_turns=-1):
         self.__socket = socket.socket()
         self.__socket.connect((SERVER, PORT))
+
+    def login_action(self, name, game, num_players=1, num_turns=-1):
         data = dumps({'name': name, 'game': game, 'num_players': num_players, 'num_turns': num_turns})
         self.__request(Action.LOGIN, data)
         return self.__response()
@@ -76,14 +74,10 @@ class ServerConnection:
         res = self.__response()
         if res == 0:
             self.__socket.close()
-            return res
+        return res
 
     def games_action(self):
         self.__request(Action.GAMES)
-        return self.__response()
-
-    def close(self):
-        self.__socket.close()
         return self.__response()
 
     def __request(self, action, data=None):
@@ -112,9 +106,13 @@ class ServerConnection:
 
 if __name__ == '__main__':
     cnt = ServerConnection()
-    g = cnt.login_action('wqe', 'wqe')
+
+    g = cnt.games_action()
     print(g)
-    g = cnt.logout_action()
+    p = cnt.login_action('123', '123')
+    print(p)
+    cnt.logout_action()
+    cnt = ServerConnection()
+    g = cnt.games_action()
     print(g)
-    g = cnt.login_action('asdasdad', 'wqe')
-    print(g)
+
