@@ -31,6 +31,10 @@ class Train:
     def level(self):
         return self.__level
 
+    @level.setter
+    def level(self, value):
+        self.__level = value
+
     @property
     def line_idx(self):
         return self.__line_idx
