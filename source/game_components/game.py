@@ -1,5 +1,5 @@
 from source.client import *
-from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player
+from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player, dict_to_lobbies
 from source.game_components.path_manager import PathManager
 
 
@@ -113,6 +113,9 @@ class Game:
         self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
                                                          self.trains[1].goods_capacity)
         self.set_direction(self.__path.next())
+
+    def get_existing_games(self):
+        return dict_to_lobbies(self.__client.games_action())
 
     @property
     def map_graph(self):

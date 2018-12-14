@@ -73,6 +73,13 @@ def dict_to_player(dictionary):
                   town=dict_to_town(dictionary['town']))
 
 
+def dict_to_lobbies(dictionary):
+    lobbies = []
+    for game in dictionary['games']:
+        lobbies.append(dict_to_lobby(game))
+    return lobbies
+
+
 def dict_to_lobby(dictionary):
     return Lobby(name=dictionary['name'], num_players=dictionary['num_players'],
                  num_turns=dictionary['num_turns'], state=dictionary['state'])
