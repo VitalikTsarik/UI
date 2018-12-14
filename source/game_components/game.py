@@ -6,23 +6,18 @@ from source.game_components.path_manager import PathManager
 class Game:
     def __init__(self):
         self.__client = ServerConnection()
-        self.player = dict_to_player(self.__client.login_action('NeBoris'))
-        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
-        self.update_layer1()
         self.__path_manager = PathManager()
-        self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx, self.__markets, self.__storages)
-
-        for train in self.trains.values():
-            self.upgrade_train_if_possible(train)
-        self.upgrade_post_if_possible(self.player.town)
-        self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
-                                                         self.trains[1].goods_capacity)
-        self.set_direction(self.__path.next())
+        self.player = None
+        self.__map_graph = None
+        self.__trains = {}
+        self.__towns = {}
+        self.__markets = {}
+        self.__storages = {}
+        self.__path = None
 
     def next_turn(self):
         self.update_layer1()
         self.update_player()
-        self.__to_upgrade = {'posts': [], 'trains': []}
         train = self.__trains[1]  # todo: сделать цикл для всех поездов !!!
         road = self.__map_graph.get_edge_by_idx(train.line_idx)
         if train.position == 0 or train.position == road['length']:
@@ -85,20 +80,38 @@ class Game:
         if train.level == 1 and self.player.town.armor >= 40:
             self.__client.upgrade_action([], [train.idx])
             self.player.town.armor -= 40
-            if self.player.town.armor >= 80:
-                self.__client.upgrade_action([], [train.idx])
-        elif train.level == 2 and self.player.town.armor >= 80:
-            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            train.level = 2
+        if train.level == 2 and self.player.town.armor >= 80:
+            self.__client.upgrade_action([], [train.idx])
             self.player.town.armor -= 80
+            train.level = 3
 
     def upgrade_post_if_possible(self, post):
         if post.level == 1 and self.player.town.armor >= 100:
-            self.__to_upgrade['posts'].append(post.idx)
-            self.__client.upgrade_action(self.__to_upgrade['posts'], self.__to_upgrade['trains'])
+            self.__client.upgrade_action([post.idx], [])
             self.player.town.armor -= 100
-        elif post.level == 2 and self.player.town.armor >= 200:
+            post.level = 2
+        if post.level == 2 and self.player.town.armor >= 200:
             self.__client.upgrade_action([post.idx], [])
             self.player.town.armor -= 200
+            post.level = 3
+
+    def new_game(self, player_name, game_name, num_players=1, num_turns=-1):
+        if self.player is not None:
+            self.__client.logout_action()
+        if game_name == '':
+            game_name = 'Game of ' + player_name
+        self.player = dict_to_player(self.__client.login_action(player_name, game_name, num_players, num_turns))
+        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
+        self.update_layer1()
+        self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
+                                           self.__markets, self.__storages)
+        for train in self.trains.values():
+            self.upgrade_train_if_possible(train)
+        self.upgrade_post_if_possible(self.player.town)
+        self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
+                                                         self.trains[1].goods_capacity)
+        self.set_direction(self.__path.next())
 
     @property
     def map_graph(self):

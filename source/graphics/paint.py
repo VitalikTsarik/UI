@@ -5,6 +5,7 @@ from source.graphics.settings_dlg import *
 from source.graphics.move_buttons import *
 from source.game_components.game import Game
 from source.graphics.extra_messages import ExtraMessages
+from source.graphics.new_game_dlg import NewGameDlg
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF
 from PyQt5.QtGui import QPainter, QPixmap
@@ -21,7 +22,6 @@ class MainWindow(QMainWindow):
         self.create_menu()
 
         self.__form_widget = FormWidget(self)
-        self.__form_widget.paint_widget.link_graph(self.game.map_graph)
 
         self.setCentralWidget(self.__form_widget)
 
@@ -45,6 +45,10 @@ class MainWindow(QMainWindow):
         self.move(qr.topLeft())
 
     def create_menu(self):
+        new_act = QAction('&New...', self)
+        new_act.setStatusTip('Create a new game or connect to existing one')
+        new_act.triggered.connect(self.new_game)
+
         exit_act = QAction('&Exit', self)
         exit_act.setStatusTip('Quit application')
         exit_act.triggered.connect(qApp.quit)
@@ -52,13 +56,23 @@ class MainWindow(QMainWindow):
         self.statusBar()
         menu_bar = self.menuBar()
 
-        file_menu = menu_bar.addMenu('&Game')
-        file_menu.addAction(exit_act)
+        game_menu = menu_bar.addMenu('&Game')
+        game_menu.addAction(new_act)
+        game_menu.addSeparator()
+        game_menu.addAction(exit_act)
+
+    def new_game(self):
+        dlg = NewGameDlg(self)
+        if dlg.exec_():
+            self.game.new_game(dlg.player_name, dlg.game_name, dlg.num_players, dlg.num_turns)
+            self.__turn_timer.start()
+            self.__form_widget.paint_widget.link_graph(self.game.map_graph)
+            self.update()
+            self.centralWidget().next_turn_btn.setEnabled(True)
 
     def init_turn_timer(self):
         self.__turn_timer.setInterval(10000)
         self.__turn_timer.timeout.connect(self.next_turn)
-        self.__turn_timer.start()
 
     def next_turn(self):
         print('next turn')
@@ -82,6 +96,7 @@ class FormWidget(QWidget):
         self.next_turn_btn = ControlButton(self)
         self.next_turn_btn.resize(50, 50)
         self.next_turn_btn.next_turn()
+        self.next_turn_btn.setEnabled(False)
         self.next_turn_btn.clicked.connect(self.parent().next_turn_btn_clicked)
 
         self.__layouts = []
