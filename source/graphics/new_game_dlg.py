@@ -37,6 +37,7 @@ class NewGameDlg(QDialog):
             self.num_turns = -1
         else:
             self.num_turns = self.ui.sb_num_turns.value()
+        self.num_players = self.ui.sb_num_players.value()
         self.accept()
 
 # Created by: PyQt5 UI code generator 5.11.3
