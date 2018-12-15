@@ -15,6 +15,16 @@ class Game:
         self.__storages = {}
         self.__path = None
 
+    def start_game(self):
+        self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
+                                           self.__markets, self.__storages)
+        for train in self.trains.values():
+            self.upgrade_train_if_possible(train)
+        self.upgrade_post_if_possible(self.player.town)
+        self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
+                                                         self.trains[1].goods_capacity)
+        self.set_direction(self.__path.next())
+
     def next_turn(self):
         self.update_layer1()
         self.update_player()
@@ -105,14 +115,6 @@ class Game:
         self.player = dict_to_player(self.__client.login_action(player_name, game_name, num_players, num_turns))
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
-        self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
-                                           self.__markets, self.__storages)
-        for train in self.trains.values():
-            self.upgrade_train_if_possible(train)
-        self.upgrade_post_if_possible(self.player.town)
-        self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
-                                                         self.trains[1].goods_capacity)
-        self.set_direction(self.__path.next())
 
     def get_existing_games(self):
         return dict_to_lobbies(self.__client.games_action())
