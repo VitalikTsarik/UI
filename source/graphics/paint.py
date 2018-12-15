@@ -6,6 +6,7 @@ from source.graphics.move_buttons import *
 from source.game_components.game import Game
 from source.graphics.extra_messages import ExtraMessages
 from source.graphics.new_game_dlg import NewGameDlg
+from source.graphics.find_game_dlg import FindGameDlg
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF
 from PyQt5.QtGui import QPainter, QPixmap
@@ -46,8 +47,12 @@ class MainWindow(QMainWindow):
 
     def create_menu(self):
         new_act = QAction('&New...', self)
-        new_act.setStatusTip('Create a new game or connect to existing one')
+        new_act.setStatusTip('Create a new game')
         new_act.triggered.connect(self.new_game)
+
+        find_act = QAction('&Find...', self)
+        find_act.setStatusTip('Find and connect to existing game')
+        find_act.triggered.connect(self.find_game)
 
         exit_act = QAction('&Exit', self)
         exit_act.setStatusTip('Quit application')
@@ -58,6 +63,7 @@ class MainWindow(QMainWindow):
 
         game_menu = menu_bar.addMenu('&Game')
         game_menu.addAction(new_act)
+        game_menu.addAction(find_act)
         game_menu.addSeparator()
         game_menu.addAction(exit_act)
 
@@ -65,10 +71,19 @@ class MainWindow(QMainWindow):
         dlg = NewGameDlg(self)
         if dlg.exec_():
             self.game.new_game(dlg.player_name, dlg.game_name, dlg.num_players, dlg.num_turns)
-            self.__turn_timer.start()
             self.__form_widget.paint_widget.link_graph(self.game.map_graph)
-            self.update()
             self.centralWidget().next_turn_btn.setEnabled(True)
+            self.update()
+
+            self.game.start_game()  # temp
+
+    def find_game(self):
+        dlg = FindGameDlg(self.game.get_existing_games(), self)
+        if dlg.exec_():
+            self.game.new_game('23', dlg.name, dlg.num_players, dlg.num_turns)
+            self.__turn_timer.start()
+            self.centralWidget().next_turn_btn.setEnabled(True)
+            self.update()
 
     def init_turn_timer(self):
         self.__turn_timer.setInterval(10000)
