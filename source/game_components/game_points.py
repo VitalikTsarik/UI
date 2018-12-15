@@ -51,6 +51,10 @@ class Town(GamePoint):
     def level(self):
         return self.__level
 
+    @level.setter
+    def level(self, value):
+        self.__level = value
+
     @property
     def population(self):
         return self.__population
