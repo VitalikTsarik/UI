@@ -111,6 +111,8 @@ class MainWindow(QMainWindow):
     def wait_other_player(self):
         if self.game.lobby.state != GameState.RUN.value:
             self.game.lobby = self.game.get_existing_games()[self.game.lobby.name]
+            self.game.update_layer1()
+            self.repaint()
         else:
             self.centralWidget().next_turn_btn.setEnabled(True)
             self.__turn_timer.start()
@@ -159,13 +161,12 @@ class FormWidget(QWidget):
 
 class PaintGraphWidget(QWidget):
     background_color = QColor(255, 211, 117, 60)
-    vertex_color = QColor(40, 220, 0)
-    vertex_pen = QPen(Qt.black, 1, Qt.SolidLine)
-    edge_width = 2
-    edge_color = QColor(50, 50, 50)
-    font = QFont('Decorative', 10)
-    vertex_label_style = 'inside'
-    train_color = QColor(25, 64, 255)
+    available_player_colors = []
+    player_colors = {}
+    vertex_color = QColor(220, 234, 242)
+    available_trains_colors = []
+    trains_colors = {}
+    players_idxs = []
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -253,16 +254,13 @@ class PaintGraphWidget(QWidget):
             self.__v_offsets[vertex] = (randint(0, int(indent / 3)))
 
     def draw_edges_and_waypoints(self, h_painter, points, vert_radius):
-        edge_pen = QPen(self.edge_color, self.edge_width, Qt.SolidLine)
         h_painter.setBrush(self.vertex_color)
         for vertex in self.__graph.get_all_vertices():
             for adj_vert in self.__graph.get_adj_vertices(vertex):
-                h_painter.setPen(edge_pen)
                 p1 = points[vertex]
                 p2 = points[adj_vert]
                 h_painter.drawLine(p1, p2)
 
-                h_painter.setPen(self.vertex_pen)
                 edge = self.__graph.get_edge_by_adj_vert(vertex, adj_vert)
                 line = QLineF(p1, p2)
                 for i in range(1, edge['length']):
@@ -273,7 +271,6 @@ class PaintGraphWidget(QWidget):
     def draw_vertices(self, h_painter, points, radius):
         h_painter.setFont(QFont('Decorative', 10))
         h_painter.setBrush(self.vertex_color)
-        h_painter.setPen(self.vertex_pen)
         for vertex in self.__graph.get_all_vertices():
             x = points[vertex].x() - radius
             y = points[vertex].y() - radius
@@ -287,8 +284,23 @@ class PaintGraphWidget(QWidget):
                 pixmap = QPixmap("source\icons\\town_lvl2.png")
             elif town.level == 3:
                 pixmap = QPixmap("source\icons\\town_lvl3.png")
+
+            if town.player_idx not in self.player_colors.keys():
+                if len(self.available_player_colors) == 0:
+                    self.available_player_colors = [QColor(153, 204, 255), QColor(255, 102, 102), QColor(0, 166, 28),
+                                                    QColor(255, 213, 115)]
+                    self.available_trains_colors = [QColor(25, 64, 255), QColor(255, 25, 25), QColor(62, 255, 41),
+                                                    QColor(255, 163, 43)]
+                    self.player_colors.clear()
+                    self.trains_colors.clear()
+                self.player_colors[town.player_idx] = self.available_player_colors.pop(0)
+                self.trains_colors[town.player_idx] = self.available_trains_colors.pop(0)
+
             x = points[town.point_idx].x() - radius
             y = points[town.point_idx].y() - radius
+            if town.player_idx:
+                h_painter.setBrush(self.player_colors[town.player_idx])
+                h_painter.drawEllipse(x, y, 2*radius, 2*radius)
             h_painter.drawPixmap(QPointF(x, y), pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
             rect = QRectF(x + radius, y - 4*radius, 6*radius, 6*radius)
             h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, '👤' + str(town.population) +
@@ -316,12 +328,12 @@ class PaintGraphWidget(QWidget):
                                '\n⛉{}/{}'.format(storage.armor, storage.armor_capacity))
 
     def draw_trains(self, h_painter, trains, points, vert_radius):
-        h_painter.setBrush(self.train_color)
         h_painter.setFont(QFont("Times", 7))
         for train in trains.values():
-            self.draw_train(h_painter, train, points, vert_radius)
+            self.draw_train(h_painter, train, points, vert_radius, self.trains_colors[train.player_idx])
 
-    def draw_train(self, h_painter, train, points, vert_radius):
+    def draw_train(self, h_painter, train, points, vert_radius, color):
+        h_painter.setBrush(color)
         edge = self.__graph.get_edge_by_idx(train.line_idx)
         p1 = points[edge['vert_from']]
         p2 = points[edge['vert_to']]
