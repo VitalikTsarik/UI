@@ -74,9 +74,9 @@ def dict_to_player(dictionary):
 
 
 def dict_to_lobbies(dictionary):
-    lobbies = []
+    lobbies = {}
     for game in dictionary['games']:
-        lobbies.append(dict_to_lobby(game))
+        lobbies[game['name']] = (dict_to_lobby(game))
     return lobbies
 
 
