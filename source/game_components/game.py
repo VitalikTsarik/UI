@@ -10,6 +10,7 @@ class Game:
         self.player = None
         self.__map_graph = None
         self.__trains = {}
+        self.__player_trains = {}
         self.__towns = {}
         self.__markets = {}
         self.__storages = {}
@@ -18,21 +19,21 @@ class Game:
     def start_game(self):
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
                                            self.__markets, self.__storages)
-        for train in self.trains.values():
+        for train in self.__player_trains.values():
             self.upgrade_train_if_possible(train)
         self.upgrade_post_if_possible(self.player.town)
         self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
                                                          self.trains[1].goods_capacity)
-        self.set_direction(self.__path.next())
+        self.set_direction(self.__player_trains[1], self.__path.next())
 
     def next_turn(self):
         self.update_layer1()
         self.update_player()
-        train = self.__trains[1]  # todo: сделать цикл для всех поездов !!!
+        train = self.__player_trains[1]  # todo: сделать цикл для всех поездов !!!
         road = self.__map_graph.get_edge_by_idx(train.line_idx)
         if train.position == 0 or train.position == road['length']:
             if self.__path.has_next():
-                self.set_direction(self.__path.next())
+                self.set_direction(train, self.__path.next())
             else:
                 self.upgrade_train_if_possible(train)
                 self.upgrade_post_if_possible(self.player.town)
@@ -42,6 +43,9 @@ class Game:
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
         self.__trains = dict_to_trains(layer1)
+        for train in self.__trains.values():
+            if train.player_idx == self.player.idx:
+                self.__player_trains[train.idx] = train
         self.__towns, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def update_player(self):
@@ -52,21 +56,20 @@ class Game:
         self.__trains[train_idx].line_idx = line_idx
         self.__trains[train_idx].speed = speed
 
-    def set_direction(self, next_vert_idx):
-        train_idx = 1  # временно
+    def set_direction(self, train, next_vert_idx):
 
-        if self.__trains[train_idx].position == 0:
-            curr_vert = self.__map_graph.get_edge_by_idx(self.__trains[train_idx].line_idx)['vert_from']
+        if train.position == 0:
+            curr_vert = self.__map_graph.get_edge_by_idx(train.line_idx)['vert_from']
         else:
-            curr_vert = self.__map_graph.get_edge_by_idx(self.__trains[train_idx].line_idx)['vert_to']
+            curr_vert = self.__map_graph.get_edge_by_idx(train.line_idx)['vert_to']
 
         new_line = self.__map_graph.get_edge_by_adj_vert(next_vert_idx, curr_vert)
         if curr_vert == new_line['vert_from']:
-            self.__trains[train_idx].position = 0
-            self.move_train(train_idx, new_line['edge_idx'], 1)
+            train.position = 0
+            self.move_train(train.idx, new_line['edge_idx'], 1)
         else:
-            self.__trains[train_idx].position = new_line['length']
-            self.move_train(train_idx, new_line['edge_idx'], -1)
+            train.position = new_line['length']
+            self.move_train(train.idx, new_line['edge_idx'], -1)
 
     def move_forward(self):
         train_idx = 1  # временно
@@ -115,6 +118,7 @@ class Game:
         self.player = dict_to_player(self.__client.login_action(player_name, game_name, num_players, num_turns))
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
+        self.update_player()
 
     def get_existing_games(self):
         return dict_to_lobbies(self.__client.games_action())
