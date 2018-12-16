@@ -6,6 +6,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QColor, QPen, QFont, QIcon
 from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog, QDialogButtonBox
 
+from source.game_components.lobby import Lobby, GameState
+
 
 class NewGameDlg(QDialog):
     def __init__(self, parent=None):
@@ -15,10 +17,8 @@ class NewGameDlg(QDialog):
         self.setWindowIcon(QIcon('source/icons/icon.png'))
         self.connect_actions()
 
+        self.lobby = None
         self.player_name = ''
-        self.game_name = ''
-        self.num_players = 1
-        self.num_turns = -1
 
     def connect_actions(self):
         self.ui.cb_infinite.clicked.connect(self.cb_infinite_clicked)
@@ -31,13 +31,15 @@ class NewGameDlg(QDialog):
 
     def submit(self):
         self.player_name = self.ui.player_name.text()
-        self.game_name = self.ui.game_name.text()
-        self.num_turns = self.ui.sb_num_turns.value()
+        game_name = self.ui.game_name.text()
+        if game_name == '':
+            game_name = 'Game of ' + self.player_name
         if self.ui.cb_infinite.isChecked():
-            self.num_turns = -1
+            num_turns = -1
         else:
-            self.num_turns = self.ui.sb_num_turns.value()
-        self.num_players = self.ui.sb_num_players.value()
+            num_turns = self.ui.sb_num_turns.value()
+        num_players = self.ui.sb_num_players.value()
+        self.lobby = Lobby(game_name, num_players, num_turns, GameState.INIT.value)
         self.accept()
 
 # Created by: PyQt5 UI code generator 5.11.3
