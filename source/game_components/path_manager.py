@@ -111,40 +111,24 @@ class PathManager:
         best_market = -1
         max_goods = -inf
         min_len = inf
-        min_people_died = inf
 
         for market in markets.values():
-            people_died = self.__count_died_people(town, self.__lengths[market.point_idx] + self.__lengths_markets[market.point_idx])
-            if people_died <= min_people_died:
                 from_market = min(train_capacity, market.product_capacity, market.product + market.replenishment * self.__lengths_markets[market.point_idx])
                 if from_market > max_goods or (from_market == max_goods and min_len > self.__lengths_markets[market.point_idx] + self.__lengths[market.point_idx]):
                     max_goods = from_market
                     best_market = market.point_idx
                     min_len = self.__lengths_markets[market.point_idx] + self.__lengths[market.point_idx]
-                    min_people_died = people_died
         return best_market
 
     def find_best_storage(self, town, storages, train_capacity):
         best_storage = -1
         max_goods = -inf
         min_len = inf
-        min_people_died = inf
 
         for storage in storages.values():
-            people_died = self.__count_died_people(town, self.__lengths[storage.point_idx] + self.__lengths_storage[storage.point_idx])
-            if people_died <= min_people_died:
                 from_storage = min(train_capacity, storage.armor_capacity, storage.armor + storage.replenishment * self.__lengths_storage[storage.point_idx])
                 if from_storage > max_goods or (from_storage == max_goods and min_len > self.__lengths_storage[storage.point_idx] + self.__lengths[storage.point_idx]):
                     max_goods = from_storage
                     best_storage = storage.point_idx
                     min_len = self.__lengths_storage[storage.point_idx] + self.__lengths[storage.point_idx]
-                    min_people_died = people_died
         return best_storage
-
-    def __count_died_people(self, town, turns):
-        product = town.product
-        population = town.population
-        product -= population*turns
-        if product >= 0:
-            return 0
-        return -(product//population)
