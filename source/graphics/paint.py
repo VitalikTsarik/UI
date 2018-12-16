@@ -8,7 +8,7 @@ from source.graphics.extra_messages import ExtraMessages
 from source.graphics.new_game_dlg import NewGameDlg
 from source.graphics.find_game_dlg import FindGameDlg
 
-from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF, Qt
+from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF, Qt, QPoint
 from PyQt5.QtGui import QPainter, QPixmap, QColor, QIcon, QPen, QFont
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
@@ -302,10 +302,9 @@ class PaintGraphWidget(QWidget):
                 h_painter.setBrush(self.player_colors[town.player_idx])
                 h_painter.drawEllipse(x, y, 2*radius, 2*radius)
             h_painter.drawPixmap(QPointF(x, y), pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
-            rect = QRectF(x + radius, y - 4*radius, 6*radius, 6*radius)
-            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, '👤' + str(town.population) +
-                               '\n🍽️{}/{}'.format(town.product, town.product_capacity) +
-                               '\n⛉{} / {}'.format(town.armor, town.armor_capacity))
+            h_painter.drawText(QPoint(x + radius, y - 3*radius), '👤' + str(town.population))
+            h_painter.drawText(QPoint(x + radius, y - 3*radius + 15), '🍽️{}/{}'.format(town.product, town.product_capacity))
+            h_painter.drawText(QPoint(x + radius, y - 3*radius + 30), '⛉{}/{}'.format(town.armor, town.armor_capacity))
 
     def draw_markets(self, h_painter, markets, points, radius):
         pixmap = QPixmap("source\icons\market.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
@@ -313,9 +312,8 @@ class PaintGraphWidget(QWidget):
             x = points[market.point_idx].x() - radius
             y = points[market.point_idx].y() - radius
             h_painter.drawPixmap(QPointF(x, y), pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
-            rect = QRectF(x + radius, y - 3 * radius, 6 * radius, 6 * radius)
-            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, '+' + str(market.replenishment) +
-                               '\n🍽️{}/{}'.format(market.product, market.product_capacity))
+            h_painter.drawText(QPoint(x + radius, y - 2 * radius), '   +' + str(market.replenishment))
+            h_painter.drawText(QPoint(x + radius, y - 2 * radius + 15), '🍽️{}/{}'.format(market.product, market.product_capacity))
 
     def draw_storages(self, h_painter, storages, points, radius):
         pixmap = QPixmap("source\icons\storage.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
@@ -323,9 +321,9 @@ class PaintGraphWidget(QWidget):
             x = points[storage.point_idx].x() - radius
             y = points[storage.point_idx].y() - radius
             h_painter.drawPixmap(QPointF(x, y), pixmap.scaled(2*radius, 2*radius, Qt.KeepAspectRatio))
-            rect = QRectF(x + radius, y - 3 * radius, 6 * radius, 6 * radius)
-            h_painter.drawText(rect, Qt.AlignHCenter | Qt.AlignTop, '+' + str(storage.replenishment) +
-                               '\n⛉{}/{}'.format(storage.armor, storage.armor_capacity))
+            h_painter.drawText(QPoint(x + radius, y - 2 * radius), '   +' + str(storage.replenishment))
+            h_painter.drawText(QPoint(x + radius, y - 2 * radius + 15),
+                               '⛉{}/{}'.format(storage.armor, storage.armor_capacity))
 
     def draw_trains(self, h_painter, trains, points, vert_radius):
         h_painter.setFont(QFont("Times", 7))
