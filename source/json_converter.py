@@ -54,7 +54,7 @@ def dict_to_town(dictionary):
                 population=dictionary['population'], population_capacity=['population_capacity'],
                 armor=dictionary['armor'], armor_capacity=dictionary['armor_capacity'],
                 product=dictionary['product'], level=dictionary['level'],
-                product_capacity=dictionary['product_capacity'])
+                product_capacity=dictionary['product_capacity'], player_idx=dictionary['player_idx'])
 
 
 def dict_to_market(dictionary):

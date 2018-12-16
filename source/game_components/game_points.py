@@ -24,7 +24,7 @@ class GamePoint:
 
 class Town(GamePoint):
     def __init__(self, idx, name, point_idx, armor, armor_capacity, level,
-                 population, population_capacity, product, product_capacity):
+                 population, population_capacity, product, product_capacity, player_idx):
         super().__init__(idx, name, point_idx)
         self.__armor = armor
         self.__armor_capacity = armor_capacity
@@ -33,6 +33,7 @@ class Town(GamePoint):
         self.__population_capacity = population_capacity
         self.__product = product
         self.__product_capacity = product_capacity
+        self.__player_idx = player_idx
         # self.__train_cooldown = train_cooldown
 
     @property
@@ -78,6 +79,10 @@ class Town(GamePoint):
     @property
     def train_cooldown(self):
         return self.__train_cooldown
+
+    @property
+    def player_idx(self):
+        return self.__player_idx
 
 
 class Market(GamePoint):
