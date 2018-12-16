@@ -1,15 +1,15 @@
 from math import sqrt
 from random import randint
 
-from source.graphics.settings_dlg import *
-from source.graphics.move_buttons import *
+from source.graphics.move_buttons import ControlButton
 from source.game_components.game import Game
+from source.game_components.lobby import Lobby, GameState
 from source.graphics.extra_messages import ExtraMessages
 from source.graphics.new_game_dlg import NewGameDlg
 from source.graphics.find_game_dlg import FindGameDlg
 
-from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF
-from PyQt5.QtGui import QPainter, QPixmap
+from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF, Qt
+from PyQt5.QtGui import QPainter, QPixmap, QColor, QIcon, QPen, QFont
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
 
@@ -29,7 +29,8 @@ class MainWindow(QMainWindow):
         self.show()
 
         self.__turn_timer = QTimer()
-        self.init_turn_timer()
+        self.__wait_players_timer = QTimer()
+        self.init_timers()
 
     def init_main_window(self):
         self.set_geometry()
@@ -70,24 +71,29 @@ class MainWindow(QMainWindow):
     def new_game(self):
         dlg = NewGameDlg(self)
         if dlg.exec_():
-            self.game.new_game(dlg.player_name, dlg.game_name, dlg.num_players, dlg.num_turns)
+            self.__turn_timer.stop()
+            self.centralWidget().next_turn_btn.setEnabled(False)
+            self.game.new_game(dlg.player_name, dlg.lobby)
             self.__form_widget.paint_widget.link_graph(self.game.map_graph)
-            self.centralWidget().next_turn_btn.setEnabled(True)
-            self.update()
+            self.repaint()
 
-            self.game.start_game()  # temp
+            self.__wait_players_timer.start()
 
     def find_game(self):
         dlg = FindGameDlg(self.game.get_existing_games(), self)
         if dlg.exec_():
-            self.game.new_game('23', dlg.name, dlg.num_players, dlg.num_turns)
-            self.__turn_timer.start()
-            self.centralWidget().next_turn_btn.setEnabled(True)
-            self.update()
+            self.__turn_timer.stop()
+            self.game.connect_to_game('23', dlg.lobby)
+            self.centralWidget().next_turn_btn.setEnabled(False)
+            self.__form_widget.paint_widget.link_graph(self.game.map_graph)
+            self.repaint()
+            self.__wait_players_timer.start()
 
-    def init_turn_timer(self):
+    def init_timers(self):
         self.__turn_timer.setInterval(10000)
         self.__turn_timer.timeout.connect(self.next_turn)
+        self.__wait_players_timer.setInterval(100)
+        self.__wait_players_timer.timeout.connect(self.wait_other_player)
 
     def next_turn(self):
         print('next turn')
@@ -101,6 +107,15 @@ class MainWindow(QMainWindow):
         self.game.next_turn_action()
         self.next_turn()
         self.__turn_timer.start()
+
+    def wait_other_player(self):
+        if self.game.lobby.state != GameState.RUN.value:
+            self.game.lobby = self.game.get_existing_games()[self.game.lobby.name]
+        else:
+            self.centralWidget().next_turn_btn.setEnabled(True)
+            self.__turn_timer.start()
+            self.game.start_game()
+            self.__wait_players_timer.stop()
 
 
 class FormWidget(QWidget):
