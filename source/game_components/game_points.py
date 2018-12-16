@@ -116,6 +116,10 @@ class Storage(GamePoint):
     def armor(self):
         return self.__armor
 
+    @armor.setter
+    def armor(self, value):
+        self.__armor = value
+
     @property
     def armor_capacity(self):
         return self.__armor_capacity
@@ -123,3 +127,7 @@ class Storage(GamePoint):
     @property
     def replenishment(self):
         return self.__replenishment
+
+    @replenishment.setter
+    def replenishment(self, value):
+        self.__replenishment = value
