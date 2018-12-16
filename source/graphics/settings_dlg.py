@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor, QPen, QFont
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtGui import QColor
 from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog, QDialogButtonBox
 
 

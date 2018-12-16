@@ -2,9 +2,9 @@
 
 # Created by: PyQt5 UI code generator 5.11.3
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QColor, QPen, QFont, QIcon
-from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog, QDialogButtonBox
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtGui import QIcon
+from PyQt5.QtWidgets import QDialog
 
 from game_components.lobby import Lobby, GameState
 

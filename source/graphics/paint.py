@@ -9,7 +9,7 @@ from graphics.new_game_dlg import NewGameDlg
 from graphics.find_game_dlg import FindGameDlg
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF, Qt, QPoint
-from PyQt5.QtGui import QPainter, QPixmap, QColor, QIcon, QPen, QFont
+from PyQt5.QtGui import QPainter, QPixmap, QColor, QIcon, QFont
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QWidget, QHBoxLayout, QVBoxLayout, QAction, qApp
 
 
@@ -96,7 +96,6 @@ class MainWindow(QMainWindow):
         self.__wait_players_timer.timeout.connect(self.wait_other_player)
 
     def next_turn(self):
-        print('next turn')
         res = self.game.next_turn()
         if res == -1:
             ExtraMessages.information_message(self, 'Game Over', 'Game Over')
@@ -211,7 +210,6 @@ class PaintGraphWidget(QWidget):
 
         h_painter.end()
 
-    # todo: подумать(или нет)
     def calc_coordinates(self):
         padding = 50
         x_0 = padding
