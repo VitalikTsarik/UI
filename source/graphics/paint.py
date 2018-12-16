@@ -1,12 +1,12 @@
 from math import sqrt
 from random import randint
 
-from source.graphics.move_buttons import ControlButton
-from source.game_components.game import Game
-from source.game_components.lobby import Lobby, GameState
-from source.graphics.extra_messages import ExtraMessages
-from source.graphics.new_game_dlg import NewGameDlg
-from source.graphics.find_game_dlg import FindGameDlg
+from graphics.move_buttons import ControlButton
+from game_components.game import Game
+from game_components.lobby import Lobby, GameState
+from graphics.extra_messages import ExtraMessages
+from graphics.new_game_dlg import NewGameDlg
+from graphics.find_game_dlg import FindGameDlg
 
 from PyQt5.QtCore import QRectF, QTimer, QPointF, QLineF, Qt, QPoint
 from PyQt5.QtGui import QPainter, QPixmap, QColor, QIcon, QPen, QFont
@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         self.set_geometry()
 
         self.setWindowTitle('World of Wartrains')
-        self.setWindowIcon(QIcon('source/icons/icon.png'))
+        self.setWindowIcon(QIcon('icons/icon.png'))
 
     def set_geometry(self):
         self.resize(900, 1000)
@@ -279,11 +279,11 @@ class PaintGraphWidget(QWidget):
     def draw_towns(self, h_painter, towns, points, radius):
         for town in towns.values():
             if town.level == 1:
-                pixmap = QPixmap("source\icons\\town_lvl1.png")
+                pixmap = QPixmap("icons\\town_lvl1.png")
             elif town.level == 2:
-                pixmap = QPixmap("source\icons\\town_lvl2.png")
+                pixmap = QPixmap("icons\\town_lvl2.png")
             elif town.level == 3:
-                pixmap = QPixmap("source\icons\\town_lvl3.png")
+                pixmap = QPixmap("icons\\town_lvl3.png")
 
             if town.player_idx not in self.player_colors.keys():
                 if len(self.available_player_colors) == 0:
@@ -307,7 +307,7 @@ class PaintGraphWidget(QWidget):
             h_painter.drawText(QPoint(x + radius, y - 3*radius + 30), '⛉{}/{}'.format(town.armor, town.armor_capacity))
 
     def draw_markets(self, h_painter, markets, points, radius):
-        pixmap = QPixmap("source\icons\market.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
+        pixmap = QPixmap("icons\market.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
         for market in markets.values():
             x = points[market.point_idx].x() - radius
             y = points[market.point_idx].y() - radius
@@ -316,7 +316,7 @@ class PaintGraphWidget(QWidget):
             h_painter.drawText(QPoint(x + radius, y - 2 * radius + 15), '🍽️{}/{}'.format(market.product, market.product_capacity))
 
     def draw_storages(self, h_painter, storages, points, radius):
-        pixmap = QPixmap("source\icons\storage.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
+        pixmap = QPixmap("icons\storage.png").scaled(2 * radius, 2 * radius, Qt.KeepAspectRatio)
         for storage in storages.values():
             x = points[storage.point_idx].x() - radius
             y = points[storage.point_idx].y() - radius

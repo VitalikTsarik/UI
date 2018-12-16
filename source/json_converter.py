@@ -1,9 +1,9 @@
 import json
-from source.graph import Graph
-from source.game_components.train import Train
-from source.game_components.game_points import *
-from source.game_components.player import Player
-from source.game_components.lobby import Lobby
+from graph import Graph
+from game_components.train import Train
+from game_components.game_points import *
+from game_components.player import Player
+from game_components.lobby import Lobby
 
 
 def read_graph_from_json(filename):

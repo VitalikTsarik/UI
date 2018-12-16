@@ -6,7 +6,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QColor, QPen, QFont, QIcon
 from PyQt5.QtWidgets import QDialog, QFontDialog, QColorDialog, QDialogButtonBox
 
-from source.game_components.lobby import Lobby, GameState
+from game_components.lobby import Lobby, GameState
 
 
 class NewGameDlg(QDialog):
@@ -14,7 +14,7 @@ class NewGameDlg(QDialog):
         super(NewGameDlg, self).__init__(parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.setWindowIcon(QIcon('source/icons/icon.png'))
+        self.setWindowIcon(QIcon('icons/icon.png'))
         self.connect_actions()
 
         self.lobby = None

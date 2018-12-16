@@ -1,6 +1,6 @@
 import heapq
 from math import inf
-from source.game_components.path import Path
+from game_components.path import Path
 
 
 class PathManager:

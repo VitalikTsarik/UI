@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 
-from source.game_components.lobby import Lobby, GameState
+from game_components.lobby import Lobby, GameState
 
 
 class FindGameDlg(QDialog):
@@ -12,7 +12,7 @@ class FindGameDlg(QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
-        self.setWindowIcon(QIcon('source/icons/icon.png'))
+        self.setWindowIcon(QIcon('icons/icon.png'))
 
         self.__lobbies = lobbies
         self.lobby = None

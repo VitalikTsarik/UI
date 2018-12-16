@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QIcon
-from source.graphics.move_buttons import ControlButton
+from graphics.move_buttons import ControlButton
 
 
 class ExtraMessages:

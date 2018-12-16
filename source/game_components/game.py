@@ -1,6 +1,6 @@
-from source.client import *
-from source.json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player, dict_to_lobbies
-from source.game_components.path_manager import PathManager
+from client import *
+from json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player, dict_to_lobbies
+from game_components.path_manager import PathManager
 
 
 class Game:
