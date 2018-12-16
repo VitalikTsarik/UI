@@ -11,13 +11,15 @@ class PathManager:
         self.__ancestors_markets = {}
         self.__lengths_storage = {}
         self.__ancestors_storage = {}
+        self.__ignored_vertices_to_market = []
+        self.__ignored_vertices_to_storage = []
 
     def init_all_paths(self, graph, town_idx, markets, storage):
-        self.__lengths, self.__ancestors = self.min_paths(graph, town_idx)
-        self.__lengths_markets, self.__ancestors_markets = self.min_paths(graph, town_idx, markets)
-        self.__lengths_storage, self.__ancestors_storage = self.min_paths(graph, town_idx, storage)
+        self.__lengths, self.__ancestors = self.min_paths(graph, town_idx, None)
+        self.__lengths_markets, self.__ancestors_markets = self.min_paths(graph, town_idx, markets.keys())
+        self.__lengths_storage, self.__ancestors_storage = self.min_paths(graph, town_idx, storage.keys())
 
-    def min_paths(self, graph, start, posts_to_find=None):
+    def min_paths(self, graph, start, posts_to_find, ignored_vertices=None):
         is_visited = {}
         paths = {}
         ancestors = {}
@@ -25,13 +27,17 @@ class PathManager:
         if posts_to_find:
             for vertex in graph.get_all_vertices():
                 post_idx = graph.get_post_idx(vertex)
-                if not post_idx or vertex == start or post_idx in posts_to_find.keys():
+                if not post_idx or vertex == start or post_idx in posts_to_find:
                     is_visited[vertex] = False
                 else:
                     is_visited[vertex] = True
         else:
             for vertex in graph.get_all_vertices():
                 is_visited[vertex] = False
+
+        if ignored_vertices:
+            for vertex in ignored_vertices:
+                is_visited[vertex] = True
 
         path_priority = [(0, start, -1)]
         while path_priority:
@@ -46,8 +52,8 @@ class PathManager:
 
         return paths, ancestors
 
-    def find_best_path(self, town, markets, storages, train_capacity):
-        market_idx = self.find_best_market(town, markets, train_capacity)
+    def paths_to_market(self, graph, town, markets, train_group):
+        market_idx = self.find_best_market(town, markets, sum([train.goods_capacity for train in train_group.values()]))
         path_to_market = []
         path_from_market = []
 
@@ -56,34 +62,50 @@ class PathManager:
             path_to_market.append(idx)
             idx = self.__ancestors_markets[idx]
 
-        idx = market_idx
+        lengths, ancestors = self.min_paths(graph, market_idx, None, [path_to_market[1]] + self.__ignored_vertices_to_market)
+        idx = town.point_idx
         while idx != -1:
             path_from_market.append(idx)
-            idx = self.__ancestors[idx]
+            idx = ancestors[idx]
 
-        market_path = Path(path_to_market[-2::-1] + path_from_market[1:],
-                           self.__lengths_markets[market_idx] + self.__lengths[market_idx])
+        self.__ignored_vertices_to_storage = path_to_market[:-1] + path_from_market[1:]
 
-        storage_idx = self.find_best_storage(town, storages, train_capacity)
+        paths = {}
+
+        n = len(train_group)-1
+        i = 0
+        for train in train_group.values():
+            paths[train.idx] = Path(path_to_market[-2::-1] + path_from_market[-2::-1], i, n-i)
+            i += 1
+        return paths
+
+    def paths_to_storage(self, graph, town, storages, train_group):
+        lengths, ancestors = self.min_paths(graph, town.point_idx, storages, self.__ignored_vertices_to_storage)
+        storage_idx = self.find_best_storage(town, storages, sum([train.goods_capacity for train in train_group.values()]))
         path_to_storage = []
         path_from_storage = []
 
         idx = storage_idx
         while idx != -1:
             path_to_storage.append(idx)
-            idx = self.__ancestors_storage[idx]
+            idx = ancestors[idx]
 
-        idx = storage_idx
+        lengths, ancestors = self.min_paths(graph, storage_idx, None, [path_to_storage[1]] + self.__ignored_vertices_to_storage)
+        idx = town.point_idx
         while idx != -1:
             path_from_storage.append(idx)
-            idx = self.__ancestors[idx]
+            idx = ancestors[idx]
 
-        storage_path = Path(path_to_storage[-2::-1] + path_from_storage[1:],
-                            self.__lengths_storage[storage_idx] + self.__lengths[storage_idx])
+        self.__ignored_vertices_to_market = path_to_storage[:-1] + path_from_storage[1:]
 
-        if self.__count_died_people(town, storage_path.length + market_path.length) > 0 or town.population == 0:
-            return market_path
-        return storage_path
+        paths = {}
+
+        n = len(train_group)-1
+        i = 0
+        for train in train_group.values():
+            paths[train.idx] = Path(path_to_storage[-2::-1] + path_from_storage[-2::-1], i, n-i)
+            i += 1
+        return paths
 
     def find_best_market(self, town, markets, train_capacity):
         best_market = -1

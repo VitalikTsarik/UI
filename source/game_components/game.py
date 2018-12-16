@@ -11,42 +11,94 @@ class Game:
         self.player = None
         self.__map_graph = None
         self.__trains = {}
-        self.__player_trains = {}
         self.__towns = {}
         self.__markets = {}
         self.__storages = {}
-        self.__path = None
+        self.__paths = {}
+        self.__paths_to_market = {}
+        self.__paths_to_storage = {}
+        self.__trains_to_market = {}
+        self.__trains_to_storage = {}
 
     def start_game(self):
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
                                            self.__markets, self.__storages)
-        for train in self.__player_trains.values():
+
+        for train in self.__trains_to_market.values():
+            self.upgrade_train_if_possible(train)
+        for train in self.__trains_to_storage.values():
             self.upgrade_train_if_possible(train)
         self.upgrade_post_if_possible(self.player.town)
-        self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
-                                                         self.trains[1].goods_capacity)
-        self.set_direction(self.__player_trains[1], self.__path.next())
+
+        self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
+                                                                     self.__markets, self.__trains_to_market)
+        self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
+                                                                       self.__storages, self.__trains_to_storage)
+        for train in self.__trains_to_market.values():
+            next_vert = self.__paths_to_market[train.idx].next_vert()
+            if next_vert is None:
+                continue
+            else:
+                self.set_direction(train, next_vert)
+        for train in self.__trains_to_storage.values():
+            next_vert = self.__paths_to_storage[train.idx].next_vert()
+            if next_vert is None:
+                continue
+            else:
+                self.set_direction(train, next_vert)
 
     def next_turn(self):
         self.update_layer1()
         self.update_player()
-        train = self.__player_trains[1]  # todo: сделать цикл для всех поездов !!!
-        road = self.__map_graph.get_edge_by_idx(train.line_idx)
-        if train.position == 0 or train.position == road['length']:
-            if self.__path.has_next():
-                self.set_direction(train, self.__path.next())
-            else:
-                self.upgrade_train_if_possible(train)
-                self.upgrade_post_if_possible(self.player.town)
-                self.__path = self.__path_manager.find_best_path(self.player.town, self.markets, self.storages,
-                                                                 self.trains[1].goods_capacity)
+        for train in self.__trains_to_market.values():
+            road = self.__map_graph.get_edge_by_idx(train.line_idx)
+            if train.position == 0 or train.position == road['length']:
+                if self.__paths_to_market[train.idx].has_next_vert():
+                    next_vert = self.__paths_to_market[train.idx].next_vert()
+                    if next_vert is None:
+                        continue
+                    else:
+                        self.set_direction(train, next_vert)
+                else:
+                    self.upgrade_train_if_possible(train)
+                    self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
+                                                                                 self.__markets, self.__trains_to_market)
+                    next_vert = self.__paths_to_market[train.idx].next_vert()
+                    if next_vert is None:
+                        continue
+                    else:
+                        self.set_direction(train, next_vert)
+
+        for train in self.__trains_to_storage.values():
+            road = self.__map_graph.get_edge_by_idx(train.line_idx)
+            if train.position == 0 or train.position == road['length']:
+                if self.__paths_to_storage[train.idx].has_next_vert():
+                    next_vert = self.__paths_to_storage[train.idx].next_vert()
+                    if next_vert is None:
+                        continue
+                    else:
+                        self.set_direction(train, next_vert)
+                else:
+                    self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
+                                                                                   self.__storages, self.__trains_to_storage)
+                    next_vert = self.__paths_to_storage[train.idx].next_vert()
+                    if next_vert is None:
+                        continue
+                    else:
+                        self.set_direction(train, next_vert)
 
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
         self.__trains = dict_to_trains(layer1)
+        f = True
         for train in self.__trains.values():
             if train.player_idx == self.player.idx:
-                self.__player_trains[train.idx] = train
+                if f:
+                    self.__trains_to_market[train.idx] = train
+                    f = False
+                else:
+                    self.__trains_to_storage[train.idx] = train
+                    f = True
         self.__towns, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def update_player(self):
