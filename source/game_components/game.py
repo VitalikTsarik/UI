@@ -6,6 +6,7 @@ from source.game_components.path_manager import PathManager
 class Game:
     def __init__(self):
         self.__client = ServerConnection()
+        self.__lobby = None
         self.__path_manager = PathManager()
         self.player = None
         self.__map_graph = None
@@ -109,13 +110,22 @@ class Game:
             self.player.town.armor -= 200
             post.level = 3
 
-    def new_game(self, player_name, game_name, num_players=1, num_turns=-1):
+    def new_game(self, player_name, lobby):
         if self.player is not None:
             self.__client.logout_action()
             self.__client = ServerConnection()
-        if game_name == '':
-            game_name = 'Game of ' + player_name
-        self.player = dict_to_player(self.__client.login_action(player_name, game_name, num_players, num_turns))
+        self.__lobby = lobby
+        self.player = dict_to_player(self.__client.login_action(player_name, lobby.name, lobby.num_players, lobby.num_turns))
+        self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
+        self.update_layer1()
+        self.update_player()
+
+    def connect_to_game(self, player_name, lobby):
+        if self.player is not None:
+            self.__client.logout_action()
+            self.__client = ServerConnection()
+        self.__lobby = lobby
+        self.player = dict_to_player(self.__client.connect_to_game(player_name, lobby.name))
         self.__map_graph = dict_to_graph(self.__client.map_action(Layer.Layer0))
         self.update_layer1()
         self.update_player()
@@ -142,3 +152,11 @@ class Game:
     @property
     def storages(self):
         return self.__storages
+
+    @property
+    def lobby(self):
+        return self.__lobby
+
+    @lobby.setter
+    def lobby(self, value):
+        self.__lobby = value

@@ -46,6 +46,11 @@ class ServerConnection:
         self.__request(Action.LOGIN, data)
         return self.__response()
 
+    def connect_to_game(self, name, game):
+        data = dumps({'name': name, 'game': game})
+        self.__request(Action.LOGIN, data)
+        return self.__response()
+
     def player_action(self):
         self.__request(Action.PLAYER)
         return self.__response()
@@ -109,10 +114,8 @@ if __name__ == '__main__':
 
     g = cnt.games_action()
     print(g)
-    p = cnt.login_action('123', '123')
+    p = cnt.login_action('we', 'Game of qwe', 2)
     print(p)
-    cnt.logout_action()
-    cnt = ServerConnection()
     g = cnt.games_action()
     print(g)
 
