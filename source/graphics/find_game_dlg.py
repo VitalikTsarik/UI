@@ -3,6 +3,8 @@ from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 
+from source.game_components.lobby import Lobby, GameState
+
 
 class FindGameDlg(QDialog):
     def __init__(self, lobbies, parent=None):
@@ -12,28 +14,41 @@ class FindGameDlg(QDialog):
         self.setWindowIcon(QIcon('source/icons/icon.png'))
 
         self.__lobbies = lobbies
-        self.name = ''
-        self.num_players = 1
-        self.num_turns = -1
-        self.state = 2
+        self.lobby = None
         self.init_table()
 
     def init_table(self):
         n = len(self.__lobbies)
         self.ui.table.setRowCount(n)
-        for i in range(n):
-            lobby = self.__lobbies[i]
+        i = 0
+        for lobby in self.__lobbies.values():
             self.ui.table.setItem(i, 0, QTableWidgetItem(lobby.name))
             self.ui.table.setItem(i, 1, QTableWidgetItem(str(lobby.num_players)))
-            self.ui.table.setItem(i, 2, QTableWidgetItem(str(lobby.num_turns)))
-            self.ui.table.setItem(i, 3, QTableWidgetItem(lobby.state))
+            if lobby.num_turns < 0:
+                self.ui.table.setItem(i, 2, QTableWidgetItem('infinite'))
+            else:
+                self.ui.table.setItem(i, 2, QTableWidgetItem(str(lobby.num_turns)))
+            if lobby.state == GameState.INIT.value:
+                self.ui.table.setItem(i, 3, QTableWidgetItem('initialization'))
+            elif lobby.state == GameState.RUN.value:
+                self.ui.table.setItem(i, 3, QTableWidgetItem('running'))
+            elif lobby.state == GameState.FINISHED.value:
+                self.ui.table.setItem(i, 3, QTableWidgetItem('finished'))
+            i += 1
 
     def submit(self):
         row = self.ui.table.selectedItems()
-        self.name = row[0]
-        self.num_players = row[1]
-        self.num_turns = row[2]
-        self.state = row[3]
+        if row[2].text() == 'infinite':
+            num_turns = -1
+        else:
+            num_turns = int(row[2].text())
+        if row[3].text() == 'initialization':
+            state = GameState.INIT.value
+        elif row[3].text() == 'running':
+            state = GameState.RUN.value
+        else:
+            state = GameState.FINISHED.value
+        self.lobby = Lobby(row[0].text(), int(row[1].text()), num_turns, state)
         self.accept()
 
 # Created by: PyQt5 UI code generator 5.11.3
@@ -98,7 +113,7 @@ class Ui_Dialog(object):
         self.table.verticalHeader().setStretchLastSection(False)
 
         self.retranslateUi(Dialog)
-        self.buttonBox.accepted.connect(Dialog.accept)
+        self.buttonBox.accepted.connect(Dialog.submit)
         self.buttonBox.rejected.connect(Dialog.reject)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
