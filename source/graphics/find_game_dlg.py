@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QDialogButtonBox
 
 from source.game_components.lobby import Lobby, GameState
 
@@ -11,11 +11,15 @@ class FindGameDlg(QDialog):
         super(FindGameDlg, self).__init__(parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
+        self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(False)
         self.setWindowIcon(QIcon('source/icons/icon.png'))
 
         self.__lobbies = lobbies
         self.lobby = None
+        self.player_name = None
         self.init_table()
+        self.ui.table.itemSelectionChanged.connect(lambda:
+                                                   self.ui.buttonBox.button(QDialogButtonBox.Ok).setEnabled(True))
 
     def init_table(self):
         n = len(self.__lobbies)
@@ -49,6 +53,7 @@ class FindGameDlg(QDialog):
         else:
             state = GameState.FINISHED.value
         self.lobby = Lobby(row[0].text(), int(row[1].text()), num_turns, state)
+        self.player_name = self.ui.le_player_name.text()
         self.accept()
 
 # Created by: PyQt5 UI code generator 5.11.3
@@ -111,6 +116,12 @@ class Ui_Dialog(object):
         self.table.verticalHeader().setHighlightSections(True)
         self.table.verticalHeader().setSortIndicatorShown(False)
         self.table.verticalHeader().setStretchLastSection(False)
+        self.label = QtWidgets.QLabel(Dialog)
+        self.label.setGeometry(QtCore.QRect(20, 215, 71, 31))
+        self.label.setObjectName("label")
+        self.le_player_name = QtWidgets.QLineEdit(Dialog)
+        self.le_player_name.setGeometry(QtCore.QRect(90, 220, 131, 20))
+        self.le_player_name.setObjectName("le_player_name")
 
         self.retranslateUi(Dialog)
         self.buttonBox.accepted.connect(Dialog.submit)
@@ -129,6 +140,7 @@ class Ui_Dialog(object):
         item.setText(_translate("Dialog", "Number of turns"))
         item = self.table.horizontalHeaderItem(3)
         item.setText(_translate("Dialog", "State"))
+        self.label.setText(_translate("Dialog", "Player Name:"))
 
 
 if __name__ == "__main__":

@@ -83,7 +83,7 @@ class MainWindow(QMainWindow):
         dlg = FindGameDlg(self.game.get_existing_games(), self)
         if dlg.exec_():
             self.__turn_timer.stop()
-            self.game.connect_to_game('23', dlg.lobby)
+            self.game.connect_to_game(dlg.player_name, dlg.lobby)
             self.centralWidget().next_turn_btn.setEnabled(False)
             self.__form_widget.paint_widget.link_graph(self.game.map_graph)
             self.repaint()
