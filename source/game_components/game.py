@@ -1,4 +1,5 @@
 from client import *
+from game_components.path import Path
 from json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player, dict_to_lobbies
 from game_components.path_manager import PathManager
 
@@ -19,7 +20,6 @@ class Game:
         self.__towns = {}
         self.__markets = {}
         self.__storages = {}
-        self.__paths = {}
         self.__paths_to_market = {}
         self.__paths_to_storage = {}
         self.__trains_to_market = {}
@@ -48,6 +48,11 @@ class Game:
             self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
                                                                          self.__markets, self.__trains_to_market)
         for train in self.__trains_to_market.values():
+            for event in train.events:
+                if event['type'] == 1:
+                    self.__paths_to_market[train.idx] = Path([])
+                    if train.idx in self.__stopped_trains_direction.keys():
+                        self.__stopped_trains_direction.pop(train.idx)
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
                 if self.__paths_to_market[train.idx].has_next_vert():
@@ -68,6 +73,11 @@ class Game:
             self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
                                                                            self.__storages, self.__trains_to_storage)
         for train in self.__trains_to_storage.values():
+            for event in train.events:
+                if event['type'] == 1:
+                    self.__paths_to_storage[train.idx] = Path([])
+                    if train.idx in self.__stopped_trains_direction.keys():
+                        self.__stopped_trains_direction.pop(train.idx)
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
                 if self.__paths_to_storage[train.idx].has_next_vert():
@@ -130,7 +140,7 @@ class Game:
         if line['vert_to'] == self.player.town.point_idx and train.position == line['length'] - 1 and train.speed == 1:
             return False
 
-        for another_train in self.__trains.values():
+        for another_train in self.__player_trains.values():
             if train.line_idx == another_train.line_idx and another_train.speed == 0:
                 if train.idx in self.__stopped_trains_direction.keys():
                     speed = self.__stopped_trains_direction[train.idx]
@@ -194,6 +204,8 @@ class Game:
         lines = self.__map_graph.get_adj_edges(self.player.town.point_idx)
 
         for train in group.values():
+            if train.cooldown != 0:
+                return False
             town_line = None
             for line in lines:
                 if train.line_idx == line['edge_idx']:
