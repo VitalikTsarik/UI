@@ -1,5 +1,6 @@
 class Train:
-    def __init__(self, idx, speed, level, next_level_price, line_idx, position, player_idx, goods, goods_capacity):
+    def __init__(self, idx, speed, level, next_level_price, line_idx, position, player_idx, events, goods,
+                 goods_capacity, cooldown):
         self.__idx = idx
         self.__speed = speed
         self.__level = level
@@ -7,8 +8,8 @@ class Train:
         self.__line_idx = line_idx
         self.__position = position
         self.__player_idx = player_idx
-        # self.__cooldown = cooldown
-        # self.__events = events
+        self.__cooldown = cooldown
+        self.__events = events
         # self.__fuel = fuel
         # self.__fuel_capacity = fuel_capacity
         # self.__fuel_consumption = fuel_consumption
@@ -67,6 +68,10 @@ class Train:
     @property
     def cooldown(self):
         return self.__cooldown
+
+    @cooldown.setter
+    def cooldown(self, value):
+        self.__cooldown = value
 
     @property
     def events(self):

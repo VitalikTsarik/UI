@@ -31,7 +31,8 @@ def dict_to_trains(layer1):
 def dict_to_train(dictionary):
     return Train(idx=dictionary['idx'], speed=dictionary['speed'], level=dictionary['level'], line_idx=dictionary['line_idx'],
                  position=dictionary['position'], player_idx=dictionary['player_idx'], goods=dictionary['goods'],
-                 goods_capacity=dictionary['goods_capacity'], next_level_price=dictionary['next_level_price'])
+                 goods_capacity=dictionary['goods_capacity'], next_level_price=dictionary['next_level_price'],
+                 events=dictionary['events'], cooldown=dictionary['cooldown'])
 
 
 def dict_to_posts(layer1):
