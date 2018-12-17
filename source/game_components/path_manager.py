@@ -53,6 +53,7 @@ class PathManager:
         return paths, ancestors
 
     def paths_to_market(self, graph, town, markets, train_group):
+        lengths, ancestors = self.min_paths(graph, town.point_idx, markets, self.__ignored_vertices_to_market)
         market_idx = self.find_best_market(town, markets, sum([train.goods_capacity for train in train_group.values()]))
         path_to = []
         path_from = []
@@ -60,7 +61,7 @@ class PathManager:
         idx = market_idx
         while idx != -1:
             path_to.append(idx)
-            idx = self.__ancestors_markets[idx]
+            idx = ancestors[idx]
 
         lengths, ancestors = self.min_paths(graph, market_idx, None, [path_to[1]] + self.__ignored_vertices_to_market)
         idx = town.point_idx
@@ -112,7 +113,8 @@ class PathManager:
         i = 0
         for train in train_group.values():
             path = path_to[-2::-1]
-            wait_beside = (train.goods_capacity - storage.armor)//storage.replenishment
+            wait_beside = (train.goods_capacity - storage.armor)//storage.replenishment - \
+                          (1 if storage.armor != storage.armor_capacity else 0)
             storage.armor -= train.goods_capacity
             if storage.armor < 0:
                 storage.armor = 0

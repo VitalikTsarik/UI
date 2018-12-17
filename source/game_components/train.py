@@ -92,6 +92,10 @@ class Train:
     def goods_capacity(self):
         return self.__goods_capacity
 
+    @goods_capacity.setter
+    def goods_capacity(self, value):
+        self.__goods_capacity = value
+
     @property
     def goods_type(self):
         return self.__goods_type

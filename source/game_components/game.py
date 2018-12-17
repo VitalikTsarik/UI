@@ -2,6 +2,10 @@ from client import *
 from json_converter import dict_to_graph, dict_to_trains, dict_to_posts, dict_to_player, dict_to_lobbies
 from game_components.path_manager import PathManager
 
+EMERGENCY_ARMOR_RESERVE = 25
+TRAINS_TO_MARKETS = 6/8
+TRAINS_TO_STORAGES = 1 - TRAINS_TO_MARKETS
+
 
 class Game:
     def __init__(self):
@@ -11,6 +15,7 @@ class Game:
         self.player = None
         self.__map_graph = None
         self.__trains = {}
+        self.__player_trains = {}
         self.__towns = {}
         self.__markets = {}
         self.__storages = {}
@@ -32,26 +37,7 @@ class Game:
         for train in self.__trains_to_storage.values():
             self.__trains_to_storage_lvl += train.level
 
-        self.update_trains_if_possible(self.__trains_to_market)
-        self.update_trains_if_possible(self.__trains_to_storage)
-        self.upgrade_post_if_possible(self.player.town)
-
-        self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
-                                                                     self.__markets, self.__trains_to_market)
-        self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
-                                                                       self.__storages, self.__trains_to_storage)
-        for train in self.__trains_to_market.values():
-            next_vert = self.__paths_to_market[train.idx].next_vert()
-            if next_vert is None:
-                continue
-            else:
-                self.set_direction(train, next_vert)
-        for train in self.__trains_to_storage.values():
-            next_vert = self.__paths_to_storage[train.idx].next_vert()
-            if next_vert is None:
-                continue
-            else:
-                self.set_direction(train, next_vert)
+        self.next_turn()
 
     def next_turn(self):
         self.update_layer1()
@@ -70,6 +56,11 @@ class Game:
                         continue
                     else:
                         self.set_direction(train, next_vert)
+            else:
+                if self.collision_can_happened(train):
+                    self.stop_train(train)
+                else:
+                    self.move_forward(train)
 
         if self.all_trains_in_group_in_town(self.__trains_to_storage):
             self.upgrade_post_if_possible(self.player.town)
@@ -94,15 +85,19 @@ class Game:
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
         self.__trains = dict_to_trains(layer1)
-        f = True
         for train in self.__trains.values():
             if train.player_idx == self.player.idx:
-                if f:
+                self.__player_trains[train.idx] = train
+
+        n = len(self.__player_trains)
+        i = 0
+        for train in self.__player_trains.values():
+            if train.player_idx == self.player.idx:
+                if i < n*TRAINS_TO_MARKETS:
                     self.__trains_to_market[train.idx] = train
-                    f = False
                 else:
                     self.__trains_to_storage[train.idx] = train
-                    f = True
+                i += 1
         self.__towns, self.__markets, self.__storages = dict_to_posts(layer1)
 
     def update_player(self):
@@ -165,38 +160,35 @@ class Game:
         self.__client.turn_action()
 
     def update_trains_if_possible(self, trains):
-        if trains.keys() == self.__trains_to_market.keys() and self.__trains_to_market_lvl < self.__trains_to_storage_lvl:
+        if trains.keys() == self.__trains_to_market.keys():
             for train in self.__trains_to_market.values():
                 self.upgrade_train_if_possible(train)
                 self.__trains_to_market_lvl += 1
-                if self.__trains_to_market_lvl <= self.__trains_to_storage_lvl:
+                if self.__trains_to_market_lvl*TRAINS_TO_MARKETS <= self.__trains_to_storage_lvl*TRAINS_TO_STORAGES:
                     break
         else:
             for train in self.__trains_to_storage.values():
                 self.upgrade_train_if_possible(train)
                 self.__trains_to_storage_lvl += 1
-                if self.__trains_to_storage_lvl <= self.__trains_to_market_lvl:
+                if self.__trains_to_storage_lvl*TRAINS_TO_STORAGES < self.__trains_to_market_lvl*TRAINS_TO_MARKETS:
                     break
 
     def upgrade_train_if_possible(self, train):
-        while train.next_level_price:
-            if self.player.town.armor >= train.next_level_price + 30:
+        if train.next_level_price:
+            if self.player.town.armor >= train.next_level_price + EMERGENCY_ARMOR_RESERVE:
                 self.__client.upgrade_action([], [train.idx])
                 self.player.town.armor -= train.next_level_price
                 train.level += 1
                 train.next_level_price *= 2
-            else:
-                break
+                train.goods_capacity *= 2
 
     def upgrade_post_if_possible(self, post):
-        while post.next_level_price:
-            if self.player.town.armor >= post.next_level_price + 30:
+        if post.next_level_price:
+            if self.player.town.armor >= post.next_level_price + EMERGENCY_ARMOR_RESERVE:
                 self.__client.upgrade_action([post.idx], [])
                 self.player.town.armor -= post.next_level_price
                 post.level += 1
                 post.next_level_price *= 2
-            else:
-                break
 
     def all_trains_in_group_in_town(self, group):
         lines = self.__map_graph.get_adj_edges(self.player.town.point_idx)
