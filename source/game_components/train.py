@@ -1,8 +1,9 @@
 class Train:
-    def __init__(self, idx, speed, level, line_idx, position, player_idx, goods, goods_capacity):
+    def __init__(self, idx, speed, level, next_level_price, line_idx, position, player_idx, goods, goods_capacity):
         self.__idx = idx
         self.__speed = speed
         self.__level = level
+        self.__next_level_price = next_level_price
         self.__line_idx = line_idx
         self.__position = position
         self.__player_idx = player_idx
@@ -34,6 +35,14 @@ class Train:
     @level.setter
     def level(self, value):
         self.__level = value
+
+    @property
+    def next_level_price(self):
+        return self.__next_level_price
+
+    @next_level_price.setter
+    def next_level_price(self, value):
+        self.__next_level_price = value
 
     @property
     def line_idx(self):

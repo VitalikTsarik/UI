@@ -23,12 +23,13 @@ class GamePoint:
 
 
 class Town(GamePoint):
-    def __init__(self, idx, name, point_idx, armor, armor_capacity, level,
+    def __init__(self, idx, name, point_idx, armor, armor_capacity, level, next_level_price,
                  population, population_capacity, product, product_capacity, player_idx):
         super().__init__(idx, name, point_idx)
         self.__armor = armor
         self.__armor_capacity = armor_capacity
         self.__level = level
+        self.__next_level_price = next_level_price
         self.__population = population
         self.__population_capacity = population_capacity
         self.__product = product
@@ -55,6 +56,14 @@ class Town(GamePoint):
     @level.setter
     def level(self, value):
         self.__level = value
+
+    @property
+    def next_level_price(self):
+        return self.__next_level_price
+
+    @next_level_price.setter
+    def next_level_price(self, value):
+        self.__next_level_price = value
 
     @property
     def population(self):
