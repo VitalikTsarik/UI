@@ -96,6 +96,10 @@ class Market(GamePoint):
     def product(self):
         return self.__product
 
+    @product.setter
+    def product(self, value):
+        self.__product = value
+
     @property
     def product_capacity(self):
         return self.__product_capacity
