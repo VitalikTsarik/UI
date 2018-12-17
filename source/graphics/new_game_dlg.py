@@ -14,7 +14,7 @@ class NewGameDlg(QDialog):
         super(NewGameDlg, self).__init__(parent)
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
-        self.setWindowIcon(QIcon('source\icons\icon.png'))
+        self.setWindowIcon(QIcon('icons\icon.png'))
         self.connect_actions()
 
         self.lobby = None

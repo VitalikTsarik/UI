@@ -25,7 +25,7 @@ class ControlButton(QPushButton):
         self.setIconSize(QSize(self.height(), self.height()))
 
     def next_turn(self):
-        self.__move_btn('Force next turn', 'source\icons\\turn')
+        self.__move_btn('Force next turn', 'icons\\turn')
 
     def right_arrow(self):
         self.__move_btn('Set speed +1', 'icons/right_arrow')
