@@ -1,9 +1,8 @@
 class Path:
-    def __init__(self, path, wait_before=0, wait_after=0):
+    def __init__(self, path, wait_before=0):
         self.__i = -wait_before
         self.__path = path
         self.__wait_before = wait_before
-        self.wait_after = wait_after
 
     def next_vert(self):
         if len(self.__path) > self.__i >= 0:
@@ -14,7 +13,7 @@ class Path:
         return next_vert
 
     def has_next_vert(self):
-        return self.__i < len(self.__path) + self.wait_after
+        return self.__i < len(self.__path)
 
     def concatenate(self, path):
         self.__path += path.path

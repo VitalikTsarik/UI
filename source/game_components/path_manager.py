@@ -54,56 +54,71 @@ class PathManager:
 
     def paths_to_market(self, graph, town, markets, train_group):
         market_idx = self.find_best_market(town, markets, sum([train.goods_capacity for train in train_group.values()]))
-        path_to_market = []
-        path_from_market = []
+        path_to = []
+        path_from = []
 
         idx = market_idx
         while idx != -1:
-            path_to_market.append(idx)
+            path_to.append(idx)
             idx = self.__ancestors_markets[idx]
 
-        lengths, ancestors = self.min_paths(graph, market_idx, None, [path_to_market[1]] + self.__ignored_vertices_to_market)
+        lengths, ancestors = self.min_paths(graph, market_idx, None, [path_to[1]] + self.__ignored_vertices_to_market)
         idx = town.point_idx
         while idx != -1:
-            path_from_market.append(idx)
+            path_from.append(idx)
             idx = ancestors[idx]
 
-        self.__ignored_vertices_to_storage = path_to_market[:-1] + path_from_market[1:]
+        self.__ignored_vertices_to_storage = path_to[:-1] + path_from[1:]
 
         paths = {}
 
-        n = len(train_group)-1
+        market = markets[graph.get_post_idx(market_idx)]
         i = 0
         for train in train_group.values():
-            paths[train.idx] = Path(path_to_market[-2::-1] + path_from_market[-2::-1], i, n-i)
+            paths[train.idx] = Path(path_to[-2::-1] + path_from[-2::-1], i)
+            path = path_to[-2::-1]
+            wait_beside = (train.goods_capacity - market.product) // market.replenishment
+            market.product -= train.goods_capacity
+            if market.product < 0:
+                market.product = 0
+            path += [None for i in range(wait_beside)]
+            path += path_from[-2::-1]
+            paths[train.idx] = Path(path, i)
             i += 1
         return paths
 
     def paths_to_storage(self, graph, town, storages, train_group):
         lengths, ancestors = self.min_paths(graph, town.point_idx, storages, self.__ignored_vertices_to_storage)
         storage_idx = self.find_best_storage(town, storages, sum([train.goods_capacity for train in train_group.values()]))
-        path_to_storage = []
-        path_from_storage = []
+        path_to = []
+        path_from = []
 
         idx = storage_idx
         while idx != -1:
-            path_to_storage.append(idx)
+            path_to.append(idx)
             idx = ancestors[idx]
 
-        lengths, ancestors = self.min_paths(graph, storage_idx, None, [path_to_storage[1]] + self.__ignored_vertices_to_storage)
+        lengths, ancestors = self.min_paths(graph, storage_idx, None, [path_to[1]] + self.__ignored_vertices_to_storage)
         idx = town.point_idx
         while idx != -1:
-            path_from_storage.append(idx)
+            path_from.append(idx)
             idx = ancestors[idx]
 
-        self.__ignored_vertices_to_market = path_to_storage[:-1] + path_from_storage[1:]
+        self.__ignored_vertices_to_market = path_to[:-1] + path_from[1:]
 
         paths = {}
 
-        n = len(train_group)-1
+        storage = storages[graph.get_post_idx(storage_idx)]
         i = 0
         for train in train_group.values():
-            paths[train.idx] = Path(path_to_storage[-2::-1] + path_from_storage[-2::-1], i, n-i)
+            path = path_to[-2::-1]
+            wait_beside = (train.goods_capacity - storage.armor)//storage.replenishment
+            storage.armor -= train.goods_capacity
+            if storage.armor < 0:
+                storage.armor = 0
+            path += [None for i in range(wait_beside)]
+            path += path_from[-2::-1]
+            paths[train.idx] = Path(path, i)
             i += 1
         return paths
 

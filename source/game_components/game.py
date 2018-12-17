@@ -19,6 +19,7 @@ class Game:
         self.__paths_to_storage = {}
         self.__trains_to_market = {}
         self.__trains_to_storage = {}
+        self.__stopped_trains_direction = {}
 
     def start_game(self):
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
@@ -50,6 +51,12 @@ class Game:
     def next_turn(self):
         self.update_layer1()
         self.update_player()
+
+        if self.all_trains_in_group_in_town(self.__trains_to_market):
+            for train in self.__trains_to_market.values():
+                self.upgrade_train_if_possible(train)
+            self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
+                                                                         self.__markets, self.__trains_to_market)
         for train in self.__trains_to_market.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
@@ -59,16 +66,11 @@ class Game:
                         continue
                     else:
                         self.set_direction(train, next_vert)
-                else:
-                    self.upgrade_train_if_possible(train)
-                    self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
-                                                                                 self.__markets, self.__trains_to_market)
-                    next_vert = self.__paths_to_market[train.idx].next_vert()
-                    if next_vert is None:
-                        continue
-                    else:
-                        self.set_direction(train, next_vert)
 
+        if self.all_trains_in_group_in_town(self.__trains_to_storage):
+            self.upgrade_post_if_possible(self.player.town)
+            self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
+                                                                           self.__storages, self.__trains_to_storage)
         for train in self.__trains_to_storage.values():
             road = self.__map_graph.get_edge_by_idx(train.line_idx)
             if train.position == 0 or train.position == road['length']:
@@ -78,14 +80,11 @@ class Game:
                         continue
                     else:
                         self.set_direction(train, next_vert)
+            else:
+                if self.collision_can_happened(train):
+                    self.stop_train(train)
                 else:
-                    self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
-                                                                                   self.__storages, self.__trains_to_storage)
-                    next_vert = self.__paths_to_storage[train.idx].next_vert()
-                    if next_vert is None:
-                        continue
-                    else:
-                        self.set_direction(train, next_vert)
+                    self.move_forward(train)
 
     def update_layer1(self):
         layer1 = self.__client.map_action(Layer.Layer1)
@@ -124,15 +123,33 @@ class Game:
             train.position = new_line['length']
             self.move_train(train.idx, new_line['edge_idx'], -1)
 
-    def move_forward(self):
-        train_idx = 1  # временно
-        train = self.trains[train_idx]
-        self.move_train(train.idx, train.line_idx, 1)
+    def collision_can_happened(self, train):
+        line = self.map_graph.get_edge_by_idx(train.line_idx)
+        if line['vert_from'] == self.player.town.point_idx and train.position == 1 and train.speed == -1:
+            return False
+        if line['vert_to'] == self.player.town.point_idx and train.position == line['length'] - 1 and train.speed == 1:
+            return False
 
-    def stop_train(self):
-        train_idx = 1  # временно
-        train = self.trains[train_idx]
-        self.move_train(train.idx, train.line_idx, 0)
+        for another_train in self.__trains.values():
+            if train.line_idx == another_train.line_idx and another_train.speed == 0:
+                if train.idx in self.__stopped_trains_direction.keys():
+                    speed = self.__stopped_trains_direction[train.idx]
+                else:
+                    speed = train.speed
+                if speed == 1 and another_train.position == train.position + 1 or \
+                        speed == -1 and another_train.position == train.position - 1:
+                    return True
+        return False
+
+    def move_forward(self, train):
+        if train.speed == 0:
+            speed = self.__stopped_trains_direction.pop(train.idx)
+            self.move_train(train.idx, train.line_idx, speed)
+
+    def stop_train(self, train):
+        if train.speed != 0:
+            self.__stopped_trains_direction[train.idx] = train.speed
+            self.move_train(train.idx, train.line_idx, 0)
 
     def move_backwards(self):
         train_idx = 1  # временно
@@ -161,6 +178,25 @@ class Game:
             self.__client.upgrade_action([post.idx], [])
             self.player.town.armor -= 200
             post.level = 3
+
+    def all_trains_in_group_in_town(self, group):
+        lines = self.__map_graph.get_adj_edges(self.player.town.point_idx)
+
+        for train in group.values():
+            town_line = None
+            for line in lines:
+                if train.line_idx == line['edge_idx']:
+                    town_line = line
+                    break
+            if town_line is None:
+                return False
+            if town_line['start_vert'] == self.player.town.point_idx:
+                if train.position != 0:
+                    return False
+            else:
+                if train.position != town_line['length']:
+                    return False
+        return True
 
     def new_game(self, player_name, lobby):
         if self.player is not None:
