@@ -289,8 +289,6 @@ class PaintGraphWidget(QWidget):
                                                     QColor(255, 213, 115)]
                     self.available_trains_colors = [QColor(25, 64, 255), QColor(255, 25, 25), QColor(62, 255, 41),
                                                     QColor(255, 163, 43)]
-                    self.player_colors.clear()
-                    self.trains_colors.clear()
                 self.player_colors[town.player_idx] = self.available_player_colors.pop(0)
                 self.trains_colors[town.player_idx] = self.available_trains_colors.pop(0)
 
