@@ -20,15 +20,20 @@ class Game:
         self.__trains_to_market = {}
         self.__trains_to_storage = {}
         self.__stopped_trains_direction = {}
+        self.__trains_to_market_lvl = 0
+        self.__trains_to_storage_lvl = 0
 
     def start_game(self):
         self.__path_manager.init_all_paths(self.__map_graph, self.player.town.point_idx,
                                            self.__markets, self.__storages)
 
         for train in self.__trains_to_market.values():
-            self.upgrade_train_if_possible(train)
+            self.__trains_to_market_lvl += train.level
         for train in self.__trains_to_storage.values():
-            self.upgrade_train_if_possible(train)
+            self.__trains_to_storage_lvl += train.level
+
+        self.update_trains_if_possible(self.__trains_to_market)
+        self.update_trains_if_possible(self.__trains_to_storage)
         self.upgrade_post_if_possible(self.player.town)
 
         self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
@@ -53,8 +58,7 @@ class Game:
         self.update_player()
 
         if self.all_trains_in_group_in_town(self.__trains_to_market):
-            for train in self.__trains_to_market.values():
-                self.upgrade_train_if_possible(train)
+            self.update_trains_if_possible(self.__trains_to_market)
             self.__paths_to_market = self.__path_manager.paths_to_market(self.__map_graph, self.player.town,
                                                                          self.__markets, self.__trains_to_market)
         for train in self.__trains_to_market.values():
@@ -69,6 +73,7 @@ class Game:
 
         if self.all_trains_in_group_in_town(self.__trains_to_storage):
             self.upgrade_post_if_possible(self.player.town)
+            self.update_trains_if_possible(self.__trains_to_storage)
             self.__paths_to_storage = self.__path_manager.paths_to_storage(self.__map_graph, self.player.town,
                                                                            self.__storages, self.__trains_to_storage)
         for train in self.__trains_to_storage.values():
@@ -159,25 +164,39 @@ class Game:
     def next_turn_action(self):
         self.__client.turn_action()
 
+    def update_trains_if_possible(self, trains):
+        if trains.keys() == self.__trains_to_market.keys() and self.__trains_to_market_lvl < self.__trains_to_storage_lvl:
+            for train in self.__trains_to_market.values():
+                self.upgrade_train_if_possible(train)
+                self.__trains_to_market_lvl += 1
+                if self.__trains_to_market_lvl <= self.__trains_to_storage_lvl:
+                    break
+        else:
+            for train in self.__trains_to_storage.values():
+                self.upgrade_train_if_possible(train)
+                self.__trains_to_storage_lvl += 1
+                if self.__trains_to_storage_lvl <= self.__trains_to_market_lvl:
+                    break
+
     def upgrade_train_if_possible(self, train):
-        if train.level == 1 and self.player.town.armor >= 40:
-            self.__client.upgrade_action([], [train.idx])
-            self.player.town.armor -= 40
-            train.level = 2
-        if train.level == 2 and self.player.town.armor >= 80:
-            self.__client.upgrade_action([], [train.idx])
-            self.player.town.armor -= 80
-            train.level = 3
+        while train.next_level_price:
+            if self.player.town.armor >= train.next_level_price + 30:
+                self.__client.upgrade_action([], [train.idx])
+                self.player.town.armor -= train.next_level_price
+                train.level += 1
+                train.next_level_price *= 2
+            else:
+                break
 
     def upgrade_post_if_possible(self, post):
-        if post.level == 1 and self.player.town.armor >= 100:
-            self.__client.upgrade_action([post.idx], [])
-            self.player.town.armor -= 100
-            post.level = 2
-        if post.level == 2 and self.player.town.armor >= 200:
-            self.__client.upgrade_action([post.idx], [])
-            self.player.town.armor -= 200
-            post.level = 3
+        while post.next_level_price:
+            if self.player.town.armor >= post.next_level_price + 30:
+                self.__client.upgrade_action([post.idx], [])
+                self.player.town.armor -= post.next_level_price
+                post.level += 1
+                post.next_level_price *= 2
+            else:
+                break
 
     def all_trains_in_group_in_town(self, group):
         lines = self.__map_graph.get_adj_edges(self.player.town.point_idx)
